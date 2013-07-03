@@ -1,0 +1,5 @@
+{
+    "require": {
+		"podio/podio-php": "dev-master"
+    }
+}
