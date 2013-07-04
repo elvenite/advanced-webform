@@ -4,6 +4,9 @@ require 'PodioAdvancedFormError.php';
 
 require 'Elements/PodioAdvancedFormElement.php';
 require 'Elements/PodioAdvancedFormTextElement.php';
+require 'Elements/PodioAdvancedFormNumberElement.php';
+require 'Elements/PodioAdvancedFormCategoryElement.php';
+require 'Elements/PodioAdvancedFormQuestionElement.php';
 
 class PodioAdvancedForm {
 	protected $app_id;
@@ -46,6 +49,9 @@ class PodioAdvancedForm {
 		if ($attributes){
 			$this->set_attributes($attributes);
 		}
+		
+		// TODO set default attributes
+		$this->set_attribute('class', 'form-horizontal');
 		
 		$this->set_app_id($app_id);
 		
@@ -104,7 +110,15 @@ class PodioAdvancedForm {
 			case 'text':
 				$this->fields[] = new PodioAdvancedFormTextElement($field, $this, ''); // TODO third attribute, add item values
 				break;
-
+			case 'category':
+				$this->fields[] = new PodioAdvancedFormCategoryElement($field, $this, ''); // TODO third attribute, add item values
+				break;
+			case 'question':
+				$this->fields[] = new PodioAdvancedFormQuestionElement($field, $this, ''); // TODO third attribute, add item values
+				break;
+			case 'number':
+				$this->fields[] = new PodioAdvancedFormNumberElement($field, $this, ''); // TODO third attribute, add item values
+				break;
 			default:
 				break;
 		}

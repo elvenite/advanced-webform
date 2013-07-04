@@ -18,4 +18,5 @@ $podioform = new PodioAdvancedForm(MONTER_APP_ID, array(
 ));
 
 require 'header.php';
+require 'content.php';
 require 'footer.php';
