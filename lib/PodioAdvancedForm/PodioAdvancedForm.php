@@ -5,17 +5,19 @@ require 'PodioAdvancedFormError.php';
 require 'Elements/PodioAdvancedFormElement.php';
 require 'Elements/PodioAdvancedFormTextElement.php';
 require 'Elements/PodioAdvancedFormNumberElement.php';
+require 'Elements/PodioAdvancedFormProgressElement.php';
+require 'Elements/PodioAdvancedFormLocationElement.php';
+require 'Elements/PodioAdvancedFormDurationElement.php';
+require 'Elements/PodioAdvancedFormMoneyElement.php';
+require 'Elements/PodioAdvancedFormDateElement.php';
 require 'Elements/PodioAdvancedFormCategoryElement.php';
 require 'Elements/PodioAdvancedFormQuestionElement.php';
 
 class PodioAdvancedForm {
-	protected $app_id;
 	protected $app;
-	
-	protected $item_id;
 	protected $item;
 	
-	protected $fields;
+	protected $elements;
 	
 	    /**#@+
      * Method type constants
@@ -45,7 +47,36 @@ class PodioAdvancedForm {
 	
 	protected $attributes = array();
 		
-	public function __construct($app_id, $attributes = array()) {
+	public function __construct($attributes = array()) {
+		// setup app
+		if(isset($attributes['app']) && $attributes['app'] instanceof PodioApp){
+			$this->set_app($attributes['app']);
+		} elseif (isset($attributes['app_id']) && $attributes['app_id']){
+			$this->set_app( PodioApp::get($attributes['app_id']) );
+		} else {
+			throw new PodioFormError('App or app id must be set.');
+		}
+		
+		unset($attributes['app']);
+		unset($attributes['app_id']);
+		
+		// setup item
+		if(isset($attributes['item']) && $attributes['item'] instanceof PodioItem){
+			$this->set_item($attributes['item']);
+		} elseif (isset($attributes['item_id']) && $attributes['item_id']){
+			$item = PodioItem::get($attributes['item_id']);
+			$item->app = $this->get_app();
+			$this->set_item( $item );
+		} else {
+			$this->set_item( new PodioItem(array(
+				'app' => $this->get_app(),
+			)));
+		}
+		
+		unset($attributes['item']);
+		unset($attributes['item_id']);
+		
+		
 		if ($attributes){
 			$this->set_attributes($attributes);
 		}
@@ -53,25 +84,7 @@ class PodioAdvancedForm {
 		// TODO set default attributes
 		$this->set_attribute('class', 'form-horizontal');
 		
-		$this->set_app_id($app_id);
-		
-		if (!$this->app_id){
-			throw new PodioAdvancedFormError('App id not set');
-		}
-		
-		$app = PodioApp::get($this->get_app_id());
-		
-		$this->set_app($app);
-		
-		$this->set_fields();
-	}
-	
-	public function get_app_id() {
-		return $this->app_id;
-	}
-
-	public function set_app_id($app_id) {
-		$this->app_id = (int) $app_id;
+		$this->set_elements();
 	}
 
 	public function get_app() {
@@ -82,14 +95,6 @@ class PodioAdvancedForm {
 		$this->app = $app;
 	}
 
-	public function get_item_id() {
-		return $this->item_id;
-	}
-
-	public function set_item_id($item_id) {
-		$this->item_id = (int) $item_id;
-	}
-
 	public function get_item() {
 		return $this->item;
 	}
@@ -98,29 +103,22 @@ class PodioAdvancedForm {
 		$this->item = $item;
 	}
 	
-	protected function set_fields(){
+	protected function set_elements(){
 		// get all fields
 		foreach($this->get_app()->fields AS $field){
-			$this->add_field($field);
+			$this->set_element($field);
 		}
 	}
 	
-	protected function add_field($field){
-		switch ($field->type) {
-			case 'text':
-				$this->fields[] = new PodioAdvancedFormTextElement($field, $this, ''); // TODO third attribute, add item values
-				break;
-			case 'category':
-				$this->fields[] = new PodioAdvancedFormCategoryElement($field, $this, ''); // TODO third attribute, add item values
-				break;
-			case 'question':
-				$this->fields[] = new PodioAdvancedFormQuestionElement($field, $this, ''); // TODO third attribute, add item values
-				break;
-			case 'number':
-				$this->fields[] = new PodioAdvancedFormNumberElement($field, $this, ''); // TODO third attribute, add item values
-				break;
-			default:
-				break;
+	protected function set_element($field){
+		$element = false;
+		$class_name = 'PodioAdvancedForm' . ucfirst($field->type) . 'Element';
+		if (class_exists($class_name)){
+			$element = new $class_name($field, $this); // TODO third attribute, add item
+		}
+		
+		if ($element){
+			$this->elements[$field->external_id] = $element;
 		}
 	}
 	
@@ -223,14 +221,31 @@ class PodioAdvancedForm {
 		
 		$output[] = $head;
 		
-		foreach($this->fields AS $field){
+		foreach($this->elements AS $field){
 			
 			$output[] = $field->render();
 		}
 		
+		$output[] = '<div class="form-actions">
+			<input type="submit" class="btn btn-primary" value="Save changes">
+		</div>';
+		
 		$output[] = '</form>';
 		
 		return implode('', $output);
+	}
+	
+	public function set_values($data){
+		foreach($this->elements AS $key => $element){
+			if (isset($data[$key])){
+				$element->set_value($data[$key]);
+				$this->item->add_field($element->get_item_field());
+			}
+		}
+	}
+	
+	public function save(){
+		$this->item->save();
 	}
 
 

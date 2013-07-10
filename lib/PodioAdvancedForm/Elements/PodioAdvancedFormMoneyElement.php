@@ -1,18 +1,12 @@
 <?php
 
-class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
+class PodioAdvancedFormMoneyElement extends PodioAdvancedFormElement{
 	
 	public function __construct($app_field, $form, $item_field = null) {
 		parent::__construct($app_field, $form, $item_field);
 		
-		// set type
-		if ($this->app_field->config['settings']['size'] == 'small'){
-			$type = 'text';
-			
-		} else {
-			$type = 'textarea';
-		}
-		$this->set_attribute('type', $type);
+		$this->set_attribute('type', 'text');
+		$this->set_attribute('currencies', $this->app_field->config['settings']['allowed_currencies']);
 		
 		/**
 		 * TODO
@@ -20,9 +14,14 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 		 * check visibility equals true (config['visible']
 		 * add delta field (delta is the sort order)
 		 */
-	
 	}
 	
+	public function set_value($values) {
+		$this->item_field->set_amount($values['amount']);
+		$this->item_field->set_currency($values['currency']);
+	}
+
+
 	public function render(){
 		// output is:
 		// decorator
@@ -34,23 +33,30 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 		// required is a special case as well
 		// handle them first
 		
-		$type = $this->get_attribute('type');
-		unset($attributes['type']);
 		$description = $this->get_attribute('description');
 		unset($attributes['description']);
 		$required = $this->get_attribute('required');
 		unset($attributes['required']);
+		
+		// change name attributes to include amount
+		$attributes['name'] .= '[amount]';
+		
+		$elements = array();
 		
 		$attributes_string = '';
 		foreach($attributes AS $key => $attribute){
 			$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
 		}
 		
-		if ($type == 'text'){
-			$element = '<input type="text"';
-		} else {
-			$element = '<textarea';
-		}
+		$element = '<select name="' . $this->get_attribute('name') . '[currency]" class="span1">';
+			foreach($this->get_attribute('currencies') AS $currency){
+				$element .= '<option value="' . $currency . '">' . $currency . '</option>';
+			}
+		$element .= '</select>';
+		
+		$elements[] = $element;
+		
+		$element = '<input';
 		
 		if ($required){
 			$element .= ' required';
@@ -60,9 +66,7 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 		
 		$element .= '>';
 		
-		if ($type == 'textarea'){
-			$element .= '</textarea>';
-		}
+		$elements[] = $element;
 		
 		$description_decorator = '';
 		if ($description){
@@ -74,7 +78,7 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 		$decorator = sprintf('<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls">%3$s%4$s</div></div>', 
 						$this->get_attribute('name'),
 						$this->get_attribute('placeholder'),
-						$element,
+						implode(' ', $elements),
 						$description_decorator
 					);
 		

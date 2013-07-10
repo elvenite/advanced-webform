@@ -2,8 +2,8 @@
 
 class PodioAdvancedFormNumberElement extends PodioAdvancedFormElement{
 	
-	public function __construct($field, $form, $value) {
-		parent::__construct($field, $form, $value);
+	public function __construct($app_field, $form, $item_field = null) {
+		parent::__construct($app_field, $form, $item_field);
 		
 		/**
 		 * TODO

@@ -2,13 +2,13 @@
 
 class PodioAdvancedFormQuestionElement extends PodioAdvancedFormElement{
 	
-	public function __construct($field, $form, $value) {
-		parent::__construct($field, $form, $value);
+	public function __construct($app_field, $form, $item_field = null) {
+		parent::__construct($app_field, $form, $item_field);
 		
 		// set multiple
-		$this->set_attribute('multiple', $field->config['settings']['multiple']);
+		$this->set_attribute('multiple', $app_field->config['settings']['multiple']);
 		
-		$this->set_attribute('options', $field->config['settings']['options']);
+		$this->set_attribute('options', $app_field->config['settings']['options']);
 		
 		// set type to checkbox or radio depending on if category allows multiple
 		// values, also change the name is multiple = true, ad [] to indicate

@@ -1,18 +1,18 @@
 <?php
 
-class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
+class PodioAdvancedFormProgressElement extends PodioAdvancedFormElement{
 	
 	public function __construct($app_field, $form, $item_field = null) {
 		parent::__construct($app_field, $form, $item_field);
 		
-		// set type
-		if ($this->app_field->config['settings']['size'] == 'small'){
-			$type = 'text';
-			
-		} else {
-			$type = 'textarea';
-		}
-		$this->set_attribute('type', $type);
+		$this->set_attribute('type', 'range');
+		$this->set_attribute('min', 0);
+		$this->set_attribute('max', 100);
+		$this->set_attribute('step', 5);
+		
+		// initial value, can be overridden
+		$this->set_attribute('value', 0);
+		
 		
 		/**
 		 * TODO
@@ -34,8 +34,6 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 		// required is a special case as well
 		// handle them first
 		
-		$type = $this->get_attribute('type');
-		unset($attributes['type']);
 		$description = $this->get_attribute('description');
 		unset($attributes['description']);
 		$required = $this->get_attribute('required');
@@ -46,11 +44,8 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 			$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
 		}
 		
-		if ($type == 'text'){
-			$element = '<input type="text"';
-		} else {
-			$element = '<textarea';
-		}
+		$element = '<input';
+		
 		
 		if ($required){
 			$element .= ' required';
@@ -59,10 +54,6 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 		$element .= $attributes_string;
 		
 		$element .= '>';
-		
-		if ($type == 'textarea'){
-			$element .= '</textarea>';
-		}
 		
 		$description_decorator = '';
 		if ($description){

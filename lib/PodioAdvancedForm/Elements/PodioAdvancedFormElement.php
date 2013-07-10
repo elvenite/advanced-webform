@@ -2,29 +2,36 @@
 
 
 class PodioAdvancedFormElement {
-	protected $field;
+	protected $app_field;
+	protected $item_field;
 	protected $form;
 	protected $value;
 	
 	protected $attributes = array();
 
 
-	public function __construct(PodioAppField $field, PodioAdvancedForm $form, $value = null) {
-		$this->field = $field;
+	public function __construct(PodioAppField $app_field, PodioAdvancedForm $form, $item_field = null) {
+		$this->app_field = $app_field;
 		$this->form = $form;
-		$this->value = $value;
+		
+		if(!$item_field){
+			$class_name = 'Podio' . ucfirst($app_field->type) . 'ItemField';
+			$this->item_field = new $class_name(array(
+				'field_id' => $app_field->field_id
+			));
+		}
 		
 		// set name
-		$this->set_attribute('name', $field->external_id);
+		$this->set_attribute('name', $app_field->external_id);
 		// set placeholder
-		$this->set_attribute('placeholder', $field->config['label']);
+		$this->set_attribute('placeholder', $app_field->config['label']);
 		// set required
-		$this->set_attribute('required', (bool) $field->config['required']);
+		$this->set_attribute('required', (bool) $app_field->config['required']);
 		// set description
-		$this->set_attribute('description', $field->config['description']);
+		$this->set_attribute('description', $app_field->config['description']);
 		
 		// set type
-		$this->set_attribute('type', $field->type);
+		$this->set_attribute('type', $app_field->type);
 	}
 	
 	public function get_attribute($key){
@@ -44,7 +51,18 @@ class PodioAdvancedFormElement {
 		return $this->attributes;
 	}
 	
+	public function get_item_field(){
+		return $this->item_field;
+	}
 	
+	public function set_item_field($item_field){
+		$this->item_field = $item_field;
+	}
+	
+	public function set_value($values){
+		$this->item_field->set_value($values);
+	}
+
 }
 
 ?>
