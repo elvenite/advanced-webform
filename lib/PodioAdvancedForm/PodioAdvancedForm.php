@@ -1,23 +1,59 @@
 <?php
 
-require 'PodioAdvancedFormError.php';
+require_once 'PodioAdvancedFormError.php';
 
-require 'Elements/PodioAdvancedFormElement.php';
-require 'Elements/PodioAdvancedFormTextElement.php';
-require 'Elements/PodioAdvancedFormNumberElement.php';
-require 'Elements/PodioAdvancedFormProgressElement.php';
-require 'Elements/PodioAdvancedFormLocationElement.php';
-require 'Elements/PodioAdvancedFormDurationElement.php';
-require 'Elements/PodioAdvancedFormMoneyElement.php';
-require 'Elements/PodioAdvancedFormDateElement.php';
-require 'Elements/PodioAdvancedFormCategoryElement.php';
-require 'Elements/PodioAdvancedFormQuestionElement.php';
+require_once 'Elements/PodioAdvancedFormElement.php';
+require_once 'Elements/PodioAdvancedFormTextElement.php';
+require_once 'Elements/PodioAdvancedFormNumberElement.php';
+require_once 'Elements/PodioAdvancedFormProgressElement.php';
+require_once 'Elements/PodioAdvancedFormLocationElement.php';
+require_once 'Elements/PodioAdvancedFormDurationElement.php';
+require_once 'Elements/PodioAdvancedFormMoneyElement.php';
+require_once 'Elements/PodioAdvancedFormDateElement.php';
+require_once 'Elements/PodioAdvancedFormCategoryElement.php';
+require_once 'Elements/PodioAdvancedFormContactElement.php';
+require_once 'Elements/PodioAdvancedFormQuestionElement.php';
+require_once 'Elements/PodioAdvancedFormAppElement.php';
+require_once 'Elements/PodioAdvancedFormEmbedElement.php';
+require_once 'Elements/PodioAdvancedFormFileElement.php';
+require_once 'Elements/PodioAdvancedFormImageElement.php';
 
 class PodioAdvancedForm {
 	protected $app;
 	protected $item;
+	protected $error = false;
 	
 	protected $elements;
+	
+	protected $is_sub_form = false;
+	
+	protected $files;
+	
+	// used to prefix form fields in sub forms
+	// the field "name" in an app reference field "company"
+	// would get the name attribute company[name]
+	// prefix should not contain the last [] surrounding "name"
+	// as the element will take care of that.
+	protected $field_name_prefix = '';
+	
+	
+	/**
+	 * field and parent_field
+	 *   1 name attribute
+	 *   2 label, also defaults as placeholder
+	 *   3 element, the actual input element
+	 *   4 description decorator, only if there is a description
+	 * field_description
+	 *   1 description
+	 * @var type 
+	 */
+	protected $decorators = array(
+		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls">%3$s%4$s</div></div>',
+		'field_description' => '<small class="help-block muted">%1$s</small>',
+		'parent_field' => '<div class="control-group"><fieldset><legend>%2$s</legend>%3$s%4$s</fieldset></div>',
+		'sub_field' => '<label for="%1$s">%2$s</label>%3$s%4$s',
+		
+	);
 	
 	    /**#@+
      * Method type constants
@@ -65,9 +101,9 @@ class PodioAdvancedForm {
 			$this->set_item($attributes['item']);
 		} elseif (isset($attributes['item_id']) && $attributes['item_id']){
 			$item = PodioItem::get($attributes['item_id']);
-			$item->app = $this->get_app();
 			$this->set_item( $item );
 		} else {
+			
 			$this->set_item( new PodioItem(array(
 				'app' => $this->get_app(),
 			)));
@@ -76,6 +112,11 @@ class PodioAdvancedForm {
 		unset($attributes['item']);
 		unset($attributes['item_id']);
 		
+		// set is_sub_form
+		if (isset($attributes['is_sub_form'])){
+			$this->set_is_sub_form($attributes['is_sub_form']);
+			unset($attributes['is_sub_form']);
+		}
 		
 		if ($attributes){
 			$this->set_attributes($attributes);
@@ -103,22 +144,62 @@ class PodioAdvancedForm {
 		$this->item = $item;
 	}
 	
+	public function is_sub_form(){
+		return $this->is_sub_form;
+	}
+	
+	public function set_is_sub_form($sub_form){
+		$this->is_sub_form = (bool) $sub_form;
+	}
+	
+	
 	protected function set_elements(){
 		// get all fields
-		foreach($this->get_app()->fields AS $field){
-			$this->set_element($field);
+		foreach($this->get_app()->fields AS $app_field){
+			$key = $app_field->external_id;
+			$item_field = null;
+//			var_dump($this->item->fields);
+//			echo '<hr>';
+			if ($this->item->fields){
+				$item_field = $this->item->field($key);
+			}
+			$this->set_element($app_field, $item_field);
+		}
+		
+		// is file uploads allowed?
+		// Then add a file input element
+		if ($this->get_app()->config['allow_attachments']){
+			$app_field = new PodioAppField(array(
+				'field_id' => PHP_INT_MAX,
+				'status' => 'active',
+				'type' => 'file',
+				'external_id' => 'files', // external_id is used as input name
+				'config' => array(
+					'label' => 'Files',
+					'required' => false,
+					'description' => '',
+				)
+			));
+			
+			$this->set_element($app_field);
 		}
 	}
 	
-	protected function set_element($field){
+	protected function set_element($app_field, $item_field = null){
 		$element = false;
-		$class_name = 'PodioAdvancedForm' . ucfirst($field->type) . 'Element';
+		$class_name = 'PodioAdvancedForm' . ucfirst($app_field->type) . 'Element';
+		
 		if (class_exists($class_name)){
-			$element = new $class_name($field, $this); // TODO third attribute, add item
+			try {
+				$element = new $class_name($app_field, $this, $item_field); // TODO third attribute, add item
+			} catch (Exception $e){
+				$element = false;
+			}
+			// App references are a special case
 		}
 		
 		if ($element){
-			$this->elements[$field->external_id] = $element;
+			$this->elements[$app_field->external_id] = $element;
 		}
 	}
 	
@@ -161,6 +242,28 @@ class PodioAdvancedForm {
         }
 
         return false;
+	}
+	
+	public function get_files(){
+		return $this->files;
+	}
+	
+	public function add_file($file){
+		if (!is_array($this->files)){
+			$this->files = array();
+		}
+		
+		$this->files[] = $file;
+	}
+	
+	public function add_files($files){
+		foreach($files AS $file){
+			$this->add_file($file);
+		}
+	}
+	
+	public function set_files($files){
+		$this->files = $files;
 	}
 	
 	public function get_method(){
@@ -206,6 +309,34 @@ class PodioAdvancedForm {
 		$this->set_attribute('enctype', $enctype);
 	}
 	
+	public function get_field_name_prefix(){
+		return $this->field_name_prefix;
+	}
+	
+	public function set_field_name_prefix($prefix){
+		$this->field_name_prefix = $prefix;
+	}
+	
+	public function get_decorators(){
+		return $this->decorators;
+	}
+	
+	public function set_decorators($decorators){
+		$this->decorators = $decorators;
+	}
+	
+	public function get_decorator($key){
+		if (!array_key_exists($key, $this->decorators)){
+			return null;
+		}
+		
+		return $this->decorators[$key];
+	}
+	
+	public function set_decorator($key, $value){
+		$this->decorators[$key] = $value;
+	}
+	
 	public function __toString() {
 		return $this->render();
 	}
@@ -213,39 +344,97 @@ class PodioAdvancedForm {
 	public function render(){
 		$output = array();
 		
-		$head = '<form';
-		foreach($this->get_attributes() AS $key => $value){
-			$head .= ' ' . $key . '="' . (string) $value . '"';
-		}
-		$head .= '>';
-		
-		$output[] = $head;
-		
-		foreach($this->elements AS $field){
+		if (!$this->is_sub_form()){
+			$head = '<form';
+			foreach($this->get_attributes() AS $key => $value){
+				// if true, then attribute minimization is allowed
+				if ($value === true){
+					$head .= ' ' . $key;
+				} elseif ($value){ // all falsy values won't be added
+					$head .= ' ' . $key . '="' . (string) $value . '"';
+				}	
+			}
+			$head .= '>';
 			
-			$output[] = $field->render();
+			$output[] = $head;
+		}
+
+		foreach($this->elements AS $field){
+			try {
+				$output[] = $field->render();
+			} catch (Exception $e){
+				var_dump($field);
+			}
 		}
 		
-		$output[] = '<div class="form-actions">
-			<input type="submit" class="btn btn-primary" value="Save changes">
-		</div>';
-		
-		$output[] = '</form>';
+		if (!$this->is_sub_form()){
+			$output[] = '<div class="form-actions">
+				<input type="submit" class="btn btn-primary" value="Save changes">
+			</div>';
+			
+			$output[] = '</form>';
+		}
 		
 		return implode('', $output);
 	}
 	
-	public function set_values($data){
+	public function set_values($data, $files = array()){
 		foreach($this->elements AS $key => $element){
 			if (isset($data[$key])){
 				$element->set_value($data[$key]);
 				$this->item->add_field($element->get_item_field());
+			} elseif (isset($files[$key])){
+				$element->set_value($files[$key]);
+				// if element is the attachment field, not an image or similar
+				// add to the item files attribute
+				// otherwise add item field to item
+				if ($key == 'files'){
+					if (!empty($files['files']['name'][0])){
+						$this->add_files($element->get_files());
+					}
+				} else {
+					$this->item->add_field($element->get_item_field());
+				}
 			}
 		}
 	}
 	
+	public function get_error(){
+		return $this->error;
+	}
+	
+	public function set_error($message){
+		$this->error = (string) $message;
+	}
+	
 	public function save(){
-		$this->item->save();
+		try {
+			$item_id = $this->item->save();
+
+			// if $this->item->files is a none empty array
+			// attach it to the newly created item.
+			if ($item_id && $this->get_files())
+			{
+				foreach($this->get_files() AS $file){
+					PodioFile::attach($file->file_id, array(
+						'ref_type' => 'item',
+						'ref_id' => $item_id,
+					));
+				}
+
+			}
+		} catch (PodioError $e){
+			$this->set_error($e->body['error_description']);
+		}
+		catch (Exception $e){
+			$this->set_error($e->getMessage());
+		}
+		
+		if ($this->error){
+			return false;
+		}
+		
+		return $item_id;
 	}
 
 

@@ -11,6 +11,13 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 			
 		} else {
 			$type = 'textarea';
+			$this->set_attribute('rows', 6);
+			if ($item_field){
+				$value = $item_field->values[0]['value'];
+				$value = str_replace('</p><p>', "\n\n", $value);
+				$value = strip_tags($value);
+				$this->set_attribute('value', $value);
+			}
 		}
 		$this->set_attribute('type', $type);
 		
@@ -23,6 +30,13 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 	
 	}
 	
+	/**
+	 * Renders the input field
+	 * This method HAS to return parent::render() with an optional element
+	 * string, this way parent::render() can decide whether to display the
+	 * element or not. If it happened to have hidden=true
+	 * @return type
+	 */
 	public function render(){
 		// output is:
 		// decorator
@@ -38,47 +52,24 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 		unset($attributes['type']);
 		$description = $this->get_attribute('description');
 		unset($attributes['description']);
-		$required = $this->get_attribute('required');
-		unset($attributes['required']);
-		
-		$attributes_string = '';
-		foreach($attributes AS $key => $attribute){
-			$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
-		}
 		
 		if ($type == 'text'){
 			$element = '<input type="text"';
 		} else {
+			unset($attributes['value']);
 			$element = '<textarea';
 		}
 		
-		if ($required){
-			$element .= ' required';
-		}
-		
-		$element .= $attributes_string;
+		$element .= $this->attributes_concat($attributes);
 		
 		$element .= '>';
 		
 		if ($type == 'textarea'){
+			$element .= $this->get_attribute('value');
 			$element .= '</textarea>';
 		}
 		
-		$description_decorator = '';
-		if ($description){
-			$description_decorator = sprintf('<span class="help-block">%1$s</span>',
-												$description
-											);
-		}
-		
-		$decorator = sprintf('<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls">%3$s%4$s</div></div>', 
-						$this->get_attribute('name'),
-						$this->get_attribute('placeholder'),
-						$element,
-						$description_decorator
-					);
-		
-		return $decorator;
+		return parent::render($element);
 	}
 }
 

@@ -2,6 +2,10 @@
 
 class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 	
+	protected $decorators = array(
+		//'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls controls-row">%3$s%4$s</div></div>'
+	);
+	
 	public function __construct($app_field, $form, $item_field = null) {
 		parent::__construct($app_field, $form, $item_field);
 		
@@ -17,6 +21,9 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 	
 	public function set_value($values) {
 		$value = array();
+		if (empty($values['start_date'])){
+			return false;
+		}
 		$value['start'] = $values['start_date'];
 		
 		if (!empty($values['start_date']) && !empty($values['start_time'])){
@@ -70,6 +77,7 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 			}
 			$attributes['placeholder'] = 'YYYY-MM-DD';
 			$attributes['name'] = $this->get_attribute('name') . '[start_date]';
+			$attributes['class'] = 'span3';
 
 			$attributes_string = '';
 			foreach($attributes AS $key => $attribute){
@@ -102,7 +110,7 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 			$attributes['placeholder'] = 'YYYY-MM-DD';
 			$attributes['name'] = $this->get_attribute('name') . '[end_date]';
 			$attributes['type'] = $this->get_attribute('type');
-			unset($attributes['class']);
+			$attributes['class'] = 'span3';
 
 			$attributes_string = '';
 			foreach($attributes AS $key => $attribute){
@@ -132,12 +140,12 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 		
 		$description_decorator = '';
 		if ($description){
-			$description_decorator = sprintf('<span class="help-block">%1$s</span>',
+			$description_decorator = sprintf($this->get_decorator('field_description'),
 												$description
 											);
 		}
 		
-		$decorator = sprintf('<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls">%3$s%4$s</div></div>', 
+		$decorator = sprintf($this->get_decorator('field'), 
 						$this->get_attribute('name'),
 						$this->get_attribute('placeholder'),
 						implode(' ', $elements),

@@ -16,10 +16,17 @@ class PodioAdvancedFormDurationElement extends PodioAdvancedFormElement{
 		
 		/**
 		 * TODO
-		 * check status is active
 		 * check visibility equals true (config['visible']
 		 * add delta field (delta is the sort order)
 		 */
+		
+		if ($item_field){
+			$this->set_attribute('value', array(
+				'hours' => $item_field->hours(),
+				'minutes' => $item_field->minutes(),
+				'seconds' => $item_field->seconds(),
+			));
+		}
 	}
 	
 	public function set_value($values){
@@ -51,8 +58,12 @@ class PodioAdvancedFormDurationElement extends PodioAdvancedFormElement{
 		$required = $this->get_attribute('required');
 		unset($attributes['required']);
 		
+		$values = $attributes['value'];
+		
 		unset($attributes['placeholder']);
 		unset($attributes['name']);
+		unset($attributes['value']);
+		
 		
 		$attributes_string = '';
 		
@@ -73,6 +84,9 @@ class PodioAdvancedFormDurationElement extends PodioAdvancedFormElement{
 			$element .= $attributes_string;
 			
 			$element .= ' name="' . $this->get_attribute('name') . '[' . $value_type . ']"';
+			if ( $values ){
+				$element .= ' value="' . (string) $values[$value_type] . '"';
+			}
 
 			$element .= '>';
 			
@@ -88,12 +102,12 @@ class PodioAdvancedFormDurationElement extends PodioAdvancedFormElement{
 		
 		$description_decorator = '';
 		if ($description){
-			$description_decorator = sprintf('<span class="help-block">%1$s</span>',
+			$description_decorator = sprintf($this->get_decorator('field_description'),
 												$description
 											);
 		}
 		
-		$decorator = sprintf('<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls">%3$s%4$s</div></div>', 
+		$decorator = sprintf($this->get_decorator('field'), 
 						$this->get_attribute('name'),
 						$this->get_attribute('placeholder'),
 						implode('', $elements),
