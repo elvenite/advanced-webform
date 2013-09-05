@@ -2,9 +2,14 @@
 
 class PodioAdvancedFormMoneyElement extends PodioAdvancedFormElement{
 	
+//	protected $decorators = array(
+//		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls controls-row">%3$s%4$s</div></div>'
+//	);
+	
 	protected $decorators = array(
-		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls controls-row">%3$s%4$s</div></div>'
-	);
+		'field' => '<label for="%1$s">%2$s</label><div class="controls-row">%3$s%4$s</div>',
+		'sub_field' => '<label for="%1$s">%2$s</label><div class="controls-row">%3$s%4$s</div>',
+ 	);
 
 	public function __construct($app_field, $form, $item_field = null) {
 		parent::__construct($app_field, $form, $item_field);

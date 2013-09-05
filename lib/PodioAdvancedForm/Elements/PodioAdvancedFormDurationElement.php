@@ -58,7 +58,7 @@ class PodioAdvancedFormDurationElement extends PodioAdvancedFormElement{
 		$required = $this->get_attribute('required');
 		unset($attributes['required']);
 		
-		$values = $attributes['value'];
+		$values = $this->get_attribute('value');
 		
 		unset($attributes['placeholder']);
 		unset($attributes['name']);
@@ -111,7 +111,8 @@ class PodioAdvancedFormDurationElement extends PodioAdvancedFormElement{
 						$this->get_attribute('name'),
 						$this->get_attribute('placeholder'),
 						implode('', $elements),
-						$description_decorator
+						$description_decorator,
+						($this->get_attribute('required')) ? $this->get_decorator('field_required') : ''
 					);
 		
 		return $decorator;

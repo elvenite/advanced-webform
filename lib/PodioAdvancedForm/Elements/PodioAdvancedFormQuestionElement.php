@@ -17,8 +17,8 @@ class PodioAdvancedFormQuestionElement extends PodioAdvancedFormCategoryElement{
 		$checked = (($required && 
 					!$this->get_attribute('multiple') &&
 					$key === 0 &&
-					(null === $this->get_attribute('value'))) ||
-					in_array($option['id'], $this->get_attribute('value'))) ? 'checked' : '';
+					(!$this->get_value())) ||
+					in_array($option['id'], $this->get_value())) ? 'checked' : '';
 		
 			$element = sprintf(
 						'<label class="%1$s">

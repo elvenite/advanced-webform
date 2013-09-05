@@ -149,7 +149,8 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 						$this->get_attribute('name'),
 						$this->get_attribute('placeholder'),
 						implode(' ', $elements),
-						$description_decorator
+						$description_decorator,
+						($this->get_attribute('required')) ? $this->get_decorator('field_required') : ''
 					);
 		
 		return $decorator;

@@ -29,6 +29,13 @@ class PodioAdvancedForm {
 	
 	protected $files;
 	
+	/**
+	 * Used to decide if locked and hidden attributes should be ignored, for
+	 * administration purposes.
+	 * @var string
+	 */
+	public $mode;
+	
 	// used to prefix form fields in sub forms
 	// the field "name" in an app reference field "company"
 	// would get the name attribute company[name]
@@ -43,15 +50,18 @@ class PodioAdvancedForm {
 	 *   2 label, also defaults as placeholder
 	 *   3 element, the actual input element
 	 *   4 description decorator, only if there is a description
+	 *   5 required decorator
 	 * field_description
 	 *   1 description
 	 * @var type 
 	 */
+	
 	protected $decorators = array(
-		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls">%3$s%4$s</div></div>',
+		'field' => '<label for="%1$s">%2$s%5$s</label>%3$s%4$s',
+		'field_required' => ' <span class="required">*</span>',
 		'field_description' => '<small class="help-block muted">%1$s</small>',
-		'parent_field' => '<div class="control-group"><fieldset><legend>%2$s</legend>%3$s%4$s</fieldset></div>',
-		'sub_field' => '<label for="%1$s">%2$s</label>%3$s%4$s',
+		'parent_field' => '<fieldset class="well"><legend>%2$s</legend>%4$s%3$s</fieldset>',
+		'sub_field' => '<label for="%1$s">%2$s%5$s</label>%3$s%4$s',
 		
 	);
 	
@@ -81,7 +91,10 @@ class PodioAdvancedForm {
 	protected $action;
 	protected $enctype;
 	
-	protected $attributes = array();
+	protected $attributes = array(
+		'submit_value' => 'Save changes',
+		'class' => 'podio-advanced-form',
+	);
 		
 	public function __construct($attributes = array()) {
 		// setup app
@@ -119,11 +132,8 @@ class PodioAdvancedForm {
 		}
 		
 		if ($attributes){
-			$this->set_attributes($attributes);
+			$this->add_attributes($attributes);
 		}
-		
-		// TODO set default attributes
-		$this->set_attribute('class', 'form-horizontal');
 		
 		$this->set_elements();
 	}
@@ -152,7 +162,15 @@ class PodioAdvancedForm {
 		$this->is_sub_form = (bool) $sub_form;
 	}
 	
-	
+	public function get_element($external_id){
+		if (!array_key_exists($external_id, $this->elements)){
+			return null;
+		}
+		
+		return $this->elements[$external_id];
+	}
+
+
 	protected function set_elements(){
 		// get all fields
 		foreach($this->get_app()->fields AS $app_field){
@@ -345,8 +363,10 @@ class PodioAdvancedForm {
 		$output = array();
 		
 		if (!$this->is_sub_form()){
+			$attributes = $this->get_attributes();
+			unset($attributes['submit_value']);
 			$head = '<form';
-			foreach($this->get_attributes() AS $key => $value){
+			foreach($attributes AS $key => $value){
 				// if true, then attribute minimization is allowed
 				if ($value === true){
 					$head .= ' ' . $key;
@@ -369,7 +389,7 @@ class PodioAdvancedForm {
 		
 		if (!$this->is_sub_form()){
 			$output[] = '<div class="form-actions">
-				<input type="submit" class="btn btn-primary" value="Save changes">
+				<input type="submit" class="btn btn-primary" value="' . $this->get_attribute('submit_value') . '">
 			</div>';
 			
 			$output[] = '</form>';

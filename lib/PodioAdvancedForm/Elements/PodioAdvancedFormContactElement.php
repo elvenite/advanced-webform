@@ -6,9 +6,9 @@ class PodioAdvancedFormContactElement extends PodioAdvancedFormElement{
 	
 	protected $sub_fields;
 	
-	protected $decorators = array(
-		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls"><fieldset>%3$s%4$s</fieldsset></div></div>'
-	);
+//	protected $decorators = array(
+//		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls"><fieldset>%3$s%4$s</fieldsset></div></div>'
+//	);
 	
 	public function __construct($app_field, $form, $item_field = null) {
 		parent::__construct($app_field, $form, $item_field);
@@ -16,7 +16,8 @@ class PodioAdvancedFormContactElement extends PodioAdvancedFormElement{
 		
 		if ($this->app_field->config['settings']['type'] != 'space_contacts'){
 			// workspace members should not be exposed in the outside world
-			return false;
+			//return false;
+			throw new ErrorException('Workspace members is not supported.');
 		}
 		
 		// Contact Name
@@ -92,10 +93,8 @@ class PodioAdvancedFormContactElement extends PodioAdvancedFormElement{
 		foreach($this->sub_fields AS $sub_field){
 			$elements[] = $sub_field->render();
 		}
-		
-		$decorator_string = ($this->form->is_sub_form()) ?
-			'parent_field' :
-			'field';
+
+		$decorator_string = 'parent_field';
 		
 		return parent::render(
 			implode('', $elements),

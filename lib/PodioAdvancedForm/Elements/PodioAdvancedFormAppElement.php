@@ -30,8 +30,10 @@ class PodioAdvancedFormAppElement extends PodioAdvancedFormElement{
 			'item_id' => $sub_item_id,
 			'parent' => $this,
 		);
+		
+		$sub_form = new PodioAdvancedForm($sub_form_attributes);
 
-		$this->set_sub_form(new PodioAdvancedForm($sub_form_attributes));
+		$this->set_sub_form($sub_form);
 		
 		/**
 		 * TODO

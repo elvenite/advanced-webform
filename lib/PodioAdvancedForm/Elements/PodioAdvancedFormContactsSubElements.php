@@ -102,7 +102,8 @@ abstract class PodioAdvancedFormContactsSubElement{
 						$this->get_attribute('name'),
 						$this->get_attribute('placeholder'),
 						$element,
-						'' // description is always empty in these fields
+						'', // description is always empty in these fields
+						($this->get_attribute('required')) ? $this->get_decorator('field_required') : ''
 					);
 		
 		return $decorator;
