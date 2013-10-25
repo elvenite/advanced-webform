@@ -60,7 +60,9 @@ class PodioAdvancedFormFileElement extends PodioAdvancedFormElement{
 						$message = "The uploaded file was only partially uploaded"; 
 						break; 
 					case UPLOAD_ERR_NO_FILE: 
-						$message = "No file was uploaded"; 
+						//$message = "No file was uploaded"; 
+						// if no file, continue to next
+						continue 2;
 						break; 
 					case UPLOAD_ERR_NO_TMP_DIR: 
 						$message = "Missing a temporary folder"; 

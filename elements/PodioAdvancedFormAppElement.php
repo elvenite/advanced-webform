@@ -38,18 +38,18 @@ class PodioAdvancedFormAppElement extends PodioAdvancedFormElement{
 				// if no items, then hide the field
 				$this->set_attribute('hidden', true);
 			}
-		} else {
-			$sub_form_attributes = array(
-				'app_id' => $sub_app_id,
-				'is_sub_form' => true,
-				'item_id' => $sub_item_id,
-				'parent' => $this,
-			);
-
-			$sub_form = new PodioAdvancedForm($sub_form_attributes);
-
-			$this->set_sub_form($sub_form);
 		}
+		
+		$sub_form_attributes = array(
+			'app_id' => $sub_app_id,
+			'is_sub_form' => true,
+			'item_id' => $sub_item_id,
+			'parent' => $this,
+		);
+
+		$sub_form = new PodioAdvancedForm($sub_form_attributes);
+
+		$this->set_sub_form($sub_form);
 		
 		/**
 		 * TODO

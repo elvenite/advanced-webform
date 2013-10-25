@@ -13,7 +13,8 @@ if (!Podio::is_authenticated()) {
 }
 
 $podioform = new PodioAdvancedForm(array(
-	'app_id' => 5421613,
+	'app_id' => APP_ID,
+	'item_id' => ITEM_ID,
 	'lock_default' => true,
 	'method' => 'post',
 	'action' => '',
