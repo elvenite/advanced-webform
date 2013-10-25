@@ -2,21 +2,21 @@
 
 require_once 'PodioAdvancedFormError.php';
 
-require_once 'Elements/PodioAdvancedFormElement.php';
-require_once 'Elements/PodioAdvancedFormTextElement.php';
-require_once 'Elements/PodioAdvancedFormNumberElement.php';
-require_once 'Elements/PodioAdvancedFormProgressElement.php';
-require_once 'Elements/PodioAdvancedFormLocationElement.php';
-require_once 'Elements/PodioAdvancedFormDurationElement.php';
-require_once 'Elements/PodioAdvancedFormMoneyElement.php';
-require_once 'Elements/PodioAdvancedFormDateElement.php';
-require_once 'Elements/PodioAdvancedFormCategoryElement.php';
-require_once 'Elements/PodioAdvancedFormContactElement.php';
-require_once 'Elements/PodioAdvancedFormQuestionElement.php';
-require_once 'Elements/PodioAdvancedFormAppElement.php';
-require_once 'Elements/PodioAdvancedFormEmbedElement.php';
-require_once 'Elements/PodioAdvancedFormFileElement.php';
-require_once 'Elements/PodioAdvancedFormImageElement.php';
+require_once 'elements/PodioAdvancedFormElement.php';
+require_once 'elements/PodioAdvancedFormTextElement.php';
+require_once 'elements/PodioAdvancedFormNumberElement.php';
+require_once 'elements/PodioAdvancedFormProgressElement.php';
+require_once 'elements/PodioAdvancedFormLocationElement.php';
+require_once 'elements/PodioAdvancedFormDurationElement.php';
+require_once 'elements/PodioAdvancedFormMoneyElement.php';
+require_once 'elements/PodioAdvancedFormDateElement.php';
+require_once 'elements/PodioAdvancedFormCategoryElement.php';
+require_once 'elements/PodioAdvancedFormContactElement.php';
+require_once 'elements/PodioAdvancedFormQuestionElement.php';
+require_once 'elements/PodioAdvancedFormAppElement.php';
+require_once 'elements/PodioAdvancedFormEmbedElement.php';
+require_once 'elements/PodioAdvancedFormFileElement.php';
+require_once 'elements/PodioAdvancedFormImageElement.php';
 
 class PodioAdvancedForm {
 	protected $app;
@@ -28,13 +28,6 @@ class PodioAdvancedForm {
 	protected $is_sub_form = false;
 	
 	protected $files;
-	
-	/**
-	 * Used to decide if locked and hidden attributes should be ignored, for
-	 * administration purposes.
-	 * @var string
-	 */
-	public $mode;
 	
 	// used to prefix form fields in sub forms
 	// the field "name" in an app reference field "company"
@@ -53,15 +46,18 @@ class PodioAdvancedForm {
 	 *   5 required decorator
 	 * field_description
 	 *   1 description
-	 * @var type 
+	 * sub_sub_field - used when a subform has contact sub elements
+	 * @var array 
 	 */
 	
 	protected $decorators = array(
-		'field' => '<label for="%1$s">%2$s%5$s</label>%3$s%4$s',
+		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s%5$s</label><div class="controls">%3$s%4$s</div></div>',
 		'field_required' => ' <span class="required">*</span>',
 		'field_description' => '<small class="help-block muted">%1$s</small>',
 		'parent_field' => '<fieldset class="well"><legend>%2$s</legend>%4$s%3$s</fieldset>',
-		'sub_field' => '<label for="%1$s">%2$s%5$s</label>%3$s%4$s',
+		'sub_field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s%5$s</label><div class="controls">%3$s%4$s</div></div>',
+		'sub_parent_field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s%5$s<br>%4$s</label><div class="controls">%3$s</div><hr></div>',
+		'sub_sub_field' => '<label for="%1$s">%2$s%5$s</label>%3$s%4$s',
 		
 	);
 	
@@ -92,8 +88,9 @@ class PodioAdvancedForm {
 	protected $enctype;
 	
 	protected $attributes = array(
-		'submit_value' => 'Save changes',
-		'class' => 'podio-advanced-form',
+		'submit_value' => 'Submit',
+		'class' => 'podio-advanced-form form-horizontal',
+		'method' => self::METHOD_POST,
 	);
 		
 	public function __construct($attributes = array()) {
@@ -138,6 +135,10 @@ class PodioAdvancedForm {
 		$this->set_elements();
 	}
 
+	/**
+	 * 
+	 * @return PodioApp
+	 */
 	public function get_app() {
 		return $this->app;
 	}
@@ -146,6 +147,10 @@ class PodioAdvancedForm {
 		$this->app = $app;
 	}
 
+	/**
+	 * Returns the Podio item
+	 * @return PodioItem
+	 */
 	public function get_item() {
 		return $this->item;
 	}
@@ -154,6 +159,10 @@ class PodioAdvancedForm {
 		$this->item = $item;
 	}
 	
+	/**
+	 * 
+	 * @return bool
+	 */
 	public function is_sub_form(){
 		return $this->is_sub_form;
 	}
@@ -162,6 +171,11 @@ class PodioAdvancedForm {
 		$this->is_sub_form = (bool) $sub_form;
 	}
 	
+	/**
+	 * Returns an instance of a form element
+	 * @param string $external_id
+	 * @return PodioAdvancedFormElement
+	 */
 	public function get_element($external_id){
 		if (!array_key_exists($external_id, $this->elements)){
 			return null;
@@ -174,6 +188,7 @@ class PodioAdvancedForm {
 	protected function set_elements(){
 		// get all fields
 		foreach($this->get_app()->fields AS $app_field){
+			if ($app_field->status != "active")	continue;
 			$key = $app_field->external_id;
 			$item_field = null;
 //			var_dump($this->item->fields);
@@ -181,7 +196,10 @@ class PodioAdvancedForm {
 			if ($this->item->fields){
 				$item_field = $this->item->field($key);
 			}
-			$this->set_element($app_field, $item_field);
+			
+			$attributes = $this->get_field_attributes($app_field);
+			
+			$this->set_element($app_field, $item_field, $attributes);
 		}
 		
 		// is file uploads allowed?
@@ -203,13 +221,13 @@ class PodioAdvancedForm {
 		}
 	}
 	
-	protected function set_element($app_field, $item_field = null){
+	protected function set_element($app_field, $item_field = null, $attributes = null){
 		$element = false;
 		$class_name = 'PodioAdvancedForm' . ucfirst($app_field->type) . 'Element';
 		
 		if (class_exists($class_name)){
 			try {
-				$element = new $class_name($app_field, $this, $item_field); // TODO third attribute, add item
+				$element = new $class_name($app_field, $this, $item_field, $attributes);
 			} catch (Exception $e){
 				$element = false;
 			}
@@ -262,6 +280,22 @@ class PodioAdvancedForm {
         return false;
 	}
 	
+	public function get_field_attributes($app_field){
+		if (!isset($this->attributes['fields'])){
+			return null;
+		}
+		
+		if (array_key_exists($app_field->external_id, $this->attributes['fields'])){
+			return $this->attributes['fields'][$app_field->external_id];
+		}
+		
+		if (array_key_exists($app_field->app_id, $this->attributes['fields'])){
+			return $this->attributes['fields'][$app_field->app_id];
+		}
+		
+		return null;
+	}
+	
 	public function get_files(){
 		return $this->files;
 	}
@@ -275,8 +309,10 @@ class PodioAdvancedForm {
 	}
 	
 	public function add_files($files){
-		foreach($files AS $file){
-			$this->add_file($file);
+		if (is_array($files)){
+			foreach($files AS $file){
+				$this->add_file($file);
+			}
 		}
 	}
 	
@@ -427,9 +463,21 @@ class PodioAdvancedForm {
 		$this->error = (string) $message;
 	}
 	
+	/**
+	 * Save $this->item (PodioItem) to Podio
+	 * @return int $item_id 
+	 */
 	public function save(){
 		try {
-			$item_id = $this->item->save();
+
+			$result = $this->item->save();
+			// if item is update, result will be an array with revision id
+			// + title. We always want this function to result the item_id
+			if (is_array($result)){
+				$item_id = $this->item->item_id;
+			} else {
+				$item_id = $result;
+			}
 
 			// if $this->item->files is a none empty array
 			// attach it to the newly created item.

@@ -2,7 +2,7 @@
 
 class PodioAdvancedFormFileElement extends PodioAdvancedFormElement{
 	
-	protected $files;
+	protected $files = array();
 	
 	public function __construct($app_field, $form, $item_field = null) {
 		parent::__construct($app_field, $form, $item_field);
@@ -43,11 +43,41 @@ class PodioAdvancedFormFileElement extends PodioAdvancedFormElement{
 		}
 		
 		foreach($new_values AS $value){
-			if ($value['error'] === 0){
+			if ($value['error'] === UPLOAD_ERR_OK){
 				$file = PodioFile::upload($value['tmp_name'], $value['name']);
 				if ($file instanceof PodioFile){
 					$files[] = $file;
 				}
+			} else {
+				switch ($value['error']) { 
+					case UPLOAD_ERR_INI_SIZE: 
+						$message = "The uploaded file exceeds the upload_max_filesize directive in php.ini"; 
+						break; 
+					case UPLOAD_ERR_FORM_SIZE: 
+						$message = "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"; 
+						break; 
+					case UPLOAD_ERR_PARTIAL: 
+						$message = "The uploaded file was only partially uploaded"; 
+						break; 
+					case UPLOAD_ERR_NO_FILE: 
+						$message = "No file was uploaded"; 
+						break; 
+					case UPLOAD_ERR_NO_TMP_DIR: 
+						$message = "Missing a temporary folder"; 
+						break; 
+					case UPLOAD_ERR_CANT_WRITE: 
+						$message = "Failed to write file to disk"; 
+						break; 
+					case UPLOAD_ERR_EXTENSION: 
+						$message = "File upload stopped by extension"; 
+						break; 
+
+					default: 
+						$message = "Unknown upload error"; 
+						break; 
+				}
+				
+				throw new Exception($message);
 			}
 		}
 		
@@ -66,7 +96,7 @@ class PodioAdvancedFormFileElement extends PodioAdvancedFormElement{
 			$attributes['name'] = $name;
 		}
 		
-		$element = '<input type="hidden" name="MAX_FILE_SIZE" value="102400">';
+		$element = '<input type="hidden" name="MAX_FILE_SIZE" value="104857600">';
 		
 		$element .= '<input';
 		
@@ -77,9 +107,7 @@ class PodioAdvancedFormFileElement extends PodioAdvancedFormElement{
 		return $element;
 	}
 	
-	public function render(){
+	public function render($element = null, $default_field_decorator = 'field'){
 		return parent::render($this->render_element());
 	}
 }
-
-?>

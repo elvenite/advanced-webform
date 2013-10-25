@@ -77,9 +77,22 @@ class PodioAdvancedFormContactElement extends PodioAdvancedFormElement{
 	}
 	
 	public function set_value($values){
+		if (is_numeric($values)){
+			$profile_id = (int) $values;
+			
+			parent::set_value(array(
+				'profile_id' => $profile_id,
+			));
+		}
+		
 		if (isset($values['name']) && !empty($values['name'])){
 			$space_id = $this->form->get_app()->space_id;
-			$profile_id = PodioContact::create($space_id, $values);
+			if ($profile_values = $this->get_value()){
+				$profile_id = $profile_values[0]['value']['profile_id'];
+				PodioContact::update($profile_id, $values);
+			} else {
+				$profile_id = PodioContact::create($space_id, $values);
+			}
 
 			parent::set_value(array(
 				'profile_id' => $profile_id,
@@ -87,14 +100,18 @@ class PodioAdvancedFormContactElement extends PodioAdvancedFormElement{
 		}
 	}
 	
-	public function render(){
+	public function render($element = null, $default_field_decorator = 'field'){
 		$elements = array();
 		
 		foreach($this->sub_fields AS $sub_field){
 			$elements[] = $sub_field->render();
 		}
-
-		$decorator_string = 'parent_field';
+		
+		if ($this->get_form()->is_sub_form()){
+			$decorator_string = 'sub_parent_field';
+		} else {
+			$decorator_string = 'parent_field';
+		}
 		
 		return parent::render(
 			implode('', $elements),

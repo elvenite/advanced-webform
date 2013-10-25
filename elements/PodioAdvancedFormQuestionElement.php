@@ -2,7 +2,7 @@
 
 class PodioAdvancedFormQuestionElement extends PodioAdvancedFormCategoryElement{
 	
-	public function render(){
+	public function render($element = null, $default_field_decorator = 'field'){
 
 		// required cannot be used with multiple checkboxes
 		$required = $this->get_attribute('required');

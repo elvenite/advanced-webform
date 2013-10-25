@@ -7,8 +7,8 @@ class PodioAdvancedFormMoneyElement extends PodioAdvancedFormElement{
 //	);
 	
 	protected $decorators = array(
-		'field' => '<label for="%1$s">%2$s</label><div class="controls-row">%3$s%4$s</div>',
-		'sub_field' => '<label for="%1$s">%2$s</label><div class="controls-row">%3$s%4$s</div>',
+		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls-row controls">%3$s%4$s</div>',
+		'sub_field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls-row controls">%3$s%4$s</div>',
  	);
 
 	public function __construct($app_field, $form, $item_field = null) {
@@ -38,7 +38,7 @@ class PodioAdvancedFormMoneyElement extends PodioAdvancedFormElement{
 	}
 
 
-	public function render(){
+	public function render($element = null, $default_field_decorator = 'field'){
 		$attributes = $this->get_attributes();
 		
 		// change name attributes to include amount

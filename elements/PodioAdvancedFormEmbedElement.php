@@ -65,7 +65,7 @@ class PodioAdvancedFormEmbedElement extends PodioAdvancedFormElement{
 		return $embed;
 	}
 	
-	public function render(){
+	public function render($element = null, $default_field_decorator = 'field'){
 		// output is:
 		// decorator
 		// element

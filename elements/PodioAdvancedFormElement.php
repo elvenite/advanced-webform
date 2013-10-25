@@ -20,7 +20,7 @@ abstract class PodioAdvancedFormElement {
 	 */
 	protected $decorators = array();
 
-	public function __construct(PodioAppField $app_field, PodioAdvancedForm $form, $item_field = null) {
+	public function __construct(PodioAppField $app_field, PodioAdvancedForm $form, $item_field = null, $attributes = null) {
 		if ($app_field->status != "active"){
 			throw new ErrorException('Field is not active');
 		}
@@ -77,9 +77,19 @@ abstract class PodioAdvancedFormElement {
 		// set type
 		$this->set_attribute('type', $app_field->type);
 		
+		// set additional attributes
+		if ($attributes){
+			$this->add_attributes($attributes);
+		}
+		
 		return true;
 	}
 	
+	public function get_form(){
+		return $this->form;
+	}
+
+
 	public function get_attribute($key){
 		// backward compability
 		if ('name' == $key){
@@ -104,6 +114,15 @@ abstract class PodioAdvancedFormElement {
 		return $attributes;
 	}
 	
+	public function add_attributes($attributes){
+		foreach($attributes AS $key=>$value){
+			$this->set_attribute($key, $value);
+		}
+	}
+	
+	/**
+	 * @return PodioAppField
+	 */
 	public function get_app_field(){
 		return $this->app_field;
 	}
@@ -111,7 +130,9 @@ abstract class PodioAdvancedFormElement {
 	public function set_app_field($app_field){
 		$this->app_field = $app_field;
 	}
-	
+	/**
+	 * @return PodioItemField
+	 */
 	public function get_item_field(){
 		return $this->item_field;
 	}
@@ -120,10 +141,30 @@ abstract class PodioAdvancedFormElement {
 		$this->item_field = $item_field;
 	}
 	
+	/**
+	 * Get value from item
+	 * @return array
+	 */
+	public function get_value(){
+		return $this->item_field->values;
+	}
+	
+	/**
+	 * Shortcut for PodioItemField->humanized_value();
+	 * @return string
+	 */
+	public function get_humanized_value(){
+		return $this->item_field->humanized_value();
+	}
+	
 	public function set_value($values){
 		$this->item_field->set_value($values);
 	}
 	
+	/**
+	 * Get name attribute of element (to use in <input name="{$name}">")
+	 * @return string
+	 */
 	public function get_name(){
 		$name = $this->name;
 		if ($this->form->is_sub_form()){
@@ -133,21 +174,48 @@ abstract class PodioAdvancedFormElement {
 		return $name;
 		
 	}
-	
+	/**
+	 * 
+	 * @param string $name
+	 */
 	public function set_name($name){
 		$this->name = (string) $name;
 	}
 	
+	/**
+	 * Determine if the element should be hidden
+	 * @return bool
+	 */
 	public function is_hidden(){
 		return (bool) $this->get_attribute('hidden');
 	}
 	
+	/**
+	 * Determine if the element should be locked.
+	 * If the element isn't locked, then check if the "lock_default" attribute
+	 * is set on the element or the form, if so, and if the element has a value,
+	 * return true.
+	 * @return bool
+	 */
 	public function is_locked(){
 		$locked = $this->get_attribute('locked');
 		if (!$locked){
-			if ($this->form->is_sub_form()){
+			if ($this->get_attribute('lock_default')
+				&& $this->get_item_field()->values){
+				$locked = true;
+			} elseif ($this->form->get_attribute('lock_default')
+					  && $this->get_item_field()->values) {
+				$locked = true;
+			} elseif ($this->form->is_sub_form()){
 				if ($parent = $this->form->get_attribute('parent')) {
 					$locked = $parent->get_attribute('locked');
+					
+					if (!$locked){
+						if ($parent->form->get_attribute('lock_default')
+							&& $this->get_item_field()->values){
+							$locked = true;
+						}
+					}
 				}
 			}
 		}
@@ -209,18 +277,22 @@ abstract class PodioAdvancedFormElement {
 		return $element;
 	}
 	protected function render_locked(){
-		$element = '<div class="locked" style="padding:5px 0">';
+		$element = "";
+		
 		if ($this->get_item_field()->values){
+			$element .= '<div class="locked">';
 			$element .= $this->get_item_field()->humanized_value();
+			$element .= '</div>';
 		}
-		$element .= '</div>';
 		
 		return $element;
 	}
 	
 	public function render($element = null, $default_field_decorator = 'field'){
-		if ($this->form->is_sub_form()){
+		if ($default_field_decorator == "field" && $this->form->is_sub_form()){
 			$default_field_decorator = 'sub_field';
+		} elseif ($default_field_decorator == "parent_field" && $this->form->is_sub_form()){
+			$default_field_decorator = 'sub_parent_field';
 		}
 		// hidden elements will not even show up as type="hidden", they are completely
 		// invisible but can still contain prepopulate values
@@ -229,6 +301,9 @@ abstract class PodioAdvancedFormElement {
 		}
 		
 		if ($this->is_locked()){
+			if (!$this->item_field->values){
+				return '';
+			}
 			$element = $this->render_locked();
 		} else {
 			if (!$element){

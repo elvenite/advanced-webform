@@ -30,6 +30,20 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 	
 	}
 	
+	protected function render_locked(){
+		$element = "";
+		
+		if ($this->get_item_field()->values){
+			$element .= '<div class="locked">';
+			// text elements cannot output humanized_value since that method 
+			// will strip html-tags like <br>
+			$element .= $this->get_item_field()->values[0]['value'];
+			$element .= '</div>';
+		}
+		
+		return $element;
+	}
+	
 	/**
 	 * Renders the input field
 	 * This method HAS to return parent::render() with an optional element
@@ -37,40 +51,39 @@ class PodioAdvancedFormTextElement extends PodioAdvancedFormElement{
 	 * element or not. If it happened to have hidden=true
 	 * @return type
 	 */
-	public function render(){
+	public function render($element = null, $default_field_decorator = 'field'){
 		// output is:
 		// decorator
 		// element
 		
-		$attributes = $this->get_attributes();
-		// some attributes should not go into the element, like type,
-		// description
-		// required is a special case as well
-		// handle them first
-		
-		$type = $this->get_attribute('type');
-		unset($attributes['type']);
-		$description = $this->get_attribute('description');
-		unset($attributes['description']);
-		
-		if ($type == 'text'){
-			$element = '<input type="text"';
-		} else {
-			unset($attributes['value']);
-			$element = '<textarea';
-		}
-		
-		$element .= $this->attributes_concat($attributes);
-		
-		$element .= '>';
-		
-		if ($type == 'textarea'){
-			$element .= $this->get_attribute('value');
-			$element .= '</textarea>';
+		if (!$element){
+			$attributes = $this->get_attributes();
+			// some attributes should not go into the element, like type,
+			// description
+			// required is a special case as well
+			// handle them first
+
+			$type = $this->get_attribute('type');
+			unset($attributes['type']);
+			unset($attributes['description']);
+
+			if ($type == 'text'){
+				$element = '<input type="text"';
+			} else {
+				unset($attributes['value']);
+				$element = '<textarea';
+			}
+
+			$element .= $this->attributes_concat($attributes);
+
+			$element .= '>';
+
+			if ($type == 'textarea'){
+				$element .= $this->get_attribute('value');
+				$element .= '</textarea>';
+			}
 		}
 		
 		return parent::render($element);
 	}
 }
-
-?>

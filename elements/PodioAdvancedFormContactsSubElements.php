@@ -75,7 +75,7 @@ abstract class PodioAdvancedFormContactsSubElement{
 		return $attributes;
 	}
 	
-	public function render(){
+	public function render($element = null, $default_field_decorator = 'field'){
 		// output is:
 		// decorator
 		// element
@@ -98,7 +98,13 @@ abstract class PodioAdvancedFormContactsSubElement{
 		
 		$element .= '>';
 		
-		$decorator = sprintf($this->parent->get_decorator('sub_field'), 
+		if ($this->parent->get_form()->is_sub_form()){
+			$decorator_format = 'sub_sub_field';
+		} else {
+			$decorator_format = 'sub_field';
+		}
+		
+		$decorator = sprintf($this->parent->get_decorator($decorator_format), 
 						$this->get_attribute('name'),
 						$this->get_attribute('placeholder'),
 						$element,

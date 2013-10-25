@@ -37,7 +37,7 @@ class PodioAdvancedFormCategoryElement extends PodioAdvancedFormElement{
 	
 	}
 
-	public function render($element = null){
+	public function render($element = null, $default_field_decorator = 'field'){
 		// if the method is invoked from PodioAdvancedFormQuestionElement
 		// just pass it on to the parent.
 		if ($element){
@@ -50,6 +50,9 @@ class PodioAdvancedFormCategoryElement extends PodioAdvancedFormElement{
 		$required = $this->get_attribute('required');
 		
 		foreach($this->get_attribute('options') AS $key => $option){
+		$class = array();
+		$class[] = $this->get_attribute('type');
+		$class[] = $option['color'] ? 'color-' . $option['color'] : 'color-DCEBD8';
 		// check the first option ($key === 0) if field is required and radio
 		$checked = (($required && 
 					!$this->get_attribute('multiple') &&
@@ -58,7 +61,7 @@ class PodioAdvancedFormCategoryElement extends PodioAdvancedFormElement{
 					in_array($option['id'], $this->get_value())) ? 'checked' : '';
 		
 			$element = sprintf(
-						'<label class="%1$s inline">
+						'<label class="%7$s inline">
 							<input type="%1$s" value="%2$d" name="%3$s" %4$s %5$s> %6$s
 						</label>', 
 							$this->get_attribute('type'),
@@ -67,7 +70,8 @@ class PodioAdvancedFormCategoryElement extends PodioAdvancedFormElement{
 							($required && !$this->get_attribute('multiple'))
 								? 'required' : '',
 							$checked,
-							$option['text']
+							$option['text'],
+							implode(' ',$class)
 					  );
 			
 			$elements[] = $element;

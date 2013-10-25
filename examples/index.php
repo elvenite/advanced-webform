@@ -1,15 +1,11 @@
 <?php
 
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 require 'config.php';
-require 'lib/PodioAdvancedForm/PodioAdvancedForm.php';
+require '../PodioAdvancedForm.php';
 
 Podio::setup(CLIENT_ID, CLIENT_SECRET);
-
 Podio::$debug = true;
-
-// reset access token
-Podio::$oauth = new PodioOAuth();
 
 
 if (!Podio::is_authenticated()) {
@@ -17,18 +13,12 @@ if (!Podio::is_authenticated()) {
 }
 
 $podioform = new PodioAdvancedForm(array(
-	'app_id' => 4583624,
-	'app' => '', // insert a PodioApp object if you want
-	'item_id' => 73691824, // prefill the form with values from an item,
-						   // the item will be updated
-	'item' => '', // insert a PodioItem object if you want
+	'app_id' => 5421613,
+	'lock_default' => true,
 	'method' => 'post',
 	'action' => '',
-	'submit_value' => 'Boka monter!',
+	'submit_value' => 'I wanna come!',
 ));
-
-$podioform->get_element('paket2')->set_attribute('locked', true);
-
 
 if ($_POST){
 	$podioform->set_values($_POST, $_FILES);

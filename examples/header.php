@@ -4,13 +4,15 @@
 		<meta charset="UTF-8">
 		<title>Podio Advanced Form library</title>
 		<link rel="stylesheet" href="css/bootstrap.min">
+		<link rel="stylesheet" href="lib/PodioAdvancedForm/assets/css/podio-advanced-form.css">
 	</head>
 <body>
 	
 	<div id="main" class="container">
 		<div class="row">
 			<div class="span12">
-				<h1>Podio Advanced Form library</h1>
+				<?php $title = (isset($title)) ? $title : 'Podio Advanced Form library'; ?>
+				<h1><?php echo $title; ?></h1>
 			</div>
 		</div>
 		
@@ -20,4 +22,10 @@
 					<div class="alert alert-error"><?php echo $error_message; ?></div>
 				</div>
 			</div>
-		<?php } ?>
+		<?php }if (isset($message)){ ?>
+			<div class="row">
+				<div class="span12">
+					<div class="alert alert-success"><?php echo $message; ?></div>
+				</div>
+			</div>
+		<?php }

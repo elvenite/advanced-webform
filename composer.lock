@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/podio/podio-php.git",
-                "reference": "82a5faa92b78be5f7d3dce2596e7bafbec6d8e38"
+                "reference": "e895171913ed68a2ff75505a581cb04523e145bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/podio/podio-php/zipball/82a5faa92b78be5f7d3dce2596e7bafbec6d8e38",
-                "reference": "82a5faa92b78be5f7d3dce2596e7bafbec6d8e38",
+                "url": "https://api.github.com/repos/podio/podio-php/zipball/e895171913ed68a2ff75505a581cb04523e145bb",
+                "reference": "e895171913ed68a2ff75505a581cb04523e145bb",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
             "keywords": [
                 "podio"
             ],
-            "time": "2013-07-01 19:34:41"
+            "time": "2013-09-10 13:13:17"
         }
     ],
     "packages-dev": [

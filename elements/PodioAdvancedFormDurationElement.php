@@ -42,7 +42,7 @@ class PodioAdvancedFormDurationElement extends PodioAdvancedFormElement{
 		parent::set_value($value);
 	}
 	
-	public function render(){
+	public function render($element = null, $default_field_decorator = 'field'){
 		// output is:
 		// decorator
 		// element
