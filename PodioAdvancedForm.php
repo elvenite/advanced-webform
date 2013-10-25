@@ -19,12 +19,41 @@ require_once 'elements/PodioAdvancedFormFileElement.php';
 require_once 'elements/PodioAdvancedFormImageElement.php';
 
 class PodioAdvancedForm {
+	
+	/**
+	 * @const string
+	 */
+	const VERSION = '0.1.0';
+	
+	/**
+	 *
+	 * @var PodioApp 
+	 */
 	protected $app;
+	
+	/**
+	 *
+	 * @var PodioItem
+	 */
+	
 	protected $item;
+	
+	/**
+	 * Error message
+	 * @var String|false
+	 */
 	protected $error = false;
 	
+	/**
+	 * And array of all PodioAdvancedFormElement objects
+	 * @var array
+	 */
 	protected $elements;
 	
+	/**
+	 * Is $this a sub form, used to indicate if <form>-tag should be displayed or not
+	 * @var bool
+	 */
 	protected $is_sub_form = false;
 	
 	protected $files;
