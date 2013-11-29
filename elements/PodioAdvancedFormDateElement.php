@@ -16,14 +16,50 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 		 * add delta field (delta is the sort order)
 		 * support different date and time formats?
 		 */
+                
+                if ($item_field){
+                    $this->set_attribute('value', $item_field->values[0]);
+                }
 	
 	}
+        
+        /**
+         * Validates the date interval by transforming date and time to seconds
+         * since unix epoch
+         * @param array $values
+         */
+        protected function validate($values){
+            $start_string = $values['start_date'];
+            $start_format = 'Y-m-d';
+            if (isset($values['start_time'])){
+                $start_string .= ' ' . $values['start_time'];
+                $start_format .= ' H:i';
+            }
+            
+            $end_string = $values['end_date'];
+            $end_format = 'Y-m-d';
+            if (isset($values['end_time'])){
+                $end_string .= ' ' . $values['end_time'];
+                $end_format .= ' H:i';
+            }
+            
+            $start = DateTime::createFromFormat($start_format, $start_string);
+            $end = DateTime::createFromFormat($end_format, $end_string);
+            
+            if ($start && $end && ($end > $start)){
+                return true;
+            }
+            
+            throw new PodioFormError(
+                'The dates and times does not have the right format (YYYY-MM-DD HH:MM)');
+        }
 	
 	public function set_value($values) {
 		$value = array();
-		if (empty($values['start_date'])){
+		if (empty($values['start_date']) || !$this->validate($values)){
 			return false;
 		}
+
 		$value['start'] = $values['start_date'];
 		
 		if (!empty($values['start_date']) && !empty($values['start_time'])){
@@ -68,7 +104,8 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 		
 		$elements = array();
 		
-		
+                $values = $this->get_attribute('value');
+                unset($attributes['value']);
 		
 		// startdate
 			$element = '<input';
@@ -78,11 +115,14 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 			$attributes['placeholder'] = 'YYYY-MM-DD';
 			$attributes['name'] = $this->get_attribute('name') . '[start_date]';
 			$attributes['class'] = 'span3';
-
-			$attributes_string = '';
-			foreach($attributes AS $key => $attribute){
-				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
-			}
+                        $attributes['required'] = $required;
+                        $attributes['value'] = (isset($values['start_date'])) ? $values['start_date'] : null;
+                        
+//			foreach($attributes AS $key => $attribute){
+//				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
+//			}
+                        
+                        $attributes_string = $this->attributes_concat($attributes);
 
 			$element .= $attributes_string;
 
@@ -95,11 +135,14 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 			$attributes['name'] = $this->get_attribute('name') . '[start_time]';
 			$attributes['type'] = 'text';
 			$attributes['class'] = 'span1';
+                        $attributes['value'] = (isset($values['start_time'])) ? substr($values['start_time'],0,5) : null;
 
-			$attributes_string = '';
-			foreach($attributes AS $key => $attribute){
-				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
-			}
+//			$attributes_string = '';
+//			foreach($attributes AS $key => $attribute){
+//				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
+//			}
+                        
+                        $attributes_string = $this->attributes_concat($attributes);
 
 			$element .= $attributes_string;
 
@@ -111,11 +154,16 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 			$attributes['name'] = $this->get_attribute('name') . '[end_date]';
 			$attributes['type'] = $this->get_attribute('type');
 			$attributes['class'] = 'span3';
+                        $attributes['value'] = (isset($values['end_date'])) ? $values['end_date'] : null;
+                        $attributes['min'] = (isset($values['start_date'])) ? $values['start_date'] : null;
+                        
 
-			$attributes_string = '';
-			foreach($attributes AS $key => $attribute){
-				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
-			}
+//			$attributes_string = '';
+//			foreach($attributes AS $key => $attribute){
+//				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
+//			}
+                        
+                        $attributes_string = $this->attributes_concat($attributes);
 
 			$element .= $attributes_string;
 
@@ -127,11 +175,14 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 			$attributes['name'] = $this->get_attribute('name') . '[end_time]';
 			$attributes['type'] = 'text';
 			$attributes['class'] = 'span1';
+                        $attributes['value'] = (isset($values['end_time'])) ? substr($values['end_time'],0,5) : null;
 
-			$attributes_string = '';
-			foreach($attributes AS $key => $attribute){
-				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
-			}
+//			$attributes_string = '';
+//			foreach($attributes AS $key => $attribute){
+//				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
+//			}
+                        
+                        $attributes_string = $this->attributes_concat($attributes);
 
 			$element .= $attributes_string;
 

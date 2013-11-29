@@ -256,7 +256,7 @@ abstract class PodioAdvancedFormElement {
 		);
 		
 		foreach($attributes AS $key => $attribute){
-			if (in_array($key, $ignore)) continue;
+			if (in_array($key, $ignore) || is_null($attribute)) continue;
 			// if true, then attribute minimization is allowed
 			if ($attribute === true){
 				$attributes_string .= ' ' . $key;
