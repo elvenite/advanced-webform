@@ -50,8 +50,7 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
                 return true;
             }
             
-            throw new PodioFormError(
-                'The dates and times does not have the right format (YYYY-MM-DD HH:MM)');
+            throw new PodioFormError('The dates and times does not have the right format (YYYY-MM-DD HH:MM)');
         }
 	
 	public function set_value($values) {
