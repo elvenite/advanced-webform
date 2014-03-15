@@ -14,18 +14,24 @@ if (!Podio::is_authenticated()) {
 
 $podioform = new PodioAdvancedForm(array(
 	'app_id' => APP_ID,
-	'item_id' => ITEM_ID,
+	'item_id' => null,
 	'lock_default' => true,
 	'method' => 'post',
 	'action' => '',
-	'submit_value' => 'I wanna come!',
+	'submit_value' => 'Skicka intresseanmälan',
 ));
 
+$podioform->get_element('files')->set_attribute('hidden', true);
+
 if ($_POST){
+    try{
 	$podioform->set_values($_POST, $_FILES);
-	if (!$podioform->save()){
-		$error_message = $podioform->get_error();
-	}
+	$podioform->save();
+        
+            $podioform = 'Tack för din anmälan! Vi kommer att höra av oss inom kort.';
+    } catch (PodioFormElementError $e){
+        $error_message = 'There\'s an error with the element.';
+    }
 }
 
 require 'header.php';

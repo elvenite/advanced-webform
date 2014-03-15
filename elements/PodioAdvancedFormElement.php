@@ -7,6 +7,9 @@ abstract class PodioAdvancedFormElement {
 	protected $form;
 	protected $value;
 	protected $name;
+        
+        public $error = false;
+        public $error_message = null;
 
 
 	protected $attributes = array(
@@ -146,7 +149,12 @@ abstract class PodioAdvancedFormElement {
 	 * @return array
 	 */
 	public function get_value(){
-		return $this->item_field->values;
+            if (isset($this->item_field->values)){
+                return $this->item_field->values;
+            } else {
+                return $this->get_attribute('value');
+            }
+		
 	}
 	
 	/**
@@ -158,6 +166,7 @@ abstract class PodioAdvancedFormElement {
 	}
 	
 	public function set_value($values){
+                $this->set_attribute('value', $values);
 		$this->item_field->set_value($values);
 	}
 	
@@ -261,6 +270,7 @@ abstract class PodioAdvancedFormElement {
 			if ($attribute === true){
 				$attributes_string .= ' ' . $key;
 			} elseif ($attribute != ''){ // empty attributes won't be added
+                            // TODO money currency is an array
 				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
 			}
 		}
@@ -310,8 +320,14 @@ abstract class PodioAdvancedFormElement {
 				$element = $this->render_element();
 			}
 		}
-		
-		$description_decorator = '';
+                
+                $decorator_class = array();
+                if ($this->error){
+                    $decorator_class[] = 'error';
+                    $this->set_attribute('description', $this->error_message);
+                }
+                
+                $description_decorator = '';
 		$description = $this->get_attribute('description');
 		if ($description){
 			$description_decorator = sprintf($this->get_decorator('field_description'),
@@ -324,10 +340,21 @@ abstract class PodioAdvancedFormElement {
 						$this->get_attribute('placeholder'),
 						$element,
 						$description_decorator,
-						($this->get_attribute('required')) ? $this->get_decorator('field_required') : ''
+						($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',
+                                                implode(' ', $decorator_class)
+                        
 					);
 		
 		return $decorator;
 	}
+        
+        protected function throw_error($values, $message){
+            // set the element as error = true
+            $this->error = true;
+            $this->error_message = $message;
+
+            // throw error
+            throw new PodioFormElementError($message);
+        }
 
 }

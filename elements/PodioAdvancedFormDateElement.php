@@ -1,6 +1,12 @@
 <?php
 
 class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
+    
+        const END_TIME_BEFORE_START_TIME = 'endTimeBeforeStartTime';
+        
+        protected $messages = array(
+            self::END_TIME_BEFORE_START_TIME => 'The end time must be later than the start time.',
+        );
 	
 	protected $decorators = array(
 		//'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls controls-row">%3$s%4$s</div></div>'
@@ -50,12 +56,15 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
                 return true;
             }
             
-            throw new PodioFormError('The dates and times does not have the right format (YYYY-MM-DD HH:MM)');
+            // insert values into value attribute (but not the item's value property
+            $this->set_attribute('value', $values);
+            $this->throw_error($values, $this->messages[self::END_TIME_BEFORE_START_TIME]);
         }
 	
 	public function set_value($values) {
 		$value = array();
 		if (empty($values['start_date']) || !$this->validate($values)){
+                        // does this really run?
 			return false;
 		}
 
@@ -63,6 +72,7 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 		
 		if (!empty($values['start_date']) && !empty($values['start_time'])){
 			$value['start'] .= ' ' . $values['start_time'] . ':00';
+                        $values['start_time'] = $values['start_time'] . ':00';
 		} else {
 			$value['start'] .= ' 00:00:00';
 		}
@@ -72,14 +82,17 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 			
 			if (!empty($values['end_time'])){
 				$value['end'] .= ' ' . $values['end_time'] . ':00';
+                                $values['end_time'] = $values['end_time'] . ':00';
 			} else {
 				$value['end'] .= ' 00:00:00';
 			}
 		} else {
 			$value['end'] = $value['start'];
 		}
+                
+                $values = array_merge($values, $value);
 		
-		parent::set_value($value);
+		parent::set_value($values);
 	}
 
 
@@ -195,15 +208,17 @@ class PodioAdvancedFormDateElement extends PodioAdvancedFormElement{
 											);
 		}
 		
-		$decorator = sprintf($this->get_decorator('field'), 
+		/*$decorator = sprintf($this->get_decorator('field'), 
 						$this->get_attribute('name'),
 						$this->get_attribute('placeholder'),
-						implode(' ', $elements),
+						
 						$description_decorator,
 						($this->get_attribute('required')) ? $this->get_decorator('field_required') : ''
 					);
 		
-		return $decorator;
+		return $decorator;*/
+                $element = implode(' ', $elements);
+                return parent::render($element);
 	}
 }
 

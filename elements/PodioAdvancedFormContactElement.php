@@ -93,12 +93,21 @@ class PodioAdvancedFormContactElement extends PodioAdvancedFormElement{
 			} else {
 				$profile_id = PodioContact::create($space_id, $values);
 			}
+                        
+                        $values['profile_id'] = $profile_id;
 
-			parent::set_value(array(
-				'profile_id' => $profile_id,
-			));
+			parent::set_value($values);
 		}
 	}
+        
+        public function render_locked(){
+            $elements = array();
+            foreach($this->sub_fields AS $sub_field){
+                $elements[] = $sub_field->render_locked();
+            }
+            
+            return implode('', $elements);
+        }
 	
 	public function render($element = null, $default_field_decorator = 'field'){
 		$elements = array();

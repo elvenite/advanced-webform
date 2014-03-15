@@ -74,42 +74,91 @@ abstract class PodioAdvancedFormContactsSubElement{
 		$attributes['name'] = $this->get_name();
 		return $attributes;
 	}
+        
+        public function render_locked(){
+		$element = "";
+                
+                $values = $this->get_parent()->get_item_field()->values;
+                
+                // don't use $this->get_name() AS it will return the parent
+                // name with subelement as array key (ex. contact[name])
+                $name = $this->name;
+		
+		if ($values){
+                    // force array for all value, not just email and phone
+                    $value = (array) $values[0]['value'][$name];
+                    foreach($value AS $v){
+			$element .= '<div class="locked">';
+			$element .= $v;
+			$element .= '</div>';
+                    }
+		}
+                
+                $decorator_class = array();
+                $decorator = sprintf($this->parent->get_decorator('field'), 
+						$this->get_attribute('name'),
+						$this->get_attribute('placeholder'),
+						$element,
+						'', // description is always empty in these fields
+						($this->get_attribute('required')) ? $this->parent->get_decorator('field_required') : '',
+                                                implode(' ', $decorator_class)
+					);
+		
+		return $decorator;
+	}
 	
 	public function render($element = null, $default_field_decorator = 'field'){
 		// output is:
 		// decorator
 		// element
-		
-		$attributes = $this->get_attributes();
-		
-		$attributes_string = '';
-		foreach($attributes AS $key => $attribute){
-			// if true, then attribute minimization is allowed
-			if ($attribute === true){
-				$attributes_string .= ' ' . $key;
-			} elseif ($attribute){ // all falsy values won't be added
-				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
+            
+                $values = $this->get_parent()->get_attribute('value');
+            
+                if ($this->get_parent()->is_locked()){
+			if (!$values){
+				return '';
 			}
-		}
+			$element = $this->render_locked();
+		} else {
 		
-		$element = '<input';
-		
-		$element .= $attributes_string;
-		
-		$element .= '>';
+                    $attributes = $this->get_attributes();
+
+                    $attributes_string = '';
+                    foreach($attributes AS $key => $attribute){
+                            // if true, then attribute minimization is allowed
+                            if ($attribute === true){
+                                    $attributes_string .= ' ' . $key;
+                            } elseif ($attribute){ // all falsy values won't be added
+                                    $attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
+                            }
+                    }
+
+                    $element = '<input';
+
+                    $element .= $attributes_string;
+
+                    $element .= '>';
+                }
 		
 		if ($this->parent->get_form()->is_sub_form()){
 			$decorator_format = 'sub_sub_field';
 		} else {
 			$decorator_format = 'sub_field';
 		}
+                
+                $decorator_class = array();
+                // TODO implement error handling
+//                if ($this->error){
+//                    $decorator_class[] = 'error';
+//                }
 		
 		$decorator = sprintf($this->parent->get_decorator($decorator_format), 
 						$this->get_attribute('name'),
 						$this->get_attribute('placeholder'),
 						$element,
 						'', // description is always empty in these fields
-						($this->get_attribute('required')) ? $this->get_decorator('field_required') : ''
+						($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',
+                                                implode(' ', $decorator_class)
 					);
 		
 		return $decorator;
