@@ -75,7 +75,9 @@ Hantera fel i file-uppladdningar
 * date and timepicker?
 * Add calc field
 * Better documentation inside code, PHPDoc style
-* Documentation section /doc/ for more extended documentation
+* Describe item fields vs app fields
+* Explain field name prefix
+* Documentation section gh-pages for more extended documentation
     * decorators
     * how to do validation, pre-save checks etc
 

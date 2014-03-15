@@ -1,7 +1,15 @@
 <?php
 
+/**
+ * Represents an app reference field
+ * 
+ * Since Podio Advanced Form can display nested app forms, this class contains
+ * a $sub_form property with a PodioAdvancedForm class.
+ */
+
 class PodioAdvancedFormAppElement extends PodioAdvancedFormElement{
-	protected $sub_form;
+    
+    protected $sub_form;
 	
 	public function __construct($app_field, $form, $item_field = null, $attributes = null) {
 		parent::__construct($app_field, $form, $item_field, $attributes);
