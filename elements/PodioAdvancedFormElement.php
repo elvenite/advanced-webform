@@ -24,32 +24,32 @@ abstract class PodioAdvancedFormElement {
 	protected $decorators = array();
 
 	public function __construct(PodioAppField $app_field, PodioAdvancedForm $form, $item_field = null, $attributes = null) {
-		if ($app_field->status != "active"){
-			throw new ErrorException('Field is not active');
-		}
+            if ($app_field->status != "active"){
+                    throw new ErrorException('Field is not active');
+            }
+
+            $this->set_app_field($app_field);
+
+            $this->form = $form;
+
+            if(!$item_field){
+                    $class_name = 'Podio' . ucfirst($app_field->type) . 'ItemField';
+                    $this->set_item_field(new $class_name(array(
+                            'field_id' => $app_field->field_id
+                    )));
+            } else {
+                    $this->set_item_field($item_field);
+                    $this->set_attribute('value', $item_field->humanized_value());
+            }
 		
-		$this->set_app_field($app_field);
-		
-		$this->form = $form;
-		
-		if(!$item_field){
-			$class_name = 'Podio' . ucfirst($app_field->type) . 'ItemField';
-			$this->set_item_field(new $class_name(array(
-				'field_id' => $app_field->field_id
-			)));
-		} else {
-			$this->set_item_field($item_field);
-			$this->set_attribute('value', $item_field->humanized_value());
-		}
-		
-		// set id
-		$this->set_attribute('id', $app_field->field_id);
-		// set name
-		$this->set_name($app_field->external_id);
-		// set placeholder
-		$this->set_attribute('placeholder', $app_field->config['label']);
-		// set required
-		$this->set_attribute('required', (bool) $app_field->config['required']);
+            // set id
+            $this->set_attribute('id', $app_field->field_id);
+            // set name
+            $this->set_name($app_field->external_id);
+            // set placeholder
+            $this->set_attribute('placeholder', $app_field->config['label']);
+            // set required
+            $this->set_attribute('required', (bool) $app_field->config['required']);
 		
 		// set "special" attributes from description
 		// like if description contains [hidden], the field should be hidden
@@ -58,6 +58,7 @@ abstract class PodioAdvancedFormElement {
 			preg_match_all('/\[([^[]+)\]/', $description, $matches);
 
 			foreach($matches[0] AS $match){
+                                // remove attribute tags from description
 				$description = str_replace($match, '', $description);
 			}
 			
