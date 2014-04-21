@@ -167,8 +167,13 @@ abstract class PodioAdvancedFormElement {
 	}
 	
 	public function set_value($values){
+            if ($values == ''){
+                $values = null;
+            } else {
                 $this->set_attribute('value', $values);
-		$this->item_field->set_value($values);
+            }
+                
+            $this->item_field->set_value($values);
 	}
 	
 	/**

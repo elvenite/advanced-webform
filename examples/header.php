@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Podio Advanced Form library</title>
-		<link rel="stylesheet" href="css/bootstrap.min">
+		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="../assets/css/podio-advanced-form.css">
 	</head>
 <body>

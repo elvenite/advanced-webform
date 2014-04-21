@@ -1,5 +1,8 @@
-# About
+# Podio Advanced Form
 This is an extension library to the Podio PHP library, it generates a form based on a Podio App ID and optionally an Item ID.
+
+** Disclaimer:** This is a work in progress and the API can change at any time.
+Once we reach a stable version, semantic versioning will be used.
 
 # Installation
 Podio Advanced Form requires the [Podio PHP library](https://github.com/podio/podio-php). Default CSS uses Bootstrap 2.3.2 but you can change the decorators to fit your own CSS framework.
@@ -37,7 +40,7 @@ More attributes the description:
 * required (true|false, override default setting)
 * value (example: [value=This will be the predefined value in the element]
 * maxsize (int, maximum allowed characters in the element
-* practically any html attribute, pattern, autofocus etc
+* practically any html attribute, autofocus etc
 
 ### Special attributes
 The App reference field will expand to display all elements of the first referenced app making it possible to insert values in several apps using a single form.
@@ -54,20 +57,18 @@ This makes it possible to show a subset of items instead of all like the regular
 
 # Display the form
 Just echo the the form object:
-    echo $podioform;
+        echo $podioform;
 
 # Known issues
 * linebreaks are removed from podio, nl2br?
+
 * If app element is locked, don't display Files placeholder
+
 * If app element is locked, better display of values
 
-Just nu sparas sub_forms på set_value vilket inte är bra, detta ska göras när
-PodioAdvancedForm->save() körs. Den funktionen måste alltså iterera alla
-subforms och köra save() innan $this->item->save() körs.
-
-Nu har alla render-funktioner i /elements/ extra attribute som $element som inte används.
-
-Hantera fel i file-uppladdningar
+* Right now, sub_forms are saved at set_value which is bad. It's better to do it
+at PodioAdvancedForm->save(). Save() needs to iterate on all sub form save
+methods.
 
 # TODOs?
 * should an app reference field be an autocomplete or extended?
@@ -77,7 +78,15 @@ Hantera fel i file-uppladdningar
 * Better documentation inside code, PHPDoc style
 * Describe item fields vs app fields
 * Explain field name prefix
+* Unit tests
+* Support for Podio PHP Library upcoming version 4
+* Handle file upload errors
 * Documentation section gh-pages for more extended documentation
     * decorators
     * how to do validation, pre-save checks etc
 
+# Author
+Podio Advanced Form is created and maintained by Carl-Fredrik Herö. Carl-Fredrik
+is a Web Architect at [Elvenite](http://elvenite.com/) where he help
+organizations to setup and optimize their Podio work flow. Elvenite is a Podio
+Preferred Partner located in Sweden.
