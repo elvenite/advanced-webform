@@ -3,7 +3,7 @@
 /**
  * Podio Advanced Form - A form generator for Podio
  *
- * @author      Carl-Fredrik Herö <carlfredrik.hero@gmail.com>
+ * @author      Carl-Fredrik Herö <carl-fredrik.hero@elvenite.se>
  * @copyright   2014 Carl-Fredrik Herö
  * @link        https://github.com/elvenite/podio-advanced-form
  * @license     https://github.com/elvenite/podio-advanced-form
