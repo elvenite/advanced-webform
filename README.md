@@ -1,7 +1,7 @@
 # Podio Advanced Form
 This is an extension library to the Podio PHP library, it generates a form based on a Podio App ID and optionally an Item ID.
 
-** Disclaimer:** This is a work in progress and the API can change at any time.
+**Disclaimer:** This is a work in progress and the API can change at any time.
 Once we reach a stable version, semantic versioning will be used.
 
 # Installation

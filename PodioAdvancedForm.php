@@ -5,8 +5,8 @@
  *
  * @author      Carl-Fredrik Herö <carlfredrik.hero@gmail.com>
  * @copyright   2014 Carl-Fredrik Herö
- * @link        https://github.com/carlfredrikhero/podio-advanced-form
- * @license     https://github.com/carlfredrikhero/podio-advanced-form
+ * @link        https://github.com/elvenite/podio-advanced-form
+ * @license     https://github.com/elvenite/podio-advanced-form
  * @version     1.0.0
  * @package     PodioAdvancedForm
  *
@@ -469,7 +469,7 @@ class PodioAdvancedForm {
         // attributes to a field would be done using either the external_id
         // or the field_id, not app_id
         // discussed in issue #9
-        // https://github.com/carlfredrikhero/podio-advanced-form/issues/9
+        // https://github.com/elvenite/podio-advanced-form/issues/9
         if (array_key_exists($app_field->app_id, $this->attributes['fields'])){
                 return $this->attributes['fields'][$app_field->app_id];
         }

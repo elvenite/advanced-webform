@@ -5,8 +5,8 @@
  *
  * @author      Carl-Fredrik Herö <carlfredrik.hero@gmail.com>
  * @copyright   2014 Carl-Fredrik Herö
- * @link        https://github.com/carlfredrikhero/podio-advanced-form
- * @license     https://github.com/carlfredrikhero/podio-advanced-form
+ * @link        https://github.com/elvenite/podio-advanced-form
+ * @license     https://github.com/elvenite/podio-advanced-form
  * @version     1.0.0
  * @package     PodioAdvancedForm
  *
