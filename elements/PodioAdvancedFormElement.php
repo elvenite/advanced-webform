@@ -108,8 +108,14 @@ abstract class PodioAdvancedFormElement {
 	}
 	
 	public function set_attribute($key, $value){
-		$key = (string) $key;
-		$this->attributes[$key] = $value;
+            $key = (string) $key;
+            // backward compability
+            if ('name' == $key){
+                    $this->name = $value;
+                    return;
+            }
+
+            $this->attributes[$key] = $value;
 	}
 	
 	public function get_attributes(){
@@ -276,8 +282,10 @@ abstract class PodioAdvancedFormElement {
 			if ($attribute === true){
 				$attributes_string .= ' ' . $key;
 			} elseif ($attribute != ''){ // empty attributes won't be added
-                            // TODO money currency is an array
-				$attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
+                            if (is_array($attribute)){
+                                $attribute = json_encode($attribute);
+                            }
+				$attributes_string .= ' ' . $key . '=\'' . (string) $attribute . '\'';
 			}
 		}
 		
