@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Podio Advanced Form - A form generator for Podio
+ * Advanced Webform for Podio - A form generator for Podio
  *
  * @author      Carl-Fredrik Herö <carl-fredrik.hero@elvenite.se>
  * @copyright   2014 Carl-Fredrik Herö
- * @link        https://github.com/elvenite/podio-advanced-form
- * @license     https://github.com/elvenite/podio-advanced-form
+ * @link        https://github.com/elvenite/advanced-webform
+ * @license     https://github.com/elvenite/advanced-webform
  * @version     1.0.0
- * @package     PodioAdvancedForm
+ * @package     AdvancedWebform
  *
  * MIT LICENSE
  *
@@ -32,21 +32,21 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once 'PodioAdvancedFormContactsSubElements.php';
+namespace AdvancedWebform\Elements;
 
 /**
  * Element for Contact Field
  * Only Contact Fields with workspace contacts will be rendered, workspace users
  * cannot be exposed outside of Podio.
- * @package PodioAdvancedForm
+ * @package AdvancedWebform
  * @author  Carl-Fredrik Herö
  * @since   1.0.0
  */
-class PodioAdvancedFormContactElement extends PodioAdvancedFormElement{
+class Contact extends Element{
 
     /**
      *
-     * @var array[PodioAdvancedFormContactsSubElement] 
+     * @var array[SubContact] 
      */
     protected $sub_fields;
 
@@ -57,7 +57,7 @@ class PodioAdvancedFormContactElement extends PodioAdvancedFormElement{
     /**
      * Constructor
      * @param PodioAppField $app_field
-     * @param PodioAdvancedForm $form
+     * @param \AdvancedWebform $form
      * @param PodioItemField $item_field
      * @throws ErrorException
      */
@@ -126,9 +126,9 @@ class PodioAdvancedFormContactElement extends PodioAdvancedFormElement{
     /**
      * Add sub field
      * @param string $name
-     * @param PodioAdvancedFormContactsSubElement $element
+     * @param SubContact $element
      */
-    public function add_sub_field($name, PodioAdvancedFormContactsSubElement $element){
+    public function add_sub_field($name, SubContact $element){
         $this->sub_fields[$name] = $element;
     }
 

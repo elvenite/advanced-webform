@@ -24,7 +24,7 @@ To load the form elements from the desired Podio App, initialize the class:
 ## Other attributes
 
 * lock_default (true|false)
-* method ("POST|"GET")
+* method ("POST"|"GET")
 * action (url)
 * submit_value (The text on the submit button, defaults to "Submit")
 
@@ -33,7 +33,7 @@ Each Podio app field has a description, you can use the description to easily ad
 
 Example: "[hidden] This field will be hidden in the Podio Advanced Form"
 
-More attributes the description:
+More attributes in the description:
 
 * hidden (no value, hides the field)
 * locked (no value, locks the field, but still visible and any value will be submitted to Podio)
@@ -75,6 +75,7 @@ methods.
 * Show progress-slider value to the right
 * date and timepicker?
 * Add calc field
+* Add support for new settings in categori field
 * Better documentation inside code, PHPDoc style
 * Describe item fields vs app fields
 * Explain field name prefix

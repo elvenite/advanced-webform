@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Podio Advanced Form - A form generator for Podio
+ * Advanced Webform for Podio - A form generator for Podio
  *
  * @author      Carl-Fredrik Herö <carl-fredrik.hero@elvenite.se>
  * @copyright   2014 Carl-Fredrik Herö
- * @link        https://github.com/elvenite/podio-advanced-form
- * @license     https://github.com/elvenite/podio-advanced-form
+ * @link        https://github.com/elvenite/advanced-webform
+ * @license     https://github.com/elvenite/advanced-webform
  * @version     1.0.0
- * @package     PodioAdvancedForm
+ * @package     AdvancedWebform
  *
  * MIT LICENSE
  *
@@ -32,33 +32,15 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// Since we don't use autoloader (yet) we need to require all classes
-require_once 'PodioAdvancedFormError.php';
-require_once 'PodioAdvancedFormElementError.php';
-
-require_once 'elements/PodioAdvancedFormElement.php';
-require_once 'elements/PodioAdvancedFormTextElement.php';
-require_once 'elements/PodioAdvancedFormNumberElement.php';
-require_once 'elements/PodioAdvancedFormProgressElement.php';
-require_once 'elements/PodioAdvancedFormLocationElement.php';
-require_once 'elements/PodioAdvancedFormDurationElement.php';
-require_once 'elements/PodioAdvancedFormMoneyElement.php';
-require_once 'elements/PodioAdvancedFormDateElement.php';
-require_once 'elements/PodioAdvancedFormCategoryElement.php';
-require_once 'elements/PodioAdvancedFormContactElement.php';
-require_once 'elements/PodioAdvancedFormQuestionElement.php';
-require_once 'elements/PodioAdvancedFormAppElement.php';
-require_once 'elements/PodioAdvancedFormEmbedElement.php';
-require_once 'elements/PodioAdvancedFormFileElement.php';
-require_once 'elements/PodioAdvancedFormImageElement.php';
+namespace AdvancedWebform;
 
 /**
- * Podio Advanced Form
- * @package PodioAdvancedForm
+ * Advanced Webform
+ * @package AdvancedWebform
  * @author  Carl-Fredrik Herö
  * @since   1.0.0
  */
-class PodioAdvancedForm {
+class AdvancedWebform {
 	
     /**
      * @const string
@@ -85,7 +67,7 @@ class PodioAdvancedForm {
     protected $error = false;
 
     /**
-     * An array of all PodioAdvancedFormElement objects
+     * An array of all AdvancedWebform\Elements\Form objects
      * @var array
      */
     protected $elements;
@@ -180,26 +162,26 @@ class PodioAdvancedForm {
      */
     protected $attributes = array(
         'submit_value' => 'Submit',
-        'class' => 'podio-advanced-form form-horizontal',
+        'class' => 'advancedwebform form-horizontal',
         'method' => self::METHOD_POST,
     );
 
     /**
      * Constructor
-     * @param PodioApp $attributes
-     * @throws PodioFormError
+     * @param \PodioApp $attributes
+     * @throws Error
      */
     public function __construct($attributes = array()) {
         /* Setup app
          * If app attribute is set, use as base, otherwise use app_id and
-         * get the app config with PodioApp::get()
+         * get the app config with \PodioApp::get()
          */
-        if(isset($attributes['app']) && $attributes['app'] instanceof PodioApp){
+        if(isset($attributes['app']) && $attributes['app'] instanceof \PodioApp){
                 $this->set_app($attributes['app']);
         } elseif (isset($attributes['app_id']) && $attributes['app_id']){
-                $this->set_app( PodioApp::get($attributes['app_id']) );
+                $this->set_app( \PodioApp::get($attributes['app_id']) );
         } else {
-                throw new PodioFormError('App or app id must be set.');
+                throw new Error('App or app id must be set.');
         }
 
         // we don't need these anymore
@@ -209,16 +191,16 @@ class PodioAdvancedForm {
 
         /* Setup item
          * If item attribute is set, use as base, otherwise use item_id and
-         * get item config + data from PodioItem::get()
+         * get item config + data from \PodioItem::get()
          */
-        if(isset($attributes['item']) && $attributes['item'] instanceof PodioItem){
+        if(isset($attributes['item']) && $attributes['item'] instanceof \PodioItem){
                 $this->set_item($attributes['item']);
         } elseif (isset($attributes['item_id']) && $attributes['item_id']){
-                $item = PodioItem::get($attributes['item_id']);
+                $item = \PodioItem::get($attributes['item_id']);
                 $this->set_item( $item );
         } else {
 
-                $this->set_item( new PodioItem(array(
+                $this->set_item( new \PodioItem(array(
                         'app' => $this->get_app(),
                 )));
         }
@@ -246,7 +228,7 @@ class PodioAdvancedForm {
 
     /**
      * Get Podio App object
-     * @return PodioApp
+     * @return \PodioApp
      */
     public function get_app() {
         return $this->app;
@@ -256,7 +238,7 @@ class PodioAdvancedForm {
      * Set Podio App object
      * @param PodioApp $app
      */
-    public function set_app(PodioApp $app) {
+    public function set_app(\PodioApp $app) {
         $this->app = $app;
     }
 
@@ -272,7 +254,7 @@ class PodioAdvancedForm {
      * Set Podio Item object
      * @param PodioItem $item
      */
-    public function set_item(PodioItem $item) {
+    public function set_item(\PodioItem $item) {
         $this->item = $item;
     }
 
@@ -335,7 +317,7 @@ class PodioAdvancedForm {
         // is file uploads allowed?
         // Then add a file input element
         if ($this->get_app()->config['allow_attachments']){
-            $app_field = new PodioAppField(array(
+            $app_field = new \PodioAppField(array(
                 'field_id' => PHP_INT_MAX,
                 'status' => 'active',
                 'type' => 'file',
@@ -353,19 +335,19 @@ class PodioAdvancedForm {
 
     /**
      * Initiates an element and adds it to the form
-     * @param PodioAppField $app_field
-     * @param PodioItemField $item_field
+     * @param \PodioAppField $app_field
+     * @param \PodioItemField $item_field
      * @param array $attributes
      */
-    protected function set_element(PodioAppField $app_field, PodioItemField $item_field = null, $attributes = null){
+    protected function set_element(\PodioAppField $app_field, \PodioItemField $item_field = null, $attributes = null){
         $element = false;
-        $class_name = 'PodioAdvancedForm' . ucfirst($app_field->type) . 'Element';
+        $class_name = 'Elements\\' . ucfirst($app_field->type);
 
         // only create if the class exists
         if (class_exists($class_name)){
                 try {
                         $element = new $class_name($app_field, $this, $item_field, $attributes);
-                } catch (Exception $e){
+                } catch (\Exception $e){
                     // TODO output to log that class does not exist
                     $element = false;
                 }
@@ -489,7 +471,7 @@ class PodioAdvancedForm {
      * Add a PodioFile object
      * @param type $file
      */
-    public function add_file(PodioFile $file){
+    public function add_file(\PodioFile $file){
         if (!is_array($this->files)){
                 $this->files = array();
         }
@@ -510,7 +492,7 @@ class PodioAdvancedForm {
     }
 
     /**
-     * Set array of PodioFiles to $this->files
+     * Set array of \PodioFiles to $this->files
      * @param array $files
      */
     public function set_files(array $files){
@@ -539,7 +521,7 @@ class PodioAdvancedForm {
         // Verify method is allowed 
         $method = strtolower($method);
         if (!in_array($method, $this->methods)){
-                throw new PodioAdvancedFormError('"' . $method . '" is not a valid form method.');
+                throw new Error('"' . $method . '" is not a valid form method.');
         }
 
         $this->set_attribute('method', $method);
@@ -679,7 +661,7 @@ class PodioAdvancedForm {
         foreach($this->elements AS $field){
             try {
                 $output[] = $field->render();
-            } catch (Exception $e){
+            } catch (\Exception $e){
                 // TODO stupid error handling, get to work
                 echo 'Exception';
                 var_dump($field);

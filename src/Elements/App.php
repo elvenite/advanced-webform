@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Podio Advanced Form - A form generator for Podio
+ * Advanced Webform for Podio - A form generator for Podio
  *
  * @author      Carl-Fredrik Herö <carl-fredrik.hero@elvenite.se>
  * @copyright   2014 Carl-Fredrik Herö
- * @link        https://github.com/elvenite/podio-advanced-form
- * @license     https://github.com/elvenite/podio-advanced-form
+ * @link        https://github.com/elvenite/advanced-webform
+ * @license     https://github.com/elvenite/advanced-webform
  * @version     1.0.0
- * @package     PodioAdvancedForm
+ * @package     AdvancedWebform
  *
  * MIT LICENSE
  *
@@ -32,32 +32,34 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+namespace AdvancedWebform\Elements;
+
 /**
- * Element for App Reference Field
- * Since Podio Advanced Form can display nested app forms, this class contains
- * a $sub_form property with a PodioAdvancedForm class.
- * @package PodioAdvancedForm
+ * Element for Relations Field
+ * Since Advanced Webform can display nested app forms, this class contains
+ * a $sub_form property with a AdvancedWebform class.
+ * @package AdvancedWebform
  * @author  Carl-Fredrik Herö
  * @since   1.0.0
  */
-class PodioAdvancedFormAppElement extends PodioAdvancedFormElement{
+class App extends Element{
     
     /**
-     * @var PodioAdvancedForm 
+     * @var \AdvancedWebform 
      */
     protected $sub_form;
 	
     /**
      * Constructor
      * @param PodioAppField $app_field
-     * @param PodioAdvancedForm $form
+     * @param \AdvancedWebform $form
      * @param PodioItemField $item_field
      * @param array|null $attributes
      */
     public function __construct($app_field, $form, $item_field = null, $attributes = null) {
         parent::__construct($app_field, $form, $item_field, $attributes);
 
-        // load a new PodioAdvancedForm in the sub_form attribute
+        // load a new AdvancedWebform in the sub_form attribute
         $this->set_attribute('reference_apps', $app_field->config['settings']['referenceable_types']);
 
         // for now, just get the first app
@@ -100,7 +102,7 @@ class PodioAdvancedFormAppElement extends PodioAdvancedFormElement{
             'parent' => $this,
         );
 
-        $sub_form = new PodioAdvancedForm($sub_form_attributes);
+        $sub_form = new \AdvancedWebform($sub_form_attributes);
 
         $this->set_sub_form($sub_form);
 
@@ -113,7 +115,7 @@ class PodioAdvancedFormAppElement extends PodioAdvancedFormElement{
 	
     /**
      * Get sub form
-     * @return PodioAdvancedForm
+     * @return \AdvancedWebform
      */
     public function get_sub_form(){
         return $this->sub_form;
@@ -121,13 +123,13 @@ class PodioAdvancedFormAppElement extends PodioAdvancedFormElement{
 
     /**
      * Set sub form
-     * @param PodioAdvancedForm|mixed $settings
+     * @param \AdvancedWebform|mixed $settings
      */
     public function set_sub_form($settings){
-        if ($settings instanceof PodioAdvancedForm){
+        if ($settings instanceof \AdvancedWebform){
             $this->sub_form = $settings;
         } else {
-            $this->sub_form = new PodioAdvancedForm($settings);
+            $this->sub_form = new \AdvancedWebform($settings);
         }
 
         // just for extra safety

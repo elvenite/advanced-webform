@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Podio Advanced Form - A form generator for Podio
+ * Advanced Webform for Podio - A form generator for Podio
  *
  * @author      Carl-Fredrik Herö <carl-fredrik.hero@elvenite.se>
  * @copyright   2014 Carl-Fredrik Herö
- * @link        https://github.com/elvenite/podio-advanced-form
- * @license     https://github.com/elvenite/podio-advanced-form
+ * @link        https://github.com/elvenite/advanced-webform
+ * @license     https://github.com/elvenite/advanced-webform
  * @version     1.0.0
- * @package     PodioAdvancedForm
+ * @package     AdvancedWebform
  *
  * MIT LICENSE
  *
@@ -32,18 +32,20 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+namespace AdvancedWebform\Elements;
+
 /**
  * Element for Category Field
- * @package PodioAdvancedForm
+ * @package AdvancedWebform
  * @author  Carl-Fredrik Herö
  * @since   1.0.0
  */
-class PodioAdvancedFormCategoryElement extends PodioAdvancedFormElement{
+class Category extends Element{
 	
     /**
      * Constructor
      * @param PodioAppField $app_field
-     * @param PodioAdvancedForm $form
+     * @param \AdvancedWebform $form
      * @param PodioItemField $item_field
      */
     public function __construct($app_field, $form, $item_field = null) {
@@ -81,7 +83,8 @@ class PodioAdvancedFormCategoryElement extends PodioAdvancedFormElement{
     }
 
     public function render($element = null, $default_field_decorator = 'field'){
-        // if the method is invoked from PodioAdvancedFormQuestionElement
+        // TODO remove question field specific code, it doesn't exist anymore
+        // if the method is invoked from QuestionElement
         // just pass it on to the parent.
         if ($element){
                 return parent::render($element);

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Podio Advanced Form - A form generator for Podio
+ * Advanced Webform for Podio - A form generator for Podio
  *
  * @author      Carl-Fredrik Herö <carl-fredrik.hero@elvenite.se>
  * @copyright   2014 Carl-Fredrik Herö
- * @link        https://github.com/elvenite/podio-advanced-form
- * @license     https://github.com/elvenite/podio-advanced-form
+ * @link        https://github.com/elvenite/advanced-webform
+ * @license     https://github.com/elvenite/advanced-webform
  * @version     1.0.0
- * @package     PodioAdvancedForm
+ * @package     AdvancedWebform
  *
  * MIT LICENSE
  *
@@ -32,15 +32,17 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+namespace AdvancedWebform\Elements;
+
 /**
  * Element for Sub Contact Field
- * @package PodioAdvancedForm
+ * @package AdvancedWebform
  * @author  Carl-Fredrik Herö
  * @since   1.0.0
  */
-abstract class PodioAdvancedFormContactsSubElement{
+abstract class SubContact{
     /**
-     * @var PodioAdvancedFormContactElement 
+     * @var Contact 
      */
     protected $parent;
 	
@@ -72,7 +74,7 @@ abstract class PodioAdvancedFormContactsSubElement{
 	
     /**
      * Get Parent
-     * @return PodioAdvancedFormContactElement
+     * @return Contact
      */
     protected function get_parent(){
         return $this->parent;
@@ -80,9 +82,9 @@ abstract class PodioAdvancedFormContactsSubElement{
 
     /**
      * Set Parent
-     * @param PodioAdvancedFormContactElement $parent
+     * @param Contact $parent
      */
-    protected function set_parent(PodioAdvancedFormContactElement $parent){
+    protected function set_parent(Contact $parent){
         $this->parent = $parent;
     }
 
@@ -242,11 +244,11 @@ abstract class PodioAdvancedFormContactsSubElement{
 
 /**
  * Text Element for Sub Contact Field
- * @package PodioAdvancedForm
+ * @package AdvancedWebform
  * @author  Carl-Fredrik Herö
  * @since   1.0.0
  */
-class PodioAdvancedFormContactsSubElementText extends PodioAdvancedFormContactsSubElement{
+class SubContactText extends SubContact{
     /**
      * @var array 
      */
@@ -257,11 +259,11 @@ class PodioAdvancedFormContactsSubElementText extends PodioAdvancedFormContactsS
 
 /**
  * Email Element for Sub Contact Field
- * @package PodioAdvancedForm
+ * @package AdvancedWebform
  * @author  Carl-Fredrik Herö
  * @since   1.0.0
  */
-class PodioAdvancedFormContactsSubElementEmail extends PodioAdvancedFormContactsSubElementText{
+class SubContactEmail extends SubContact{
     /**
      * @var array 
      */

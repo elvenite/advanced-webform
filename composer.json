@@ -1,5 +1,20 @@
-{
+{   "name": "elvenite/advanced-webform",
+    "description": "A PHP webform library for Podio",
+    "authors": [
+        {
+            "name": "Carl-Fredrik Herö",
+            "email": "carl-fredrik.hero@elvenite.se"
+        }
+    ],
+    "minimum-stability": "dev",
     "require": {
-		"podio/podio-php": "dev-master"
+        "php": ">=5.3.0",
+        "podio/podio-php": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdvancedWebform\\": ["src/"],
+            "elvenite\\AdvancedWebform\\": ""
+        }
     }
 }

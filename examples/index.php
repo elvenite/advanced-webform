@@ -14,7 +14,7 @@ if (!Podio::is_authenticated()) {
   Podio::authenticate('password', array('username' => USERNAME, 'password' => PASSWORD));
 }
 
-$podioform = new PodioAdvancedForm(array(
+$podioform = new \AdvancedWebform(array(
 	'app_id' => APP_ID,
 	'item_id' => ITEM_ID,
 	'lock_default' => false,
