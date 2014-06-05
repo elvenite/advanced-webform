@@ -55,7 +55,7 @@ class Money extends Element{
 	public function __construct($app_field, $form, $item_field = null) {
 		parent::__construct($app_field, $form, $item_field);
 		
-		$this->set_attribute('type', 'text');
+		$this->set_attribute('type', 'number');
 		$this->set_attribute('currencies', $this->app_field->config['settings']['allowed_currencies']);
 		
 		if ($item_field){

@@ -341,7 +341,7 @@ class AdvancedWebform {
      */
     protected function set_element(\PodioAppField $app_field, \PodioItemField $item_field = null, $attributes = null){
         $element = false;
-        $class_name = 'Elements\\' . ucfirst($app_field->type);
+        $class_name = '\\AdvancedWebform\\Elements\\' . ucfirst($app_field->type);
 
         // only create if the class exists
         if (class_exists($class_name)){

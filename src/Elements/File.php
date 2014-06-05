@@ -50,7 +50,7 @@ class File extends Element{
 		
 		$this->set_attribute('type', 'file');
 		$this->set_attribute('multiple', true);
-		$this->form->set_enctype(\AdvancedWebform::ENCTYPE_MULTIPART);
+		$this->form->set_enctype(\AdvancedWebform\AdvancedWebform::ENCTYPE_MULTIPART);
 		
 		/**
 		 * TODO

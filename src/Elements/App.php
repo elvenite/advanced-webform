@@ -85,10 +85,18 @@ class App extends Element{
         // either you show a sub form or a select box with items from the view
         $view = $this->get_attribute('view');
         if ($view){
-            $collection = PodioItem::filter_by_view($sub_app_id, $view);
+            $collection = \PodioItem::filter_by_view($sub_app_id, $view);
             // TODO read total, filtered do decide if autocomplete should be used.
             if ($collection){
-                $this->set_attribute('items', $collection['items']);
+                $data = array();
+                foreach($collection['items'] AS $i){
+                    $data[] = array(
+                        'item_id' => $i->item_id,
+                        'title' => $i->title,
+                    );
+                }
+                
+                $this->set_attribute('items', $data);
             } else {
                 // if no items, then hide the field
                 $this->set_attribute('hidden', true);
@@ -102,7 +110,7 @@ class App extends Element{
             'parent' => $this,
         );
 
-        $sub_form = new \AdvancedWebform($sub_form_attributes);
+        $sub_form = new \AdvancedWebform\AdvancedWebform($sub_form_attributes);
 
         $this->set_sub_form($sub_form);
 
@@ -126,10 +134,10 @@ class App extends Element{
      * @param \AdvancedWebform|mixed $settings
      */
     public function set_sub_form($settings){
-        if ($settings instanceof \AdvancedWebform){
+        if ($settings instanceof \AdvancedWebform\AdvancedWebform){
             $this->sub_form = $settings;
         } else {
-            $this->sub_form = new \AdvancedWebform($settings);
+            $this->sub_form = new \AdvancedWebform\AdvancedWebform($settings);
         }
 
         // just for extra safety
@@ -187,7 +195,7 @@ class App extends Element{
 
         $items = $this->get_attribute('items');
         foreach($items AS $item){
-                $element .= '<option value="' . $item->item_id . '">' . $item->title . '</option>';
+                $element .= '<option value="' . $item['item_id'] . '">' . $item['title'] . '</option>';
         }
 
         $element .= '</select>';

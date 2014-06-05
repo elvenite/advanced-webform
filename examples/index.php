@@ -1,8 +1,7 @@
 <?php
 
-require '../vendor/autoload.php';
+require '../../vendor/autoload.php';
 require 'config.php';
-require '../PodioAdvancedForm.php';
 
 Podio::setup(CLIENT_ID, CLIENT_SECRET);
 Podio::$debug = true;
@@ -14,7 +13,7 @@ if (!Podio::is_authenticated()) {
   Podio::authenticate('password', array('username' => USERNAME, 'password' => PASSWORD));
 }
 
-$podioform = new \AdvancedWebform(array(
+$podioform = new \AdvancedWebform\AdvancedWebform(array(
 	'app_id' => APP_ID,
 	'item_id' => ITEM_ID,
 	'lock_default' => false,
@@ -32,7 +31,7 @@ if ($_POST){
 	$podioform->save();
         
             $podioform = 'Thank you for your submission.';
-    } catch (PodioFormElementError $e){
+    } catch (\AdvancedWebform\ElementError $e){
         $error_message = 'There\'s an error with the element.';
     }
 }

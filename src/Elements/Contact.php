@@ -68,11 +68,11 @@ class Contact extends Element{
         if ($this->app_field->config['settings']['type'] != 'space_contacts'){
             // workspace members should not be exposed in the outside world
             //return false;
-            throw new ErrorException('Workspace members is not supported.');
+            throw new \ErrorException('Workspace members is not supported.');
         }
 
         // Contact Name
-        $this->add_sub_field('name', new PodioAdvancedFormContactsSubElementText(array(
+        $this->add_sub_field('name', new \AdvancedWebform\Elements\SubContactText(array(
             'name' => 'name',
             'required' => true, // name is required by Podio
             'placeholder' => 'Name',
@@ -80,7 +80,7 @@ class Contact extends Element{
         )));
 
         // Contact Title
-        $this->add_sub_field('title', new PodioAdvancedFormContactsSubElementText(array(
+        $this->add_sub_field('title', new \AdvancedWebform\Elements\SubContactText(array(
             'name' => 'title',
             'required' => false,
             'placeholder' => 'Title',
@@ -89,7 +89,7 @@ class Contact extends Element{
         )));
 
         // Contact Organization
-        $this->add_sub_field('organization', new PodioAdvancedFormContactsSubElementText(array(
+        $this->add_sub_field('organization', new \AdvancedWebform\Elements\SubContactText(array(
             'name' => 'organization',
             'required' => false, 
             'placeholder' => 'Organisation',
@@ -97,7 +97,7 @@ class Contact extends Element{
         )));
 
         // Contact Email
-        $this->add_sub_field('mail', new PodioAdvancedFormContactsSubElementEmail(array(
+        $this->add_sub_field('mail', new \AdvancedWebform\Elements\SubContactEmail(array(
             'name' => 'mail',
             'required' => false, 
             'placeholder' => 'Email',
@@ -105,7 +105,7 @@ class Contact extends Element{
         )));
 
         // Contact Phone
-        $this->add_sub_field('phone', new PodioAdvancedFormContactsSubElementText(array(
+        $this->add_sub_field('phone', new \AdvancedWebform\Elements\SubContactText(array(
             'name' => 'phone',
             'required' => false,
             'placeholder' => 'Phone',
@@ -150,9 +150,9 @@ class Contact extends Element{
             $space_id = $this->form->get_app()->space_id;
             if ($profile_values = $this->get_value()){
                 $profile_id = $profile_values[0]['value']['profile_id'];
-                PodioContact::update($profile_id, $values);
+                \PodioContact::update($profile_id, $values);
             } else {
-                $profile_id = PodioContact::create($space_id, $values);
+                $profile_id = \PodioContact::create($space_id, $values);
             }
 
             $values['profile_id'] = $profile_id;

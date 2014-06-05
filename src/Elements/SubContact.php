@@ -241,34 +241,3 @@ abstract class SubContact{
         return $decorator;
     }
 }
-
-/**
- * Text Element for Sub Contact Field
- * @package AdvancedWebform
- * @author  Carl-Fredrik Herö
- * @since   1.0.0
- */
-class SubContactText extends SubContact{
-    /**
-     * @var array 
-     */
-    protected $attributes = array(
-        'type' => 'text',
-    );
-}
-
-/**
- * Email Element for Sub Contact Field
- * @package AdvancedWebform
- * @author  Carl-Fredrik Herö
- * @since   1.0.0
- */
-class SubContactEmail extends SubContact{
-    /**
-     * @var array 
-     */
-    protected $attributes = array(
-        'type' => 'email',
-        'multi' => true,
-    );
-}

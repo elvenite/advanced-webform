@@ -64,9 +64,9 @@ abstract class Element {
 	 */
 	protected $decorators = array();
 
-	public function __construct(PodioAppField $app_field, \AdvancedWebform $form, $item_field = null, $attributes = null) {
+	public function __construct(\PodioAppField $app_field, \AdvancedWebform\AdvancedWebform $form, $item_field = null, $attributes = null) {
             if ($app_field->status != "active"){
-                    throw new ErrorException('Field is not active');
+                    throw new \ErrorException('Field is not active');
             }
 
             $this->set_app_field($app_field);
@@ -324,6 +324,8 @@ abstract class Element {
 				$attributes_string .= ' ' . $key;
 			} elseif ($attribute != ''){ // empty attributes won't be added
                             if (is_array($attribute)){
+                                var_dump($attribute);
+
                                 $attribute = json_encode($attribute);
                             }
 				$attributes_string .= ' ' . $key . '=\'' . (string) $attribute . '\'';
@@ -409,7 +411,7 @@ abstract class Element {
             $this->error_message = $message;
 
             // throw error
-            throw new PodioFormElementError($message);
+            throw new ElementError($message);
         }
 
 }

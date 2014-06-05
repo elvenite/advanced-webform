@@ -66,7 +66,7 @@ class Embed extends Element{
 			// $value['embed_id']
 			
 			if (isset($value['embed_id']) && !empty($value['embed_id'])){
-				$embed = new PodioEmbed(array(
+				$embed = new \PodioEmbed(array(
 					'embed_id' => $value['embed'],
 				));
 			} else {
@@ -99,7 +99,7 @@ class Embed extends Element{
 	}
 	
 	public function create_embed($url){
-		$embed = PodioEmbed::create(array(
+		$embed = \PodioEmbed::create(array(
 			'url' => $url,
 		));
 		
