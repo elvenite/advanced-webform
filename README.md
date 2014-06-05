@@ -1,20 +1,43 @@
-# Podio Advanced Form
+# Advanced Webform for Podio
 This is an extension library to the Podio PHP library, it generates a form based on a Podio App ID and optionally an Item ID.
 
 **Disclaimer:** This is a work in progress and the API can change at any time.
 Once we reach a stable version, semantic versioning will be used.
 
 # Installation
-Podio Advanced Form requires the [Podio PHP library](https://github.com/podio/podio-php). Default CSS uses Bootstrap 2.3.2 but you can change the decorators to fit your own CSS framework.
+## Composer Install
 
-Include the Podio PHP library as you normally would, then add:
+Install composer in your project:
 
-    require_once '/path/to/PodioAdvancedForm.php';
+    curl -s https://getcomposer.org/installer | php
+
+Create a `composer.json` file in your project root:
+
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/elvenite/advanced-webform"
+        }
+    ],
+    "require": {
+        "elvenite/advanced-webform": "master"
+    }
+
+Install via composer:
+
+    php composer.phar install
+
+Add this line to your application's `index.php` file:
+
+    <?php
+    require 'vendor/autoload.php';
+
+Advanced Webform requires the [Podio PHP library](https://github.com/podio/podio-php). Default CSS uses Bootstrap 2.3.2 but you can change the decorators to fit your own CSS framework.
 
 # Initialize the form
 To load the form elements from the desired Podio App, initialize the class:
 
-    $podioform = new PodioAdvancedForm(array(
+    $form = new \AdvancedWebform\AdvancedWebform(array(
         'app_id'		=> APP_ID, // an int value with your desired Podio App
 		// 'app'		=> $app, // Optional, If you already loaded the app from PodioApp::get you can reference it like this
         // 'item_id'	=> $item_id, // Optional, to have the form update an existing item, include the item id
@@ -31,7 +54,7 @@ To load the form elements from the desired Podio App, initialize the class:
 ## Set element attributes in description
 Each Podio app field has a description, you can use the description to easily add different attributes to single elements.
 
-Example: "[hidden] This field will be hidden in the Podio Advanced Form"
+Example: "[hidden] This field will be hidden in the Advanced Webform"
 
 More attributes in the description:
 
@@ -49,15 +72,15 @@ This makes it possible to show a subset of items instead of all like the regular
 
 # Save the form
 	if ($_POST){
-		$podioform->set_values($_POST, $_FILES);
-		if (!$podioform->save()){
-			$error_message = $podioform->get_error();
+		$form->set_values($_POST, $_FILES);
+		if (!$form->save()){
+			$error_message = $form->get_error();
 		}
 	}
 
 # Display the form
 Just echo the the form object:
-        echo $podioform;
+        echo $form;
 
 # Known issues
 * linebreaks are removed from podio, nl2br?
@@ -67,7 +90,7 @@ Just echo the the form object:
 * If app element is locked, better display of values
 
 * Right now, sub_forms are saved at set_value which is bad. It's better to do it
-at PodioAdvancedForm->save(). Save() needs to iterate on all sub form save
+at \AdvancedWebform\AdvancedWebform->save(). Save() needs to iterate on all sub form save
 methods.
 
 # TODOs?
@@ -87,7 +110,7 @@ methods.
     * how to do validation, pre-save checks etc
 
 # Author
-Podio Advanced Form is created and maintained by Carl-Fredrik Herö. Carl-Fredrik
+Advanced Webform is created and maintained by Carl-Fredrik Herö. Carl-Fredrik
 is a Web Architect at [Elvenite](http://elvenite.com/) where he help
 organizations to setup and optimize their Podio work flow. Elvenite is a Podio
 Preferred Partner located in Sweden.
