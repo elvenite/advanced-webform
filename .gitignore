@@ -1,6 +1,6 @@
+.DS_Store
 /nbproject/
 /vendor/
 /examples/config.php
 /examples/tests/
-composer.lock
 composer.phar
