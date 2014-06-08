@@ -324,8 +324,6 @@ abstract class Element {
 				$attributes_string .= ' ' . $key;
 			} elseif ($attribute != ''){ // empty attributes won't be added
                             if (is_array($attribute)){
-                                var_dump($attribute);
-
                                 $attribute = json_encode($attribute);
                             }
 				$attributes_string .= ' ' . $key . '=\'' . (string) $attribute . '\'';
