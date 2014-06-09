@@ -160,7 +160,7 @@ class Date extends Element{
         unset($attributes['value']);
 
         // startdate
-        $element = '<div class="col-xs-3"><input';
+        $element = '<div class="col-xs-2"><input';
         if ($required){
             $element .= ' required';
         }
@@ -191,7 +191,7 @@ class Date extends Element{
         $element .= '></div> ';
         $elements[] = $element;
         // enddate
-        $element = '<div class="col-xs-3"><input';
+        $element = '<div class="col-xs-2"><input';
         $attributes['placeholder'] = 'YYYY-MM-DD';
         $attributes['name'] = $this->get_attribute('name') . '[end_date]';
         $attributes['type'] = $this->get_attribute('type');
@@ -225,10 +225,12 @@ class Date extends Element{
                     $description
                 );
         }
+        
+        array_unshift($elements, '<div class="row">');
+        array_push($elements, '</div>');
 
         $element = implode(' ', $elements);
         
-        $element .= '<br>';
         return parent::render($element);
     }
 }

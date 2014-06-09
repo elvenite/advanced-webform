@@ -48,8 +48,8 @@ class Money extends Element{
 //	);
 	
 	protected $decorators = array(
-		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls-row controls">%3$s%4$s</div>',
-		'sub_field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls-row controls">%3$s%4$s</div>',
+		'field' => '<div class="form-group %6$s"><label for="%1$s">%2$s</label>%3$s%4$s</div>',
+		'sub_field' => '<div class="form-group %6$s"><label for="%1$s">%2$s</label>%3$s%4$s</div>',
  	);
 
 	public function __construct($app_field, $form, $item_field = null) {
@@ -87,29 +87,29 @@ class Money extends Element{
 		
 		$elements = array();
 		
-		$element = '<select name="' . $this->get_attribute('name') . '[currency]" class="span1">';
+		$element = '<div class="row"><div class="col-xs-1"><select name="' . $this->get_attribute('name') . '[currency]" class="form-control">';
 			foreach($this->get_attribute('currencies') AS $currency){
 				
 				$selected = (isset($attributes['value']) && $attributes['value']['currency'] == $currency) ? 'selected' : '';
 				$element .= '<option value="' . $currency . '" ' . $selected . '>' . $currency . '</option>';
 			}
 			
-		$element .= '</select>';
+		$element .= '</select></div>';
 		
 		$elements[] = $element;
 		
-		$element = '<input';
+		$element = '<div class="col-xs-11"><input';
 		
 		// make sure value is an integer
 		if (isset($attributes['value'])){
 			$attributes['value'] = number_format($attributes['value']['amount'], 2, '.', '');
 		}
 		
-		$attributes['class'] = 'span7';
+		$attributes['class'] = 'form-control';
 		
 		$element .= $this->attributes_concat($attributes);
 		
-		$element .= '>';
+		$element .= '></div></div>';
 		
 		$elements[] = $element;
 		

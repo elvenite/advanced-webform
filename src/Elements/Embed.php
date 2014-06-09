@@ -74,6 +74,7 @@ class Embed extends Element{
 					unset($values[$key]);
 					continue;
 				}
+                                // TODO does this check work?
 				$match = preg_match($pattern, $value['url']);
 				if (0 === $match){
 					$value['url'] = 'http://' . $value['url'];

@@ -47,7 +47,6 @@ class Duration extends Element{
         parent::__construct($app_field, $form, $item_field);
 
         $this->set_attribute('type', 'text');
-        $this->set_attribute('class', 'span1');
 
         $this->set_attribute('value_types', array(
                 'hours' => 'Hours',
@@ -109,13 +108,18 @@ class Duration extends Element{
         $attributes_string = '';
 
         $elements = array();
+        
+        $elements[] = '<div class="row">';
 
 
         foreach($attributes['value_types'] AS $value_type => $help_text){
             foreach($attributes AS $key => $attribute){
+                    if (is_array($attribute)){
+                        $attribute = json_encode($attribute);
+                    }
                     $attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
             }
-            $element = '<input';
+            $element = '<div class="col-xs-1"><input';
 
             // TODO how to solve required?
 //			if ($required){
@@ -137,9 +141,13 @@ class Duration extends Element{
                                                                             );
 
             $element .= $help_text_decorator;
+            
+            $element .= '</div>';
 
             $elements[] = $element;
         }
+        
+        $elements[] = '</div>';
 
         $description_decorator = '';
         if ($description){
@@ -153,7 +161,8 @@ class Duration extends Element{
                                         $this->get_attribute('placeholder'),
                                         implode('', $elements),
                                         $description_decorator,
-                                        ($this->get_attribute('required')) ? $this->get_decorator('field_required') : ''
+                                        ($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',
+                                        '' // empty css class
                                 );
 
         return $decorator;
