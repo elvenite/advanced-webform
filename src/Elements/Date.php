@@ -160,14 +160,13 @@ class Date extends Element{
         unset($attributes['value']);
 
         // startdate
-        $element = '<input';
+        $element = '<div class="col-xs-3"><input';
         if ($required){
             $element .= ' required';
         }
 
         $attributes['placeholder'] = 'YYYY-MM-DD';
         $attributes['name'] = $this->get_attribute('name') . '[start_date]';
-        $attributes['class'] = 'span3';
         $attributes['required'] = $required;
         $attributes['value'] = (isset($values['start_date'])) ? $values['start_date'] : null;
 
@@ -175,29 +174,27 @@ class Date extends Element{
 
         $element .= $attributes_string;
 
-        $element .= '> ';
+        $element .= '></div> ';
         $elements[] = $element;
 
         // starttime
-        $element = '<input';
+        $element = '<div class="col-xs-1"><input';
         $attributes['placeholder'] = 'HH:MM';
         $attributes['name'] = $this->get_attribute('name') . '[start_time]';
         $attributes['type'] = 'text';
-        $attributes['class'] = 'span1';
         $attributes['value'] = (isset($values['start_time'])) ? substr($values['start_time'],0,5) : null;
 
         $attributes_string = $this->attributes_concat($attributes);
 
         $element .= $attributes_string;
 
-        $element .= '> ';
+        $element .= '></div> ';
         $elements[] = $element;
         // enddate
-        $element = '<input';
+        $element = '<div class="col-xs-3"><input';
         $attributes['placeholder'] = 'YYYY-MM-DD';
         $attributes['name'] = $this->get_attribute('name') . '[end_date]';
         $attributes['type'] = $this->get_attribute('type');
-        $attributes['class'] = 'span3';
         $attributes['value'] = (isset($values['end_date'])) ? $values['end_date'] : null;
         $attributes['min'] = (isset($values['start_date'])) ? $values['start_date'] : null;
 
@@ -205,21 +202,20 @@ class Date extends Element{
 
         $element .= $attributes_string;
 
-        $element .= '> ';
+        $element .= '></div> ';
         $elements[] = $element;
         // endtime
-        $element = '<input';
+        $element = '<div class="col-xs-1"><input';
         $attributes['placeholder'] = 'HH:MM';
         $attributes['name'] = $this->get_attribute('name') . '[end_time]';
         $attributes['type'] = 'text';
-        $attributes['class'] = 'span1';
         $attributes['value'] = (isset($values['end_time'])) ? substr($values['end_time'],0,5) : null;
 
         $attributes_string = $this->attributes_concat($attributes);
 
         $element .= $attributes_string;
 
-        $element .= '> ';
+        $element .= '></div> ';
         $elements[] = $element;
 
         $description_decorator = '';
@@ -231,6 +227,8 @@ class Date extends Element{
         }
 
         $element = implode(' ', $elements);
+        
+        $element .= '<br>';
         return parent::render($element);
     }
 }

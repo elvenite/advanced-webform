@@ -97,7 +97,6 @@ class Category extends Element{
 
         foreach($this->get_attribute('options') AS $key => $option){
         $class = array();
-        $class[] = $this->get_attribute('type');
         $class[] = $option['color'] ? 'color-' . $option['color'] : 'color-DCEBD8';
         // check the first option ($key === 0) if field is required and radio
         $checked = (($required && 
@@ -107,7 +106,7 @@ class Category extends Element{
             in_array($option['id'], $this->get_value())) ? 'checked' : '';
 
             $element = sprintf(
-                        '<label class="%7$s inline">
+                        '<label class="%7$s %1$s-inline">
                             <input type="%1$s" value="%2$d" name="%3$s" %4$s %5$s> %6$s
                         </label>', 
                         $this->get_attribute('type'),
@@ -119,9 +118,11 @@ class Category extends Element{
                         $option['text'],
                         implode(' ',$class)
                       );
-
+    
             $elements[] = $element;
         }
+        
+        array_unshift($elements, "<br>");
 
         return parent::render(implode('', $elements));
     }

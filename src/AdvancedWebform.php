@@ -108,12 +108,12 @@ class AdvancedWebform {
      */
 
     protected $decorators = array(
-        'field' => '<div class="control-group %6$s"><label class="control-label" for="%1$s">%2$s%5$s</label><div class="controls">%3$s%4$s</div></div>',
+        'field' => '<div class="form-group %6$s"><label for="%1$s">%2$s%5$s</label>%3$s%4$s</div>',
         'field_required' => ' <span class="required">*</span>',
         'field_description' => '<small class="help-block muted">%1$s</small>',
         'parent_field' => '<fieldset class="well"><legend>%2$s</legend>%4$s%3$s</fieldset>',
-        'sub_field' => '<div class="control-group %6$s"><label class="control-label" for="%1$s">%2$s%5$s</label><div class="controls">%3$s%4$s</div></div>',
-        'sub_parent_field' => '<div class="control-group %6$s"><label class="control-label" for="%1$s">%2$s%5$s<br>%4$s</label><div class="controls">%3$s</div><hr></div>',
+        'sub_field' => '<div class="form-group %6$s"><label for="%1$s">%2$s%5$s</label>%3$s%4$s</div>',
+        'sub_parent_field' => '<div class="form-group %6$s"><div class="padding-left"><h4>%2$s%5$s%4$s</h4>%3$s</div></div>',
         'sub_sub_field' => '<label for="%1$s">%2$s%5$s</label>%3$s%4$s',
     );
 	
@@ -162,7 +162,7 @@ class AdvancedWebform {
      */
     protected $attributes = array(
         'submit_value' => 'Submit',
-        'class' => 'advancedwebform form-horizontal',
+        'class' => 'advancedwebform',
         'method' => self::METHOD_POST,
     );
 

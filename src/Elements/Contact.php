@@ -50,9 +50,9 @@ class Contact extends Element{
      */
     protected $sub_fields;
 
-//	protected $decorators = array(
-//		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls"><fieldset>%3$s%4$s</fieldsset></div></div>'
-//	);
+	protected $decorators = array(
+		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls"><fieldset>%3$s%4$s</fieldsset></div></div>'
+	);
 
     /**
      * Constructor

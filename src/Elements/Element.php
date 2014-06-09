@@ -54,7 +54,7 @@ abstract class Element {
 
 
 	protected $attributes = array(
-		'class' => 'span8',
+		'class' => 'form-control',
 	);
 	
 	/**

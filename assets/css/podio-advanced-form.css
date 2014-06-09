@@ -11,49 +11,53 @@
 	padding-top:5px;
 }
 
-.radio.inline,
-.checkbox.inline{
+.padding-left{
+    padding-left: 20px;
+}
+
+.radio-inline,
+.checkbox-inline{
 	margin-bottom: 6px;
 	padding: 6px 6px 6px 24px;
 	border-radius: 5px;
 }
 
-.radio.inline.color-EFEFEF,
-.checkbox.inline.color-EFEFEF{
+.radio-inline.color-EFEFEF,
+.checkbox-inline.color-EFEFEF{
 	background:#EFEFEF;
 }
 
-.radio.inline.color-F7D1D0,
-.checkbox.inline.color-F7D1D0{
+.radio-inline.color-F7D1D0,
+.checkbox-inline.color-F7D1D0{
 	background:#F7D1D0;
 }
 
-.radio.inline.color-DCEBD8,
-.checkbox.inline.color-DCEBD8{
+.radio-inline.color-DCEBD8,
+.checkbox-inline.color-DCEBD8{
 	background:#DCEBD8;
 }
 
-.radio.inline.color-D2E4EB,
-.checkbox.inline.color-D2E4EB{
+.radio-inline.color-D2E4EB,
+.checkbox-inline.color-D2E4EB{
 	background:#D2E4EB;
 }
 
-.radio.inline.color-F7F0C5,
-.checkbox.inline.color-F7F0C5{
+.radio-inline.color-F7F0C5,
+.checkbox-inline.color-F7F0C5{
 	background:#F7F0C5;
 }
 
-.radio.inline.color-E1D8ED,
-.checkbox.inline.color-E1D8ED{
+.radio-inline.color-E1D8ED,
+.checkbox-inline.color-E1D8ED{
 	background:#E1D8ED;
 }
 
-.radio.inline.color-FFD5C2,
-.checkbox.inline.color-FFD5C2{
+.radio-inline.color-FFD5C2,
+.checkbox-inline.color-FFD5C2{
 	background:#FFD5C2;
 }
 
-.radio.inline.color-D1F3EC,
-.checkbox.inline.color-D1F3EC{
+.radio-inline.color-D1F3EC,
+.checkbox-inline.color-D1F3EC{
 	background:#D1F3EC;
 }
