@@ -22,42 +22,16 @@
 	border-radius: 5px;
 }
 
-.radio-inline.color-EFEFEF,
-.checkbox-inline.color-EFEFEF{
-	background:#EFEFEF;
+.list-category-item{
+    display:table;
+    border-radius: 5px;
 }
 
-.radio-inline.color-F7D1D0,
-.checkbox-inline.color-F7D1D0{
-	background:#F7D1D0;
+.list-category-item label{
+    padding: 6px 6px 2px 6px;
 }
 
-.radio-inline.color-DCEBD8,
-.checkbox-inline.color-DCEBD8{
-	background:#DCEBD8;
-}
-
-.radio-inline.color-D2E4EB,
-.checkbox-inline.color-D2E4EB{
-	background:#D2E4EB;
-}
-
-.radio-inline.color-F7F0C5,
-.checkbox-inline.color-F7F0C5{
-	background:#F7F0C5;
-}
-
-.radio-inline.color-E1D8ED,
-.checkbox-inline.color-E1D8ED{
-	background:#E1D8ED;
-}
-
-.radio-inline.color-FFD5C2,
-.checkbox-inline.color-FFD5C2{
-	background:#FFD5C2;
-}
-
-.radio-inline.color-D1F3EC,
-.checkbox-inline.color-D1F3EC{
-	background:#D1F3EC;
+.radio.list-category-item label,
+.checkbox.list-category-item label{
+    display: block;
 }
