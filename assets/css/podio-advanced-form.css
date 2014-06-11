@@ -35,3 +35,8 @@
 .checkbox.list-category-item label{
     display: block;
 }
+
+span.required{
+    font-weight: bold;
+    color: #A94442;
+}

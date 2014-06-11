@@ -54,6 +54,11 @@ class Date extends Element{
 
     public function __construct($app_field, $form, $item_field = null) {
         parent::__construct($app_field, $form, $item_field);
+        
+        $this->set_attribute('settings', $app_field->config['settings']);
+        // $settings['end']
+        // $settings['time']
+        // can be either enabled, disabled or required
 
         /**
          * TODO
@@ -150,9 +155,11 @@ class Date extends Element{
         $description = $this->get_attribute('description');
         unset($attributes['description']);
         $required = $this->get_attribute('required');
+        $settings = $attributes['settings'];
         unset($attributes['required']);
         unset($attributes['placeholder']);
         unset($attributes['name']);
+        unset($attributes['settings']);
 
         $elements = array();
 
@@ -177,46 +184,64 @@ class Date extends Element{
         $element .= '></div> ';
         $elements[] = $element;
 
-        // starttime
-        $element = '<div class="col-xs-1"><input';
-        $attributes['placeholder'] = 'HH:MM';
-        $attributes['name'] = $this->get_attribute('name') . '[start_time]';
-        $attributes['type'] = 'text';
-        $attributes['value'] = (isset($values['start_time'])) ? substr($values['start_time'],0,5) : null;
+        if ($settings['time'] == "enabled" || $settings['time'] == "required"){
+            // starttime
+            $element = '<div class="col-xs-1"><input';
+            $attributes['placeholder'] = 'HH:MM';
+            $attributes['name'] = $this->get_attribute('name') . '[start_time]';
+            $attributes['type'] = 'text';
+            $attributes['value'] = (isset($values['start_time'])) ? substr($values['start_time'],0,5) : null;
+            // TODO how do we solved "required if the date is filled in"?
+            $attributes['required'] = ($required && $settings['time'] == "required") ? true : null;
 
-        $attributes_string = $this->attributes_concat($attributes);
+            $attributes_string = $this->attributes_concat($attributes);
 
-        $element .= $attributes_string;
+            $element .= $attributes_string;
 
-        $element .= '></div> ';
-        $elements[] = $element;
-        // enddate
-        $element = '<div class="col-xs-2"><input';
-        $attributes['placeholder'] = 'YYYY-MM-DD';
-        $attributes['name'] = $this->get_attribute('name') . '[end_date]';
-        $attributes['type'] = $this->get_attribute('type');
-        $attributes['value'] = (isset($values['end_date'])) ? $values['end_date'] : null;
-        $attributes['min'] = (isset($values['start_date'])) ? $values['start_date'] : null;
+            $element .= '></div> ';
+            $elements[] = $element;
+        }
+        
+        if ($settings['end'] == "enabled" || $settings['end'] == "required"){
+            // enddate
+            $element = '<div class="col-xs-2"><input';
+            $attributes['placeholder'] = 'YYYY-MM-DD';
+            $attributes['name'] = $this->get_attribute('name') . '[end_date]';
+            $attributes['type'] = $this->get_attribute('type');
+            $attributes['value'] = (isset($values['end_date'])) ? $values['end_date'] : null;
+            $attributes['min'] = (isset($values['start_date'])) ? $values['start_date'] : null;
+            // TODO how do we solved "required if start date is filled in"?
+            $attributes['required'] = ($required && $settings['end'] == "required") ? true : null;
 
-        $attributes_string = $this->attributes_concat($attributes);
+            $attributes_string = $this->attributes_concat($attributes);
 
-        $element .= $attributes_string;
+            $element .= $attributes_string;
 
-        $element .= '></div> ';
-        $elements[] = $element;
-        // endtime
-        $element = '<div class="col-xs-1"><input';
-        $attributes['placeholder'] = 'HH:MM';
-        $attributes['name'] = $this->get_attribute('name') . '[end_time]';
-        $attributes['type'] = 'text';
-        $attributes['value'] = (isset($values['end_time'])) ? substr($values['end_time'],0,5) : null;
+            $element .= '></div> ';
+            $elements[] = $element;
+        }
+        
+        if (
+            ($settings['end'] == "enabled" || 
+             $settings['end'] == "required") && 
+            ($settings['time'] == "enabled" || 
+             $settings['time'] == "required")){
+                // endtime
+                $element = '<div class="col-xs-1"><input';
+                $attributes['placeholder'] = 'HH:MM';
+                $attributes['name'] = $this->get_attribute('name') . '[end_time]';
+                $attributes['type'] = 'text';
+                $attributes['value'] = (isset($values['end_time'])) ? substr($values['end_time'],0,5) : null;
+                // TODO how do we solved "required if the date is filled in"?
+                //$attributes['required'] = ($settings['time'] == "required") ? true : null;
 
-        $attributes_string = $this->attributes_concat($attributes);
+                $attributes_string = $this->attributes_concat($attributes);
 
-        $element .= $attributes_string;
+                $element .= $attributes_string;
 
-        $element .= '></div> ';
-        $elements[] = $element;
+                $element .= '></div> ';
+                $elements[] = $element;
+        }
 
         $description_decorator = '';
         if ($description){
