@@ -45,13 +45,16 @@ class Duration extends Element{
 	
     public function __construct($app_field, $form, $item_field = null) {
         parent::__construct($app_field, $form, $item_field);
+        
+        $this->set_attribute('fields', $app_field->config['settings']['fields']);
 
         $this->set_attribute('type', 'text');
 
         $this->set_attribute('value_types', array(
-                'hours' => 'Hours',
-                'minutes' => 'Minutes',
-                'seconds' => 'Seconds',
+            'days' => 'Days',
+            'hours' => 'Hours',
+            'minutes' => 'Minutes',
+            'seconds' => 'Seconds',
         ));
 
         /**
@@ -59,25 +62,53 @@ class Duration extends Element{
          * check visibility equals true (config['visible']
          * add delta field (delta is the sort order)
          */
-
+        
         if ($item_field){
-                $this->set_attribute('value', array(
-                        'hours' => $item_field->hours(),
-                        'minutes' => $item_field->minutes(),
-                        'seconds' => $item_field->seconds(),
-                ));
+            $value = $item_field->values[0]['value'];
+            $values = array();
+            foreach($this->get_attribute('fields') AS $f){
+                switch($f){
+                    case 'days':
+                        $values['days'] = (int) floor($value/86400);
+                        $value -= $values['days']*86400;
+                        break;
+                    case 'hours':
+                        $values['hours'] = (int) floor($value/3600);
+                        $value -= $values['hours']*3600;
+                        break;
+                    case 'minutes':
+                        $values['minutes'] = (int) floor($value/60);
+                        $value -= $values['minutes']*60;
+                        break;
+                    case 'seconds':
+                        $values['seconds'] = (int) floor($value);
+                        break;
+                }
+            }
+                
+            $this->set_attribute('value', $values);
         }
     }
 
     public function set_value($values){
         $value = 0;
 
+        // days
+        if (isset($values['days'])){
+            $value += ($values['days']*86400);
+        }
         // hours
-        $value += ($values['hours']*3600);
+        if (isset($values['hours'])){
+            $value += ($values['hours']*3600);
+        }
         // minutes
-        $value += ($values['minutes']*60);
+        if (isset($values['minutes'])){
+            $value += ($values['minutes']*60);
+        }
         // seconds
-        $value += $values['seconds'];
+        if (isset($values['seconds'])){
+            $value += $values['seconds'];
+        }
 
         parent::set_value($value);
     }
@@ -112,7 +143,10 @@ class Duration extends Element{
         $elements[] = '<div class="row">';
 
 
-        foreach($attributes['value_types'] AS $value_type => $help_text){
+        foreach($attributes['fields'] AS $value_type){
+            $value_types = $this->get_attribute('value_types');
+            $help_text = $value_types[$value_type];
+            
             foreach($attributes AS $key => $attribute){
                     if (is_array($attribute)){
                         $attribute = json_encode($attribute);
@@ -135,7 +169,6 @@ class Duration extends Element{
 
             $element .= '>';
 
-            $help_text_decorator = '';
             $help_text_decorator = sprintf('<span class="help-inline">%1$s</span>&nbsp;&nbsp;&nbsp;&nbsp;',
                                                                                     $help_text
                                                                             );
