@@ -378,7 +378,7 @@ abstract class Element {
                 
                 $decorator_class = array();
                 if ($this->error){
-                    $decorator_class[] = 'error';
+                    $decorator_class[] = 'has-error';
                     $this->set_attribute('description', $this->error_message);
                 }
                 
@@ -403,13 +403,13 @@ abstract class Element {
 		return $decorator;
 	}
         
-        protected function throw_error($values, $message){
+        protected function throw_error($message){
             // set the element as error = true
             $this->error = true;
             $this->error_message = $message;
 
             // throw error
-            throw new ElementError($message);
+            throw new \AdvancedWebform\ElementError($message);
         }
 
 }

@@ -50,11 +50,11 @@ class Category extends Element{
      * @var array 
      */
     protected $decorators = array(
-        'element-inline' => '<label class="%5$s" style="%6$s">
-                                 <input type="%4$s" value="%1$d" name="%3$s" > %2$s
+        'element-inline' => '<label class="label-control %5$s" style="%6$s">
+                                 <input type="%4$s" value="%1$d" name="%3$s" %7$s> %2$s
                             </label>',
-        'element-list' => '<div class="%5$s" style="%6$s"><label>
-                                 <input type="%4$s" value="%1$d" name="%3$s" > %2$s
+        'element-list' => '<div class="%5$s" style="%6$s"><label class="label-control">
+                                 <input type="%4$s" value="%1$d" name="%3$s" %7$s> %2$s
                             </label></div>',
         'element-dropdown' => '<option value="%1$d" %7$s>%2$s</option>',
         'wrapper-inline' => '<br>%1$s',
@@ -100,7 +100,7 @@ class Category extends Element{
          */
 
         if ($item_field){
-            $this->set_attribute('value', $item_field->api_friendly_values());
+            $this->set_value($item_field->api_friendly_values());
         }
     }
 

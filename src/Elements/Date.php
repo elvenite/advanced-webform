@@ -87,7 +87,7 @@ class Date extends Element{
             $start_format .= ' H:i';
         }
 
-        $end_string = $values['end_date'];
+        $end_string = (isset($values['end_date'])) ? $values['end_date'] : $values['start_date'];
         $end_format = 'Y-m-d';
         if (isset($values['end_time'])){
             $end_string .= ' ' . $values['end_time'];
@@ -103,7 +103,7 @@ class Date extends Element{
 
         // insert values into value attribute (but not the item's value property
         $this->set_attribute('value', $values);
-        $this->throw_error($values, $this->messages[self::END_TIME_BEFORE_START_TIME]);
+        $this->throw_error($this->messages[self::END_TIME_BEFORE_START_TIME]);
     }
 	
     public function set_value($values) {

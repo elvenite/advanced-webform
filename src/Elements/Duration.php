@@ -64,53 +64,74 @@ class Duration extends Element{
          */
         
         if ($item_field){
-            $value = $item_field->values[0]['value'];
-            $values = array();
-            foreach($this->get_attribute('fields') AS $f){
-                switch($f){
-                    case 'days':
-                        $values['days'] = (int) floor($value/86400);
-                        $value -= $values['days']*86400;
-                        break;
-                    case 'hours':
-                        $values['hours'] = (int) floor($value/3600);
-                        $value -= $values['hours']*3600;
-                        break;
-                    case 'minutes':
-                        $values['minutes'] = (int) floor($value/60);
-                        $value -= $values['minutes']*60;
-                        break;
-                    case 'seconds':
-                        $values['seconds'] = (int) floor($value);
-                        break;
-                }
-            }
-                
-            $this->set_attribute('value', $values);
+            $value = (int) $item_field->values[0]['value'];
+            $this->set_value($value);
         }
     }
 
     public function set_value($values){
         $value = 0;
-
-        // days
-        if (isset($values['days'])){
-            $value += ($values['days']*86400);
-        }
-        // hours
-        if (isset($values['hours'])){
-            $value += ($values['hours']*3600);
-        }
-        // minutes
-        if (isset($values['minutes'])){
-            $value += ($values['minutes']*60);
-        }
-        // seconds
-        if (isset($values['seconds'])){
-            $value += $values['seconds'];
+        
+        if (is_array($values)){
+            // days
+            if (isset($values['days'])){
+                $value += ($values['days']*86400);
+            }
+            // hours
+            if (isset($values['hours'])){
+                $value += ($values['hours']*3600);
+            }
+            // minutes
+            if (isset($values['minutes'])){
+                $value += ($values['minutes']*60);
+            }
+            // seconds
+            if (isset($values['seconds'])){
+                $value += $values['seconds'];
+            }
+        } else {
+            $value = $values;
         }
 
         parent::set_value($value);
+    }
+    
+    /**
+     * Returns the value, if split = true, split value into active fields
+     * @param bool $split
+     */
+    public function get_value($split = false){
+        if (isset($this->item_field->values)){
+            $value = $this->item_field->values[0]['value'];
+        } else {
+            $value = $this->get_attribute('value');
+        }
+        
+        if (!$split){
+            return $value;
+        }
+        
+        foreach($this->get_attribute('fields') AS $f){
+            switch($f){
+                case 'days':
+                    $values['days'] = (int) floor($value/86400);
+                    $value -= $values['days']*86400;
+                    break;
+                case 'hours':
+                    $values['hours'] = (int) floor($value/3600);
+                    $value -= $values['hours']*3600;
+                    break;
+                case 'minutes':
+                    $values['minutes'] = (int) floor($value/60);
+                    $value -= $values['minutes']*60;
+                    break;
+                case 'seconds':
+                    $values['seconds'] = (int) floor($value);
+                    break;
+            }
+        }
+        
+        return $values;
     }
 
     public function render($element = null, $default_field_decorator = 'field'){
@@ -129,7 +150,7 @@ class Duration extends Element{
         $required = $this->get_attribute('required');
         unset($attributes['required']);
 
-        $values = $this->get_attribute('value');
+        $values = $this->get_value('value', true);
 
         unset($attributes['placeholder']);
         unset($attributes['name']);

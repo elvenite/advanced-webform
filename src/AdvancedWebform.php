@@ -108,13 +108,13 @@ class AdvancedWebform {
      */
 
     protected $decorators = array(
-        'field' => '<div class="form-group %6$s"><label for="%1$s">%2$s%5$s</label>%3$s%4$s</div>',
+        'field' => '<div class="form-group %6$s"><label class="control-label" for="%1$s">%2$s%5$s</label>%3$s%4$s</div>',
         'field_required' => ' <span class="required">*</span>',
         'field_description' => '<small class="help-block muted">%1$s</small>',
         'parent_field' => '<fieldset class="well"><legend>%2$s</legend>%4$s%3$s</fieldset>',
-        'sub_field' => '<div class="form-group %6$s"><label for="%1$s">%2$s%5$s</label>%3$s%4$s</div>',
+        'sub_field' => '<div class="form-group %6$s"><label class="control-label" for="%1$s">%2$s%5$s</label>%3$s%4$s</div>',
         'sub_parent_field' => '<div class="form-group %6$s"><div class="padding-left"><h4>%2$s%5$s%4$s</h4>%3$s</div></div>',
-        'sub_sub_field' => '<label for="%1$s">%2$s%5$s</label>%3$s%4$s',
+        'sub_sub_field' => '<label class="control-label" for="%1$s">%2$s%5$s</label>%3$s%4$s',
     );
 	
     /**
@@ -155,6 +155,24 @@ class AdvancedWebform {
      * @var string 
      */
     protected $enctype;
+ 
+    /**
+     * Use reCaptcha?
+     * @var bool 
+     */
+    protected $recaptcha = false;
+    
+    /**
+     *
+     * @var string 
+     */
+    protected $recaptcha_public_key;
+    
+    /**
+     *
+     * @var string 
+     */
+    protected $recaptcha_private_key;
 
     /**
      * Default form attributes
@@ -215,6 +233,22 @@ class AdvancedWebform {
         if (isset($attributes['is_sub_form'])){
                 $this->set_is_sub_form($attributes['is_sub_form']);
                 unset($attributes['is_sub_form']);
+        }
+        
+        // set recaptcha
+        if (isset($attributes['recaptcha']) && $attributes['recaptcha']){
+            if (!$attributes['recaptcha_public_key'] ||
+                !$attributes['recaptcha_private_key']){
+                throw new Exception('ReCaptcha public and private key must be included');
+            }
+            
+            $this->set_recaptcha($attributes['recaptcha']);
+            $this->set_recaptcha_public_key($attributes['recaptcha_public_key']);
+            $this->set_recaptcha_private_key($attributes['recaptcha_private_key']);
+            
+            unset($attributes['recaptcha']);
+            unset($attributes['recaptcha_public_key']);
+            unset($attributes['recaptcha_private_key']);
         }
 
         // add remaining attributes
@@ -329,6 +363,27 @@ class AdvancedWebform {
                 )
             ));
 
+            $this->set_element($app_field);
+        }
+        
+        // use captcha?
+        if ($this->get_recaptcha() &&
+            $this->get_recaptcha_public_key() &&
+            $this->get_recaptcha_private_key()){
+            
+            $app_field = new \PodioAppField(array(
+                'field_id' => 9999,
+                'status' => 'active',
+                'required' => true,
+                'label' => 'Recaptcha',
+                'type' => 'recaptcha',
+                'external_id' => 'recaptcha', // external_id is used as input name
+                'config' => array(
+                    'public_key' => $this->get_recaptcha_public_key(),
+                    'private_key' => $this->get_recaptcha_private_key(),
+                )
+            ));
+            
             $this->set_element($app_field);
         }
     }
@@ -570,6 +625,54 @@ class AdvancedWebform {
     public function set_enctype($enctype){
         $this->set_attribute('enctype', $enctype);
     }
+    
+    /**
+     * Use recaptcha?
+     * @return bool
+     */
+    public function get_recaptcha(){
+        return $this->recaptcha;
+    }
+    
+    /**
+     * Use recaptcha?
+     * @param bool $recaptcha
+     */
+    public function set_recaptcha($recaptcha){
+        $this->recaptcha = (bool) $recaptcha;
+    }
+    
+    /**
+     * Recaptcha public key
+     * @return string
+     */
+    public function get_recaptcha_public_key(){
+        return $this->recaptcha_public_key;
+    }
+    
+    /**
+     * Use recaptcha?
+     * @param string $recaptcha_public_key
+     */
+    public function set_recaptcha_public_key($recaptcha_public_key){
+        $this->recaptcha_public_key = (string) $recaptcha_public_key;
+    }
+    
+    /**
+     * Recaptcha private key
+     * @return string
+     */
+    public function get_recaptcha_private_key(){
+        return $this->recaptcha_private_key;
+    }
+    
+    /**
+     * Use recaptcha?
+     * @param string $recaptcha_private_key
+     */
+    public function set_recaptcha_private_key($recaptcha_private_key){
+        $this->recaptcha_private_key = (string) $recaptcha_private_key;
+    }
 
     /**
      * Get field name prefix
@@ -705,6 +808,11 @@ class AdvancedWebform {
                     $this->item->add_field($element->get_item_field());
                 }
             }
+        }
+        
+        if ($this->get_recaptcha()){
+            $recaptcha = $this->get_element('recaptcha');
+            $recaptcha->validate();
         }
     }
 	
