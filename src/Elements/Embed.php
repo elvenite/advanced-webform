@@ -59,6 +59,7 @@ class Embed extends Element{
 	
 	public function set_value($values){
 		$pattern = '/^https?:\/\//i';
+                $embeds = array();
 		
 		foreach($values AS $key => &$value){
 			// id exists and not null use that, otherwise create the embed
@@ -67,7 +68,7 @@ class Embed extends Element{
 			
 			if (isset($value['embed_id']) && !empty($value['embed_id'])){
 				$embed = new \PodioEmbed(array(
-					'embed_id' => $value['embed'],
+					'embed_id' => $value['embed_id'],
 				));
 			} else {
 				if ($value['url'] === ''){
@@ -90,12 +91,16 @@ class Embed extends Element{
 				}
 			}
 			
-			$value = $embed;
+			$embeds[] = $embed;
 
 		}
 
-		if ($values){
-			parent::set_value($values);
+		if ($embeds){
+                    $urls = array_map(function($v){
+                        return $v['url'];
+                    }, $values);
+                        $this->set_attribute('value', $urls);
+			$this->item_field->set_value($embeds);
 		}
 	}
 	
@@ -113,6 +118,13 @@ class Embed extends Element{
 		// element
 		
 		$attributes = $this->get_attributes();
+                
+                // TODO
+                // until we support multiple link inputs in the same field
+                if (isset($attributes['value']) && !empty($attributes['value'])){
+                    $attributes['value'] = $attributes['value'][0];
+                }
+
 		
 		$attributes['name'] .= '[][url]';
 		

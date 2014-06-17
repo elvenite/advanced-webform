@@ -87,7 +87,7 @@ class Date extends Element{
             $start_format .= ' H:i';
         }
 
-        $end_string = (isset($values['end_date'])) ? $values['end_date'] : $values['start_date'];
+        $end_string = (isset($values['end_date']) && $values['end_date'] != '') ? $values['end_date'] : $values['start_date'];
         $end_format = 'Y-m-d';
         if (isset($values['end_time'])){
             $end_string .= ' ' . $values['end_time'];
@@ -97,7 +97,7 @@ class Date extends Element{
         $start = \DateTime::createFromFormat($start_format, $start_string);
         $end = \DateTime::createFromFormat($end_format, $end_string);
 
-        if ($start && $end && ($end > $start)){
+        if ($start && $end && ($end >= $start)){
             return true;
         }
 

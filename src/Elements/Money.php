@@ -59,7 +59,7 @@ class Money extends Element{
 		$this->set_attribute('currencies', $this->app_field->config['settings']['allowed_currencies']);
 		
 		if ($item_field){
-			$this->set_attribute('value', array(
+			$this->set_value(array(
 				'currency' => $item_field->currency(),
 				'amount' => $item_field->amount(),
 			));
@@ -74,8 +74,13 @@ class Money extends Element{
 	}
 	
 	public function set_value($values) {
-		$this->item_field->set_amount($values['amount']);
-		$this->item_field->set_currency($values['currency']);
+            if ($values == ''){
+                $values = null;
+            } else {
+                $this->set_attribute('value', $values);
+                $this->item_field->set_amount($values['amount']);
+                $this->item_field->set_currency($values['currency']);
+            }
 	}
 
 

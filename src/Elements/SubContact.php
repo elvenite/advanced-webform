@@ -201,6 +201,12 @@ abstract class SubContact{
         } else {
 
             $attributes = $this->get_attributes();
+            $attributes['value'] = $values[$this->name];
+            // TODO
+            // until we support multiple email and phone fields, use the first
+            if ($this->get_attribute('multi')){
+                $attributes['value'] = $attributes['value'][0];
+            }
 
             $attributes_string = '';
             foreach($attributes AS $key => $attribute){

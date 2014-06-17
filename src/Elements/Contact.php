@@ -157,7 +157,8 @@ class Contact extends Element{
 
             $values['profile_id'] = $profile_id;
 
-            parent::set_value($values);
+            $this->set_attribute('value', $values);
+            $this->item_field->set_value($values);
         }
     }
 

@@ -48,7 +48,7 @@ class Duration extends Element{
         
         $this->set_attribute('fields', $app_field->config['settings']['fields']);
 
-        $this->set_attribute('type', 'text');
+        $this->set_attribute('type', 'number');
 
         $this->set_attribute('value_types', array(
             'days' => 'Days',
@@ -101,7 +101,7 @@ class Duration extends Element{
      * @param bool $split
      */
     public function get_value($split = false){
-        if (isset($this->item_field->values)){
+        if (isset($this->item_field->values[0])){
             $value = $this->item_field->values[0]['value'];
         } else {
             $value = $this->get_attribute('value');

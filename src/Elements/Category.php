@@ -160,14 +160,14 @@ class Category extends Element{
             !$this->get_attribute('multiple') &&
             $key === 0 &&
             (!$this->get_value())) ||
-            in_array($option['id'], $this->get_value())) ? 'checked' : '';
+            in_array($option['id'], (array) $this->get_value())) ? 'checked' : '';
             
             $other[] = $checked;
             
             $selected = ($this->get_attribute('display') == "dropdown" && ($required && 
                         $key === 0 &&
                         (!$this->get_value())) ||
-                        in_array($option['id'], $this->get_value()) == "dropdown") ? 'selected' : '';
+                        in_array($option['id'], (array) $this->get_value())) ? 'selected' : '';
             
             $other[] = $selected;
 

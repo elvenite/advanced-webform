@@ -8,7 +8,7 @@
 
 namespace AdvancedWebform\Elements;
 
-require'../../utils/recaptcha-php-1.11/recaptchalib.php';
+require realpath( __DIR__ . '/../../utils/recaptcha-php-1.11') . '/recaptchalib.php';
 
 /**
  * Description of Recaptcha

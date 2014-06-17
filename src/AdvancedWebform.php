@@ -65,6 +65,12 @@ class AdvancedWebform {
      * @var String|false
      */
     protected $error = false;
+    
+    /**
+     * The Element which has thrown an error
+     * @var array of \AdvancedWebform\ElementError
+     */
+    protected $error_elements = array();
 
     /**
      * An array of all AdvancedWebform\Elements\Form objects
@@ -793,8 +799,16 @@ class AdvancedWebform {
     public function set_values($data, $files = array()){
         foreach($this->elements AS $key => $element){
             if (isset($data[$key])){
-                $element->set_value($data[$key]);
-                $this->item->add_field($element->get_item_field());
+                // catch all errors to postpone them
+                // all elements must have their value set before we can
+                // return the form. Ohterwise all elements after the failed
+                // will have lost the posted values.
+                try {
+                    $element->set_value($data[$key]);
+                    $this->item->add_field($element->get_item_field());
+                } catch (\AdvancedWebform\ElementError $e){
+                    $this->error_elements[] = $e;
+                }
             } elseif (isset($files[$key])){
                 $element->set_value($files[$key]);
                 // if element is the attachment field, not an image or similar
@@ -808,6 +822,10 @@ class AdvancedWebform {
                     $this->item->add_field($element->get_item_field());
                 }
             }
+        }
+        
+        if ($this->error_elements){
+            throw $this->error_elements[0];
         }
         
         if ($this->get_recaptcha()){
