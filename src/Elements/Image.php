@@ -41,6 +41,20 @@ namespace AdvancedWebform\Elements;
  * @since   1.0.0
  */
 class Image extends File{
+    
+    public function __construct($app_field, $form, $item_field = null) {
+        parent::__construct($app_field, $form, $item_field);
+
+        $this->set_attribute('accept', 'image/jpeg,image/gif,image/png,image/bmp');
+
+        /**
+         * TODO
+         * check status is active
+         * check visibility equals true (config['visible']
+         * add delta field (delta is the sort order)
+         */
+
+    }
 	
     /**
      * @param array $values

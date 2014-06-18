@@ -149,6 +149,7 @@ class File extends Element{
 	
 	protected function render_element(){
 		$attributes = $this->get_attributes();
+                unset($attributes['MAX_FILE_SIZE']);
 		
 		// make sure PHP can understand multiple files
 		if ($this->get_attribute('multiple')){
