@@ -91,43 +91,47 @@ abstract class Element {
             $this->set_attribute('placeholder', $app_field->config['label']);
             // set required
             $this->set_attribute('required', (bool) $app_field->config['required']);
+            // set type
+            $this->set_attribute('type', $app_field->type);
 		
-		// set "special" attributes from description
-		// like if description contains [hidden], the field should be hidden
-		$description = $app_field->config['description'];
-		if ($description){
-			preg_match_all('/\[([^[]+)\]/', $description, $matches);
+            // set "special" attributes from description
+            // like if description contains [hidden], the field should be hidden
+            $description = $app_field->config['description'];
+            if ($description){
+                preg_match_all('/\[([^[]+)\]/', $description, $matches);
 
-			foreach($matches[0] AS $match){
-                                // remove attribute tags from description
-				$description = str_replace($match, '', $description);
-			}
-			
-			foreach($matches[1] AS $match){
-				if (false !== strpos($match, '=')){
-					$match_key = substr($match, 0, strpos($match,'='));
-					$match_value = substr($match, strpos($match,'=')+1);
-					
-					$this->set_attribute($match_key, $match_value);
-				} else {
-					$this->set_attribute($match, true);
-				}
-			}
+                foreach($matches[0] AS $match){
+                    // remove attribute tags from description
+                    $description = str_replace($match, '', $description);
+                }
 
-			$description = trim($description);
-			// set description
-			$this->set_attribute('description', $description);
-		}
-		
-		// set type
-		$this->set_attribute('type', $app_field->type);
-		
-		// set additional attributes
-		if ($attributes){
-			$this->add_attributes($attributes);
-		}
-		
-		return true;
+                foreach($matches[1] AS $match){
+                    if (false !== strpos($match, '=')){
+                        $match_key = substr($match, 0, strpos($match,'='));
+                        $match_value = substr($match, strpos($match,'=')+1);
+
+                        // value attribute is an exception
+                        if ($match_key == 'value'){
+                            $this->set_value($match_value);
+                        } else {
+                            $this->set_attribute($match_key, $match_value);
+                        }
+                    } else {
+                        $this->set_attribute($match, true);
+                    }
+                }
+
+                $description = trim($description);
+                // set description
+                $this->set_attribute('description', $description);
+            }
+
+            // set additional attributes
+            if ($attributes){
+                    $this->add_attributes($attributes);
+            }
+
+            return true;
 	}
 	
 	public function get_form(){
@@ -197,7 +201,7 @@ abstract class Element {
 	 * @return array
 	 */
 	public function get_value(){
-            if (isset($this->item_field->values)){
+            if (isset($this->item_field->values[0])){
                 return $this->item_field->values;
             } else {
                 return $this->get_attribute('value');
@@ -344,7 +348,7 @@ abstract class Element {
 	protected function render_locked(){
 		$element = "";
 		
-		if ($this->get_item_field()->values){
+		if ($this->get_value()){
 			$element .= '<div class="locked">';
 			$element .= $this->get_item_field()->humanized_value();
 			$element .= '</div>';
