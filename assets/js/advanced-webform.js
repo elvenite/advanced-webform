@@ -11,7 +11,7 @@ function handleFileSelect(evt) {
 	}
 	
 	// remove all old error messages
-	var errors = document.querySelectorAll('.paf-file-size-error');
+	var errors = document.querySelectorAll('.awp-file-size-error');
 	if (errors){
 		for (var i = 0, err; err = errors[i]; i++) {
 			el.parentNode.removeChild(err);
@@ -22,7 +22,7 @@ function handleFileSelect(evt) {
 	for (var i = 0, f; f = files[i]; i++) {
 		if (f.size >= max){
 			var	alert = document.createElement('p');
-			alert.setAttribute('class', 'alert alert-error paf-file-size-error');
+			alert.setAttribute('class', 'alert alert-danger awp-file-size-error');
 			alert.appendChild(document.createTextNode(escape(f.name) + ' is too large. (' + (f.size / 1048576).toFixed(2) + 'MB, max allowed is ' + (max / 1048576).toFixed(2) + 'MB.)'));
 			el.parentNode.insertBefore(alert, el.nextSibling);
 		}

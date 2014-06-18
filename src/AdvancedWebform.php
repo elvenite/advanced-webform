@@ -871,7 +871,7 @@ class AdvancedWebform {
             if ($item_id && $this->get_files())
             {
                 foreach($this->get_files() AS $file){
-                    PodioFile::attach($file->file_id, array(
+                    \PodioFile::attach($file->file_id, array(
                             'ref_type' => 'item',
                             'ref_id' => $item_id,
                     ));

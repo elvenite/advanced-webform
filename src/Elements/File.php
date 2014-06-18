@@ -34,6 +34,8 @@
 
 namespace AdvancedWebform\Elements;
 
+require realpath( __DIR__ . '/../../utils') . '/helpers.php'; 
+
 /**
  * File Element Field
  * @package AdvancedWebform
@@ -51,6 +53,8 @@ class File extends Element{
 		$this->set_attribute('type', 'file');
 		$this->set_attribute('multiple', true);
 		$this->form->set_enctype(\AdvancedWebform\AdvancedWebform::ENCTYPE_MULTIPART);
+                
+                $this->set_max_file_size();
 		
 		/**
 		 * TODO
@@ -59,6 +63,21 @@ class File extends Element{
 		 */
 	
 	}
+        
+        public function set_max_file_size(){
+            // find max file size
+            $max = 104857600; // podio allows 100MB
+            $upload_max_filesize = \return_bytes(ini_get('upload_max_filesize'));
+            $post_max_size = \return_bytes(ini_get('post_max_size'));
+
+            $max_file_size = min(
+                    $max,
+                    $upload_max_filesize,
+                    $post_max_size
+            );
+            
+            $this->set_attribute('MAX_FILE_SIZE', $max_file_size);
+        }
 	
 	public function get_files(){
 		return $this->files;
@@ -85,8 +104,8 @@ class File extends Element{
 		
 		foreach($new_values AS $value){
 			if ($value['error'] === UPLOAD_ERR_OK){
-				$file = PodioFile::upload($value['tmp_name'], $value['name']);
-				if ($file instanceof PodioFile){
+				$file = \PodioFile::upload($value['tmp_name'], $value['name']);
+				if ($file instanceof \PodioFile){
 					$files[] = $file;
 				}
 			} else {
@@ -114,13 +133,12 @@ class File extends Element{
 					case UPLOAD_ERR_EXTENSION: 
 						$message = "File upload stopped by extension"; 
 						break; 
-
 					default: 
 						$message = "Unknown upload error"; 
 						break; 
 				}
 				
-				throw new Exception($message);
+                                $this->throw_error($message);
 			}
 		}
 		
@@ -138,8 +156,10 @@ class File extends Element{
 			$name .= '[]';
 			$attributes['name'] = $name;
 		}
+                
+                $max_file_size = $this->get_attribute('MAX_FILE_SIZE');
 		
-		$element = '<input type="hidden" name="MAX_FILE_SIZE" value="104857600">';
+		$element = '<input type="hidden" name="MAX_FILE_SIZE" value="' . $max_file_size . '">';
 		
 		$element .= '<input';
 		
