@@ -326,6 +326,14 @@ class AdvancedWebform {
 
         return $this->elements[$external_id];
     }
+    
+    /**
+     * Returns the elements
+     * @return array
+     */
+    public function get_elements(){
+        return $this->elements;
+    }
 
     /**
      * Iterates through all app fields and created instances of the
