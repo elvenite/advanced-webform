@@ -167,7 +167,7 @@ abstract class SubContact{
             // force array for all value, not just email and phone
             $value = (array) $values[0]['value'][$name];
             foreach($value AS $v){
-                $element .= '<div class="locked">';
+                $element .= '<div class="form-control-static">';
                 $element .= $v;
                 $element .= '</div>';
             }

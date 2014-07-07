@@ -74,7 +74,7 @@ class Text extends Element{
 		$element = "";
 		
 		if ($this->get_item_field()->values){
-			$element .= '<div class="locked">';
+			$element .= '<div class="form-control-static">';
 			// text elements cannot output humanized_value since that method 
 			// will strip html-tags like <br>
 			$element .= $this->get_item_field()->values[0]['value'];

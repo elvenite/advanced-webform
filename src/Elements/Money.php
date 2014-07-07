@@ -43,83 +43,178 @@ namespace AdvancedWebform\Elements;
 
 class Money extends Element{
 	
-//	protected $decorators = array(
-//		'field' => '<div class="control-group"><label class="control-label" for="%1$s">%2$s</label><div class="controls controls-row">%3$s%4$s</div></div>'
-//	);
-	
-	protected $decorators = array(
-		'field' => '<div class="form-group %6$s"><label for="%1$s">%2$s</label>%3$s%4$s</div>',
-		'sub_field' => '<div class="form-group %6$s"><label for="%1$s">%2$s</label>%3$s%4$s</div>',
- 	);
+    /**
+    * (1=value, 2=label, 3=name, 4=type, 5=class, 6=style, 7=other attributes)
+    * Element inline display
+    * Element list display
+    * Element dropdown display 
+    * @var array 
+    */
+    protected $decorators = array(
+        'wrapper' => '<div class="row">%1$s</div>',
+        'wrapper-dropdown' => '<div class="col-lg-1 col-md-2 col-sm-2 col-xs-3"><select class="form-control" name="%3$s" %7$s>%1$s</select></div>',
+        'element-dropdown' => '<option value="%1$s" %7$s>%2$s</option>',
+        'element' => '<div class="col-lg-11 col-md-10 col-sm-10 col-xs-9"><input class="%5$s" type="%4$s" value="%1$d" name="%3$s" %7$s></div>',
+    );
 
-	public function __construct($app_field, $form, $item_field = null) {
-		parent::__construct($app_field, $form, $item_field);
-		
-		$this->set_attribute('type', 'number');
-		$this->set_attribute('currencies', $this->app_field->config['settings']['allowed_currencies']);
-		
-		if ($item_field){
-			$this->set_value(array(
-				'currency' => $item_field->currency(),
-				'amount' => $item_field->amount(),
-			));
-		};
-			
-		/**
-		 * TODO
-		 * check status is active
-		 * check visibility equals true (config['visible']
-		 * add delta field (delta is the sort order)
-		 */
-	}
-	
-	public function set_value($values) {
-            if ($values == ''){
-                $values = null;
-            } else {
-                $this->set_attribute('value', $values);
-                $this->item_field->set_amount($values['amount']);
-                $this->item_field->set_currency($values['currency']);
-            }
-	}
+    public function __construct($app_field, $form, $item_field = null) {
+            parent::__construct($app_field, $form, $item_field);
+
+            $this->set_attribute('type', 'number');
+            $this->set_attribute('currencies', $this->app_field->config['settings']['allowed_currencies']);
+
+            if ($item_field){
+                    $this->set_value(array(
+                            'currency' => $item_field->currency(),
+                            'amount' => $item_field->amount(),
+                    ));
+            };
+
+            /**
+             * TODO
+             * check status is active
+             * check visibility equals true (config['visible']
+             * add delta field (delta is the sort order)
+             */
+    }
+
+    public function set_value($values) {
+        if ($values == ''){
+            $values = null;
+        } else {
+            $this->set_attribute('value', $values);
+            $this->item_field->set_amount($values['amount']);
+            $this->item_field->set_currency($values['currency']);
+        }
+    }
 
 
-	public function render($element = null, $default_field_decorator = 'field'){
-		$attributes = $this->get_attributes();
-		
-		// change name attributes to include amount
-		$attributes['name'] .= '[amount]';
-		
-		$elements = array();
-		
-		$element = '<div class="row"><div class="col-xs-1"><select name="' . $this->get_attribute('name') . '[currency]" class="form-control">';
-			foreach($this->get_attribute('currencies') AS $currency){
-				
-				$selected = (isset($attributes['value']) && $attributes['value']['currency'] == $currency) ? 'selected' : '';
-				$element .= '<option value="' . $currency . '" ' . $selected . '>' . $currency . '</option>';
-			}
-			
-		$element .= '</select></div>';
-		
-		$elements[] = $element;
-		
-		$element = '<div class="col-xs-11"><input';
-		
-		// make sure value is an integer
-		if (isset($attributes['value'])){
-			$attributes['value'] = number_format($attributes['value']['amount'], 2, '.', '');
-		}
-		
-		$attributes['class'] = 'form-control';
-		
-		$element .= $this->attributes_concat($attributes);
-		
-		$element .= '></div></div>';
-		
-		$elements[] = $element;
-		
-		return parent::render(implode('', $elements));
-	}
+    public function render($element = null, $default_field_decorator = 'field'){
+        $attributes = $this->get_attributes();
+
+        $options = array();
+        $option = '';
+        
+        // currency
+        foreach($attributes['currencies'] AS $currency){
+            // (1=value, 2=label, 3=name, 4=type, 5=class, 6=style, 7=other attributes)
+            
+            // 1. value
+            $value = $currency;
+            
+            // 2. label
+            $label = $currency;
+            
+            // 3. name
+            $name = '';
+            
+            // 4. type
+            $type = '';    
+            
+            // 5. class
+            $class = array();
+            
+            // 6. style
+            $style = array();
+
+            // 7. other attributes
+            $other = array();
+            
+            $selected = (isset($attributes['value']) && $attributes['value']['currency'] == $currency) ? 'selected' : '';
+            
+            $other[] = $selected;
+        
+            $option = sprintf(
+                            $this->get_decorator('element-dropdown'), 
+                            $value,
+                            $label,
+                            $name,
+                            $type,
+                            implode(' ', $class),
+                            implode(' ', $style),
+                            implode(' ', $other)
+                          );
+
+            $options[] = $option;
+        }
+        
+        unset($attributes['currencies']);
+        
+        // wrap options in select tag
+        $value = implode('', $options);
+        $name = $attributes['name'] . '[currency]';
+        $element = sprintf($this->get_decorator('wrapper-dropdown'), 
+                $value,
+                '',
+                $name,
+                '',
+                '',
+                '',
+                '');
+        
+        $elements[] = $element;
+        
+        
+        var_dump($attributes);
+        
+        // amount
+        
+        // (1=value, 2=label, 3=name, 4=type, 5=class, 6=style, 7=other attributes)
+            
+        // 1. value
+        // make sure value is an integer
+        if (isset($attributes['value'])){
+            $value = number_format($attributes['value']['amount'], 2, '.', '');
+        }
+
+        // 2. label
+        $label = $attributes['placeholder'];
+        unset($attributes['placeholder']);
+
+        // 3. name
+       $name = $attributes['name'] . '[amount]';
+       unset($attributes['name']);
+            
+        // 4. type
+        $type = $attributes['type'];
+        unset($attributes['type']);
+        
+        // 5. class
+        $class = (array) $attributes['class'];
+        unset($attributes['class']);
+
+        // 7. other attributes
+        $other = $this->attributes_concat($attributes);
+        
+        $element = sprintf(
+                $this->get_decorator('element'), 
+                $value,
+                $label,
+                $name,
+                $type,
+                implode(' ', $class),
+                '',
+                $other
+              );
+        
+        $elements[] = $element;
+        
+        // 1. In the wrapper, value is the elements array
+        $value = implode('', $elements);
+        
+        $row = sprintf(
+                $this->get_decorator('wrapper'), 
+                $value,
+                '',
+                '',
+                '',
+                '',
+                '',
+                ''
+              );
+
+        
+
+        return parent::render($row);
+    }
 }
-
-?>

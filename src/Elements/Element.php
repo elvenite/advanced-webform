@@ -349,7 +349,7 @@ abstract class Element {
 		$element = "";
 		
 		if ($this->get_value()){
-			$element .= '<div class="locked">';
+			$element .= '<div class="form-control-static">';
 			$element .= $this->get_item_field()->humanized_value();
 			$element .= '</div>';
 		}

@@ -72,7 +72,7 @@ class Contact extends Element{
         }
 
         // Contact Name
-        $this->add_sub_field('name', new \AdvancedWebform\Elements\SubContactText(array(
+        $this->set_sub_field('name', new \AdvancedWebform\Elements\SubContactText(array(
             'name' => 'name',
             'required' => true, // name is required by Podio
             'placeholder' => 'Name',
@@ -80,7 +80,7 @@ class Contact extends Element{
         )));
 
         // Contact Title
-        $this->add_sub_field('title', new \AdvancedWebform\Elements\SubContactText(array(
+        $this->set_sub_field('title', new \AdvancedWebform\Elements\SubContactText(array(
             'name' => 'title',
             'required' => false,
             'placeholder' => 'Title',
@@ -89,7 +89,7 @@ class Contact extends Element{
         )));
 
         // Contact Organization
-        $this->add_sub_field('organization', new \AdvancedWebform\Elements\SubContactText(array(
+        $this->set_sub_field('organization', new \AdvancedWebform\Elements\SubContactText(array(
             'name' => 'organization',
             'required' => false, 
             'placeholder' => 'Organisation',
@@ -97,7 +97,7 @@ class Contact extends Element{
         )));
 
         // Contact Email
-        $this->add_sub_field('mail', new \AdvancedWebform\Elements\SubContactEmail(array(
+        $this->set_sub_field('mail', new \AdvancedWebform\Elements\SubContactEmail(array(
             'name' => 'mail',
             'required' => false, 
             'placeholder' => 'Email',
@@ -105,7 +105,7 @@ class Contact extends Element{
         )));
 
         // Contact Phone
-        $this->add_sub_field('phone', new \AdvancedWebform\Elements\SubContactText(array(
+        $this->set_sub_field('phone', new \AdvancedWebform\Elements\SubContactText(array(
             'name' => 'phone',
             'required' => false,
             'placeholder' => 'Phone',
@@ -128,8 +128,22 @@ class Contact extends Element{
      * @param string $name
      * @param SubContact $element
      */
-    public function add_sub_field($name, SubContact $element){
+    public function set_sub_field($name, SubContact $element){
         $this->sub_fields[$name] = $element;
+    }
+    
+    public function remove_sub_field($name){
+        if (isset($this->sub_fields[$name])){
+            unset($this->sub_fields[$name]);
+        }
+    }
+    
+    public function get_sub_field($name){
+        if (isset($this->sub_fields[$name])){
+            return $this->sub_fields[$name];
+        }
+        
+        return null;
     }
 
     /**
