@@ -126,18 +126,27 @@ class Contact extends Element{
     /**
      * Add sub field
      * @param string $name
-     * @param SubContact $element
+     * @param \AdvancedWebform\Elements\SubContact $element
      */
     public function set_sub_field($name, SubContact $element){
         $this->sub_fields[$name] = $element;
     }
     
+    /**
+     * Remove sub field
+     * @param string $name
+     */
     public function remove_sub_field($name){
         if (isset($this->sub_fields[$name])){
             unset($this->sub_fields[$name]);
         }
     }
     
+    /**
+     * Return a subfield
+     * @param string $name
+     * @return \AdvancedWebform\Elements\SubContact|null
+     */
     public function get_sub_field($name){
         if (isset($this->sub_fields[$name])){
             return $this->sub_fields[$name];

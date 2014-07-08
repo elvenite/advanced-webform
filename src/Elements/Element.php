@@ -358,53 +358,53 @@ abstract class Element {
 	}
 	
 	public function render($element = null, $default_field_decorator = 'field'){
-		if ($default_field_decorator == "field" && $this->form->is_sub_form()){
-			$default_field_decorator = 'sub_field';
-		} elseif ($default_field_decorator == "parent_field" && $this->form->is_sub_form()){
-			$default_field_decorator = 'sub_parent_field';
-		}
-		// hidden elements will not even show up as type="hidden", they are completely
-		// invisible but can still contain prepopulate values
-		if ($this->is_hidden()){
-			return '';
-		}
-		
-		if ($this->is_locked()){
-			if (!$this->item_field->values){
-				return '';
-			}
-			$element = $this->render_locked();
-		} else {
-			if (!$element){
-				$element = $this->render_element();
-			}
-		}
-                
-                $decorator_class = array();
-                if ($this->error){
-                    $decorator_class[] = 'has-error';
-                    $this->set_attribute('description', $this->error_message);
+            if ($default_field_decorator == "field" && $this->form->is_sub_form()){
+                $default_field_decorator = 'sub_field';
+            } elseif ($default_field_decorator == "parent_field" && $this->form->is_sub_form()){
+                $default_field_decorator = 'sub_parent_field';
+            }
+            // hidden elements will not even show up as type="hidden", they are completely
+            // invisible but can still contain prepopulate values
+            if ($this->is_hidden()){
+                return '';
+            }
+
+            if ($this->is_locked()){
+                if (!$this->item_field->values){
+                    return '';
                 }
-                
-                $description_decorator = '';
-		$description = $this->get_attribute('description');
-		if ($description){
-			$description_decorator = sprintf($this->get_decorator('field_description'),
-												$description
-											);
-		}
-		
-		$decorator = sprintf($this->get_decorator($default_field_decorator), 
-						$this->get_attribute('name'),
-						$this->get_attribute('placeholder'),
-						$element,
-						$description_decorator,
-						($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',
-                                                implode(' ', $decorator_class)
-                        
-					);
-		
-		return $decorator;
+                $element = $this->render_locked();
+            } else {
+                if (!$element){
+                    $element = $this->render_element();
+                }
+            }
+
+            $decorator_class = array();
+            if ($this->error){
+                $decorator_class[] = 'has-error';
+                $this->set_attribute('description', $this->error_message);
+            }
+
+            $description_decorator = '';
+            $description = $this->get_attribute('description');
+            if ($description){
+                $description_decorator = sprintf($this->get_decorator('field_description'),
+                                                    $description
+                                                );
+            }
+
+            $decorator = sprintf($this->get_decorator($default_field_decorator), 
+                                    $this->get_attribute('name'),
+                                    $this->get_attribute('placeholder'),
+                                    $element,
+                                    $description_decorator,
+                                    ($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',
+                                    implode(' ', $decorator_class)
+
+                                );
+
+            return $decorator;
 	}
         
         protected function throw_error($message){

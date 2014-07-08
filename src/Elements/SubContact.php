@@ -149,6 +149,14 @@ abstract class SubContact{
         $attributes['name'] = $this->get_name();
         return $attributes;
     }
+    
+    /**
+     * Determine if the element should be hidden
+     * @return bool
+     */
+    public function is_hidden(){
+        return (bool) $this->get_attribute('hidden');
+    }
 
     /**
      * Renders element in locked mode
@@ -190,6 +198,12 @@ abstract class SubContact{
         // output is:
         // decorator
         // element
+        
+        // hidden elements will not even show up as type="hidden", they are completely
+        // invisible but can still contain prepopulate values
+        if ($this->is_hidden()){
+            return '';
+        }
 
         $values = $this->get_parent()->get_attribute('value');
 
