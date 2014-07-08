@@ -154,9 +154,6 @@ class Money extends Element{
         
         $elements[] = $element;
         
-        
-        var_dump($attributes);
-        
         // amount
         
         // (1=value, 2=label, 3=name, 4=type, 5=class, 6=style, 7=other attributes)
