@@ -53,12 +53,12 @@ class Category extends Element{
         'element-inline' => '<label class="label-control %5$s" style="%6$s">
                                  <input type="%4$s" value="%1$d" name="%3$s" %7$s> %2$s
                             </label>',
-        'element-list' => '<div class="%5$s" style="%6$s"><label class="label-control">
+        'element-list' => '<label class="label-control %5$s" style="%6$s">
                                  <input type="%4$s" value="%1$d" name="%3$s" %7$s> %2$s
-                            </label></div>',
+                            </label><br>',
         'element-dropdown' => '<option value="%1$d" %7$s>%2$s</option>',
         'wrapper-inline' => '<br>%1$s',
-        'wrapper-list' => '%1$s',
+        'wrapper-list' => '<br>%1$s',
         'wrapper-dropdown' => '<br><select class="form-control" name="%3$s" %7$s>%1$s</select>',
     );
 	
@@ -138,11 +138,8 @@ class Category extends Element{
             $class = array();
             switch($this->get_attribute('display')){
                 case 'inline':
-                    $class[] = $this->get_attribute('type') . '-inline';
-                    break;
                 case 'list':
-                    $class[] = 'list-category-item';
-                    $class[] = $type;
+                    $class[] = $this->get_attribute('type') . '-inline';
                     break;
             }
             

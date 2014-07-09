@@ -388,7 +388,7 @@ abstract class Element {
 
             $description_decorator = '';
             $description = $this->get_attribute('description');
-            if ($description){
+            if ($description && !$this->is_locked()){
                 $description_decorator = sprintf($this->get_decorator('field_description'),
                                                     $description
                                                 );
