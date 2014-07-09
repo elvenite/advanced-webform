@@ -264,7 +264,7 @@ abstract class Element {
 	 * @return bool
 	 */
 	public function is_locked(){
-		$locked = $this->get_attribute('locked');
+		$locked = (bool) $this->get_attribute('locked');
 		if (!$locked){
 			if ($this->get_attribute('lock_default')
 				&& $this->get_item_field()->values){
@@ -274,7 +274,7 @@ abstract class Element {
 				$locked = true;
 			} elseif ($this->form->is_sub_form()){
 				if ($parent = $this->form->get_attribute('parent')) {
-					$locked = $parent->get_attribute('locked');
+					$locked = (bool) $parent->get_attribute('locked');
 					
 					if (!$locked){
 						if ($parent->form->get_attribute('lock_default')

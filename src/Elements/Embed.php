@@ -118,11 +118,11 @@ class Embed extends Element{
 		// element
 		
 		$attributes = $this->get_attributes();
-                
+                $attributes['value'] = $this->get_value();
                 // TODO
                 // until we support multiple link inputs in the same field
                 if (isset($attributes['value']) && !empty($attributes['value'])){
-                    $attributes['value'] = $attributes['value'][0];
+                    $attributes['value'] = $attributes['value'][0]['embed']['original_url'];
                 }
 
 		

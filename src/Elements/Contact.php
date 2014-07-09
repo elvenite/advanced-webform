@@ -173,7 +173,12 @@ class Contact extends Element{
             $space_id = $this->form->get_app()->space_id;
             if ($profile_values = $this->get_value()){
                 $profile_id = $profile_values[0]['value']['profile_id'];
-                \PodioContact::update($profile_id, $values);
+                // if the Contact is deleted
+                // Podio will return PodioNotFoundError.
+                // We'll just dismiss that.
+                try {
+                    \PodioContact::update($profile_id, $values);
+                } catch(\PodioNotFoundError $e){}
             } else {
                 $profile_id = \PodioContact::create($space_id, $values);
             }

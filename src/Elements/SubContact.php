@@ -151,6 +151,19 @@ abstract class SubContact{
     }
     
     /**
+     * Get value from item
+     * @return array
+     */
+    public function get_value(){
+        if (isset($this->item_field->values[0])){
+            return $this->item_field->values;
+        } else {
+            return $this->get_attribute('value');
+        }
+
+    }
+    
+    /**
      * Determine if the element should be hidden
      * @return bool
      */
@@ -205,7 +218,7 @@ abstract class SubContact{
             return '';
         }
 
-        $values = $this->get_parent()->get_attribute('value');
+        $values = $this->get_parent()->get_value();
 
         if ($this->get_parent()->is_locked()){
             if (!$values){
@@ -215,7 +228,7 @@ abstract class SubContact{
         } else {
 
             $attributes = $this->get_attributes();
-            $attributes['value'] = $values[$this->name];
+            $attributes['value'] = $values[0]['value'][$this->name];
             // TODO
             // until we support multiple email and phone fields, use the first
             if ($this->get_attribute('multi')){
