@@ -58,7 +58,7 @@ class Embed extends Element{
     }
 
     public function save(){
-        $values = $this->get_value();
+        $values = $this->get_attribute('value');
         $pattern = '/^https?:\/\//i';
         $embeds = array();
 
@@ -67,36 +67,29 @@ class Embed extends Element{
             // id must be in the a embed key like this
             // $value['embed_id']
 
-            if (isset($value['embed_id']) && !empty($value['embed_id'])){
-                $embed = new \PodioEmbed(array(
-                    'embed_id' => $value['embed_id'],
-                ));
-            } else {
-                if ($value['url'] === ''){
-                    unset($values[$key]);
-                    continue;
-                }
-                // TODO does this check work?
-                $match = preg_match($pattern, $value['url']);
-                if (0 === $match){
-                    $value['url'] = 'http://' . $value['url'];
-                } elseif (false === $match){
-                    unset($values[$key]);
-                    continue;
-                }
-
-                try {
-                    $embed = \PodioEmbed::create(array(
-                        'url' => $value['url'],
-                    ));
-                } catch (Exception $e){
-                    continue;
-                }
+            if (!isset($value['url']) || (isset($value['url']) && $value['url'] === '')){
+                unset($values[$key]);
+                continue;
+            }
+            // TODO does this check work?
+            $match = preg_match($pattern, $value['url']);
+            if (0 === $match){
+                $value['url'] = 'http://' . $value['url'];
+            } elseif (false === $match){
+                unset($values[$key]);
+                continue;
             }
 
-            $embeds[] = $embed;
-
+            try {
+                $embed = \PodioEmbed::create(array(
+                    'url' => $value['url'],
+                ));
+            } catch (Exception $e){
+                continue;
+            }
         }
+
+            $embeds[] = $embed;
 
         if ($embeds){
             $urls = array_map(function($v){

@@ -174,7 +174,7 @@ class Duration extends Element{
                     }
                     $attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
             }
-            $element = '<div class="col-xs-1"><input';
+            $element = '<div class="col-xs-3 col-md-2 col-lg-1"><input';
 
             // TODO how to solve required?
 //			if ($required){

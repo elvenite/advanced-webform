@@ -59,9 +59,8 @@ class Image extends File{
     /**
      * @param array $values
      */
-    public function set_value($values){
-        parent::set_value($values);
-
+    public function save(){
+        parent::save();
         $this->item_field->set_value($this->get_files());
     }
 }

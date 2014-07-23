@@ -164,9 +164,11 @@ class Contact extends Element{
         if (is_numeric($values)){
             $profile_id = (int) $values;
 
-            parent::set_value(array(
+            $this->item_field->set_values(array(
                 'profile_id' => $profile_id,
             ));
+        } else {
+            parent::set_value($values);
         }
     }
     
@@ -174,7 +176,7 @@ class Contact extends Element{
         $values = $this->get_attribute('value');
         if (isset($values['name']) && !empty($values['name'])){
             $space_id = $this->form->get_app()->space_id;
-            if ($profile_values = $this->get_value()){
+            if ($profile_values = $this->item_field->values){
                 $profile_id = $profile_values[0]['value']['profile_id'];
                 // if the Contact is deleted
                 // Podio will return PodioNotFoundError.
