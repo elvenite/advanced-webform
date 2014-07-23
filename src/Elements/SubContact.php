@@ -226,7 +226,6 @@ abstract class SubContact{
             }
             $element = $this->render_locked();
         } else {
-
             $attributes = $this->get_attributes();
             $attributes['value'] = $values[0]['value'][$this->name];
             // TODO

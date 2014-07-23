@@ -76,7 +76,8 @@ abstract class Element {
             if(!$item_field){
                     $class_name = 'Podio' . ucfirst($app_field->type) . 'ItemField';
                     $this->set_item_field(new $class_name(array(
-                            'field_id' => $app_field->field_id
+                            'field_id' => $app_field->field_id,
+                            'external_id' => $app_field->external_id,
                     )));
             } else {
                     $this->set_item_field($item_field);
@@ -218,14 +219,13 @@ abstract class Element {
 	}
 	
 	public function set_value($values){
-            if ($values == ''){
-                $values = null;
-            } else {
-                $this->set_attribute('value', $values);
-            }
-                
-            $this->item_field->set_value($values);
+            $this->set_attribute('value', $values);
 	}
+        
+        public function save(){
+           $values = $this->get_attribute('value');
+           $this->item_field->set_value($values);
+        }
 	
 	/**
 	 * Get name attribute of element (to use in <input name="{$name}">")

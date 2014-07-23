@@ -157,15 +157,23 @@ class App extends Element{
                 $this->sub_form->get_item()->item_id = $sub_form_item_id;
         } elseif (is_array($values)) {
                 $this->sub_form->set_values($values);
+                // attribute new indicates that the save function must create a
+                // new item
+                $this->set_attribute('new', true);
                 // TODO, change this since we don't always want to save before
                 // the actual save method has been called.
-                $sub_form_item_id = $this->sub_form->save();
+                
         } else {
                 // no value, the select element is empty
                 return;
         }
-
-        $this->item_field->set_value($sub_form_item_id);
+    }
+    
+    public function save(){
+        if ($this->get_attribute('new')){
+            $sub_form_item_id = $this->sub_form->save();
+            $this->item_field->set_value($sub_form_item_id);
+        }
     }
 
     /**

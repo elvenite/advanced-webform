@@ -43,99 +43,92 @@ namespace AdvancedWebform\Elements;
 
 class Embed extends Element{
 	
-	public function __construct($app_field, $form, $item_field = null) {
-		parent::__construct($app_field, $form, $item_field);
-		
-		$this->set_attribute('type', 'url');
-		
-		/**
-		 * TODO
-		 * check status is active
-		 * check visibility equals true (config['visible']
-		 * add delta field (delta is the sort order)
-		 */
-	
-	}
-	
-	public function set_value($values){
-		$pattern = '/^https?:\/\//i';
-                $embeds = array();
-		
-		foreach($values AS $key => &$value){
-			// id exists and not null use that, otherwise create the embed
-			// id must be in the a embed key like this
-			// $value['embed_id']
-			
-			if (isset($value['embed_id']) && !empty($value['embed_id'])){
-				$embed = new \PodioEmbed(array(
-					'embed_id' => $value['embed_id'],
-				));
-			} else {
-				if ($value['url'] === ''){
-					unset($values[$key]);
-					continue;
-				}
-                                // TODO does this check work?
-				$match = preg_match($pattern, $value['url']);
-				if (0 === $match){
-					$value['url'] = 'http://' . $value['url'];
-				} elseif (false === $match){
-					unset($values[$key]);
-					continue;
-				}
-				
-				try {
-					$embed = $this->create_embed($value['url']);
-				} catch (Exception $e){
-					continue;
-				}
-			}
-			
-			$embeds[] = $embed;
+    public function __construct($app_field, $form, $item_field = null) {
+        parent::__construct($app_field, $form, $item_field);
 
-		}
+        $this->set_attribute('type', 'url');
 
-		if ($embeds){
-                    $urls = array_map(function($v){
-                        return $v['url'];
-                    }, $values);
-                        $this->set_attribute('value', $urls);
-			$this->item_field->set_value($embeds);
-		}
-	}
-	
-	public function create_embed($url){
-		$embed = \PodioEmbed::create(array(
-			'url' => $url,
-		));
-		
-		return $embed;
-	}
-	
-	public function render($element = null, $default_field_decorator = 'field'){
-		// output is:
-		// decorator
-		// element
-		
-		$attributes = $this->get_attributes();
-                $attributes['value'] = $this->get_value();
-                // TODO
-                // until we support multiple link inputs in the same field
-                if (isset($attributes['value']) && !empty($attributes['value'])){
-                    $attributes['value'] = $attributes['value'][0]['embed']['original_url'];
+        /**
+         * TODO
+         * check status is active
+         * check visibility equals true (config['visible']
+         * add delta field (delta is the sort order)
+         */
+
+    }
+
+    public function save(){
+        $values = $this->get_value();
+        $pattern = '/^https?:\/\//i';
+        $embeds = array();
+
+        foreach($values AS $key => &$value){
+            // id exists and not null use that, otherwise create the embed
+            // id must be in the a embed key like this
+            // $value['embed_id']
+
+            if (isset($value['embed_id']) && !empty($value['embed_id'])){
+                $embed = new \PodioEmbed(array(
+                    'embed_id' => $value['embed_id'],
+                ));
+            } else {
+                if ($value['url'] === ''){
+                    unset($values[$key]);
+                    continue;
+                }
+                // TODO does this check work?
+                $match = preg_match($pattern, $value['url']);
+                if (0 === $match){
+                    $value['url'] = 'http://' . $value['url'];
+                } elseif (false === $match){
+                    unset($values[$key]);
+                    continue;
                 }
 
-		
-		$attributes['name'] .= '[][url]';
-		
-		$element = '<input';
-		
-		$element .= $this->attributes_concat($attributes);
-		
-		$element .= '>';
-		
-		return parent::render($element);
-	}
-}
+                try {
+                    $embed = \PodioEmbed::create(array(
+                        'url' => $value['url'],
+                    ));
+                } catch (Exception $e){
+                    continue;
+                }
+            }
 
-?>
+            $embeds[] = $embed;
+
+        }
+
+        if ($embeds){
+            $urls = array_map(function($v){
+                return $v['url'];
+            }, $values);
+                $this->set_attribute('value', $urls);
+                $this->item_field->set_value($embeds);
+        }
+    }
+
+    public function render($element = null, $default_field_decorator = 'field'){
+        // output is:
+        // decorator
+        // element
+
+        $attributes = $this->get_attributes();
+        $attributes['value'] = $this->get_value();
+        // TODO
+        // until we support multiple link inputs in the same field
+        if (isset($attributes['value']) && !empty($attributes['value'])){
+            $attributes['value'] = $attributes['value'][0]['embed']['original_url'];
+        }
+
+
+        $attributes['name'] .= '[][url]';
+
+        $element = '<input';
+
+        $element .= $this->attributes_concat($attributes);
+
+        $element .= '>';
+
+        return parent::render($element);
+    }
+}

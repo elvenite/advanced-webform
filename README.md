@@ -94,16 +94,16 @@ at \AdvancedWebform\AdvancedWebform->save(). Save() needs to iterate on all sub 
 methods.
 
 # TODOs?
+* CSRF protection
 * should an app reference field be an autocomplete or extended?
 * Show progress-slider value to the right
 * date and timepicker?
 * Add calc field
-* Add support for new settings in categori field
 * Better documentation inside code, PHPDoc style
 * Describe item fields vs app fields
 * Explain field name prefix
 * Unit tests
-* Support for Podio PHP Library upcoming version 4
+* Support for Podio PHP Library version 4
 * Handle file upload errors
 * Documentation section gh-pages for more extended documentation
     * decorators

@@ -84,68 +84,79 @@ class File extends Element{
 	}
 	
 	public function set_value($values) {
-		// make sure each file is in its own array
-		// not an array for all names, tmp_names etc.
-		$new_values = array();
-		$files = array();
+            // make sure each file is in its own array
+            // not an array for all names, tmp_names etc.
+            $new_values = array();
+   
 
-		if (is_array($values['name'])){
-			$count = count($values['name']);
-			for($i=0;$i<$count;$i++){
-				$new_values[] = array(
-					'name' => $values['name'][$i],
-					'tmp_name' => $values['tmp_name'][$i],
-					'error' => $values['error'][$i],
-				);
-			}
-		} else {
-			$new_values = $values;
-		}
-		
-		foreach($new_values AS $value){
-			if ($value['error'] === UPLOAD_ERR_OK){
-				$file = \PodioFile::upload($value['tmp_name'], $value['name']);
-				if ($file instanceof \PodioFile){
-					$files[] = $file;
-				}
-			} else {
-				switch ($value['error']) { 
-					case UPLOAD_ERR_INI_SIZE: 
-						$message = "The uploaded file exceeds the upload_max_filesize directive in php.ini"; 
-						break; 
-					case UPLOAD_ERR_FORM_SIZE: 
-						$message = "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"; 
-						break; 
-					case UPLOAD_ERR_PARTIAL: 
-						$message = "The uploaded file was only partially uploaded"; 
-						break; 
-					case UPLOAD_ERR_NO_FILE: 
-						//$message = "No file was uploaded"; 
-						// if no file, continue to next
-						continue 2;
-						break; 
-					case UPLOAD_ERR_NO_TMP_DIR: 
-						$message = "Missing a temporary folder"; 
-						break; 
-					case UPLOAD_ERR_CANT_WRITE: 
-						$message = "Failed to write file to disk"; 
-						break; 
-					case UPLOAD_ERR_EXTENSION: 
-						$message = "File upload stopped by extension"; 
-						break; 
-					default: 
-						$message = "Unknown upload error"; 
-						break; 
-				}
-				
-                                $this->throw_error($message);
-			}
-		}
-		
-		if ($files){
-			$this->files = $files;
-		}
+            if (is_array($values['name'])){
+                $count = count($values['name']);
+                for($i=0;$i<$count;$i++){
+                    $new_values[] = array(
+                        'name' => $values['name'][$i],
+                        'tmp_name' => $values['tmp_name'][$i],
+                        'error' => $values['error'][$i],
+                    );
+                }
+            } else {
+                $new_values = $values;
+            }
+            
+            if ($new_values){
+                $this->set_attribute('value', $new_values);
+            }
 	}
+        
+        public function save(){
+            $new_values = $this->get_attribute('value');
+            $files = array();
+            
+            if (is_array($new_values)){
+                foreach($new_values AS $value){
+                    if ($value['error'] === UPLOAD_ERR_OK){
+                        $file = \PodioFile::upload($value['tmp_name'], $value['name']);
+                        if ($file instanceof \PodioFile){
+                            $files[] = $file;
+                        }
+                    } else {
+                        switch ($value['error']) { 
+                            case UPLOAD_ERR_INI_SIZE: 
+                                $message = "The uploaded file exceeds the upload_max_filesize directive in php.ini"; 
+                                break; 
+                            case UPLOAD_ERR_FORM_SIZE: 
+                                $message = "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"; 
+                                break; 
+                            case UPLOAD_ERR_PARTIAL: 
+                                $message = "The uploaded file was only partially uploaded"; 
+                                break; 
+                            case UPLOAD_ERR_NO_FILE: 
+                                //$message = "No file was uploaded"; 
+                                // if no file, continue to next
+                                continue 2;
+                                break; 
+                            case UPLOAD_ERR_NO_TMP_DIR: 
+                                $message = "Missing a temporary folder"; 
+                                break; 
+                            case UPLOAD_ERR_CANT_WRITE: 
+                                $message = "Failed to write file to disk"; 
+                                break; 
+                            case UPLOAD_ERR_EXTENSION: 
+                                $message = "File upload stopped by extension"; 
+                                break; 
+                            default: 
+                                $message = "Unknown upload error"; 
+                                break; 
+                        }
+
+                        $this->throw_error($message);
+                    }
+                }
+            }
+
+            if ($files){
+                $this->files = $files;
+            }
+        }
 	
 	protected function render_element(){
 		$attributes = $this->get_attributes();

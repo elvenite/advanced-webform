@@ -33,6 +33,12 @@ if ($_POST){
             $podioform = 'Thank you for your submission.';
     } catch (\AdvancedWebform\ElementError $e){
         $error_message = 'There\'s an error with the element.';
+    } catch (\AdvancedWebform\CSRFError $e){
+        $error_message = 'There\'s an error with the submission. Please revisit the form and submit again.';
+        $podioform = '';
+    } catch(\Exception $e){
+        $error_message = 'There\'s an unknown error with the submission. Please revisit the form and submit again.';
+        $podioform = '';
     }
 }
 

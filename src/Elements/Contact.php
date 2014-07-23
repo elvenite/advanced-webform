@@ -168,7 +168,10 @@ class Contact extends Element{
                 'profile_id' => $profile_id,
             ));
         }
-
+    }
+    
+    public function save() {
+        $values = $this->get_attribute('value');
         if (isset($values['name']) && !empty($values['name'])){
             $space_id = $this->form->get_app()->space_id;
             if ($profile_values = $this->get_value()){

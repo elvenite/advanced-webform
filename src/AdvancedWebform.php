@@ -96,6 +96,8 @@ class AdvancedWebform {
     // prefix should not contain the last [] surrounding "name"
     // as the element will take care of that.
     protected $field_name_prefix = '';
+    
+    protected static $fake_field_id_index = PHP_INT_MAX;
 
 
     /**
@@ -340,6 +342,16 @@ class AdvancedWebform {
      * corresponding element
      */
     protected function set_elements(){
+        if (!$this->is_sub_form()){
+            $csrf_field = new \PodioAppField(array(
+                    'status' => 'active',
+                    'type' => 'csrf',
+                    'external_id' => 'advanced-webform-csrf', // external_id is used as input name
+                ));
+
+            $this->set_element($csrf_field);
+        }
+        
         // get all fields
         foreach($this->get_app()->fields AS $app_field){
             if ($app_field->status != "active"){
@@ -366,7 +378,7 @@ class AdvancedWebform {
         // Then add a file input element
         if ($this->get_app()->config['allow_attachments']){
             $app_field = new \PodioAppField(array(
-                'field_id' => PHP_INT_MAX,
+                'field_id' => $this->get_fake_field_id_index(),
                 'status' => 'active',
                 'type' => 'file',
                 'external_id' => 'files', // external_id is used as input name
@@ -386,7 +398,6 @@ class AdvancedWebform {
             $this->get_recaptcha_private_key()){
             
             $app_field = new \PodioAppField(array(
-                'field_id' => 9999,
                 'status' => 'active',
                 'required' => true,
                 'label' => 'Recaptcha',
@@ -526,6 +537,10 @@ class AdvancedWebform {
         }
 
         return null;
+    }
+    
+    protected function get_fake_field_id_index(){
+        return self::$fake_field_id_index--;
     }
 
     /**
@@ -805,6 +820,21 @@ class AdvancedWebform {
      * @param array $files
      */
     public function set_values($data, $files = array()){
+        
+        if (!$this->is_sub_form()){
+            // validate CSRF
+            $csrf = $this->get_element('advanced-webform-csrf');
+            $token = isset($data['advanced-webform-csrf']) ? $data['advanced-webform-csrf'] : '';
+            $csrf->validate($token);
+            unset($data['advanced-webform-csrf']);
+
+            // validate Recaptcha
+            if ($this->get_recaptcha()){
+                $recaptcha = $this->get_element('recaptcha');
+                $recaptcha->validate();
+            }
+        }
+        
         foreach($this->elements AS $key => $element){
             if (isset($data[$key])){
                 // catch all errors to postpone them
@@ -813,32 +843,16 @@ class AdvancedWebform {
                 // will have lost the posted values.
                 try {
                     $element->set_value($data[$key]);
-                    $this->item->add_field($element->get_item_field());
                 } catch (\AdvancedWebform\ElementError $e){
                     $this->error_elements[] = $e;
                 }
             } elseif (isset($files[$key])){
                 $element->set_value($files[$key]);
-                // if element is the attachment field, not an image or similar
-                // add to the item files attribute
-                // otherwise add item field to item
-                if ($key == 'files'){
-                    if (!empty($files['files']['name'][0])){
-                        $this->add_files($element->get_files());
-                    }
-                } else {
-                    $this->item->add_field($element->get_item_field());
-                }
             }
         }
         
         if ($this->error_elements){
             throw $this->error_elements[0];
-        }
-        
-        if ($this->get_recaptcha()){
-            $recaptcha = $this->get_element('recaptcha');
-            $recaptcha->validate();
         }
     }
 	
@@ -863,7 +877,27 @@ class AdvancedWebform {
      * @return false|int $item_id 
      */
     public function save(){
+        // remove csrf token, it should not be submitted to Podio.
+        if (!$this->is_sub_form()){
+            $this->item->remove_field('advanced-webform-csrf');
+            unset($this->elements['advanced-webform-csrf']);
+        }
         try {
+            foreach($this->elements AS $key => $element){
+                $element->save();
+                
+                // if element is the attachment field, not an image or similar
+                // add to the item files attribute
+                // otherwise add item field to item
+                if ($key == 'files'){
+                    if (!empty($files['files']['name'][0])){
+                        $this->add_files($element->get_files());
+                    }
+                } else {
+                    $this->item->add_field($element->get_item_field());
+                }
+            }
+                
             $result = $this->item->save();
             // if item is update, result will be an array with revision id
             // + title. We always want this function to result the item_id
