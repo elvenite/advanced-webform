@@ -89,12 +89,7 @@ Just echo the the form object:
 
 * If app element is locked, better display of values
 
-* Right now, sub_forms are saved at set_value which is bad. It's better to do it
-at \AdvancedWebform\AdvancedWebform->save(). Save() needs to iterate on all sub form save
-methods.
-
 # TODOs?
-* CSRF protection
 * should an app reference field be an autocomplete or extended?
 * Show progress-slider value to the right
 * date and timepicker?
@@ -104,7 +99,6 @@ methods.
 * Explain field name prefix
 * Unit tests
 * Support for Podio PHP Library version 4
-* Handle file upload errors
 * Documentation section gh-pages for more extended documentation
     * decorators
     * how to do validation, pre-save checks etc
