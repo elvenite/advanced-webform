@@ -40,3 +40,42 @@ span.required{
     font-weight: bold;
     color: #A94442;
 }
+
+/**
+ * customization for date field
+ */
+
+.input-group-input{
+    position: relative;
+    font-size: 0;
+    white-space: nowrap;
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+.input-group-input:first-child > input {
+    margin-right: -1px;
+
+    border-top-left-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+
+}
+
+.input-group-input:last-child > input {
+    margin-left: -1px;
+
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+@media (max-width: 767px){
+    .date-divider{
+        margin-bottom: 10px;
+    }
+}

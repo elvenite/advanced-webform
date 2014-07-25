@@ -167,7 +167,11 @@ class Date extends Element{
         unset($attributes['value']);
 
         // startdate
-        $element = '<div class="col-xs-2"><input';
+        $element = '<div class="col-sm-5 col-md-4 col-lg-3">';
+        if ($settings['time'] == "enabled" || $settings['time'] == "required"){
+            $element .= '<div class="input-group">';
+        }
+        $element .= '<input';
         if ($required){
             $element .= ' required';
         }
@@ -180,31 +184,44 @@ class Date extends Element{
         $attributes_string = $this->attributes_concat($attributes);
 
         $element .= $attributes_string;
+        
+        $element .= '>';
 
-        $element .= '></div> ';
         $elements[] = $element;
 
         if ($settings['time'] == "enabled" || $settings['time'] == "required"){
             // starttime
-            $element = '<div class="col-xs-1"><input';
+            $element = '<span class="input-group-input"><input';
             $attributes['placeholder'] = 'HH:MM';
             $attributes['name'] = $this->get_attribute('name') . '[start_time]';
             $attributes['type'] = 'text';
             $attributes['value'] = (isset($values['start_time'])) ? substr($values['start_time'],0,5) : null;
             // TODO how do we solved "required if the date is filled in"?
             $attributes['required'] = ($required && $settings['time'] == "required") ? true : null;
+            $attributes['style'] = 'width:75px;';
 
             $attributes_string = $this->attributes_concat($attributes);
 
             $element .= $attributes_string;
 
-            $element .= '></div> ';
+            $element .= '></span></div> '; // end .input-group-input & .input-group
             $elements[] = $element;
+            
         }
         
+        $elements[] = '</div> ';
+        
+        
         if ($settings['end'] == "enabled" || $settings['end'] == "required"){
+            $element = '<div class="col-sm-1">
+                    <p class="form-control-static date-divider" style="text-align:center;padding-top:7px;">–</p>
+                </div>';
             // enddate
-            $element = '<div class="col-xs-2"><input';
+            $element .= '<div class="col-sm-5 col-md-4 col-lg-3">';
+            if ($settings['time'] == "enabled" || $settings['time'] == "required"){
+                $element .= '<div class="input-group">';
+            }
+            $element .= '<input';
             $attributes['placeholder'] = 'YYYY-MM-DD';
             $attributes['name'] = $this->get_attribute('name') . '[end_date]';
             $attributes['type'] = $this->get_attribute('type');
@@ -212,12 +229,13 @@ class Date extends Element{
             $attributes['min'] = (isset($values['start_date'])) ? $values['start_date'] : null;
             // TODO how do we solved "required if start date is filled in"?
             $attributes['required'] = ($required && $settings['end'] == "required") ? true : null;
+            unset($attributes['style']);
 
             $attributes_string = $this->attributes_concat($attributes);
 
             $element .= $attributes_string;
 
-            $element .= '></div> ';
+            $element .= '>';
             $elements[] = $element;
         }
         
@@ -227,21 +245,24 @@ class Date extends Element{
             ($settings['time'] == "enabled" || 
              $settings['time'] == "required")){
                 // endtime
-                $element = '<div class="col-xs-1"><input';
+                $element = '<span class="input-group-input"><input';
                 $attributes['placeholder'] = 'HH:MM';
                 $attributes['name'] = $this->get_attribute('name') . '[end_time]';
                 $attributes['type'] = 'text';
                 $attributes['value'] = (isset($values['end_time'])) ? substr($values['end_time'],0,5) : null;
                 // TODO how do we solved "required if the date is filled in"?
                 //$attributes['required'] = ($settings['time'] == "required") ? true : null;
+                $attributes['style'] = 'width:75px;';
 
                 $attributes_string = $this->attributes_concat($attributes);
 
                 $element .= $attributes_string;
 
-                $element .= '></div> ';
+                $element .= '></span></div> '; // end .input-group-input & .input-group
                 $elements[] = $element;
         }
+        
+        $elements[] = '</div>';
 
         $description_decorator = '';
         if ($description){
