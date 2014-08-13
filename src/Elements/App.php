@@ -84,21 +84,30 @@ class App extends Element{
         // TODO shouldn't this only work if there is NO sub item?
         // either you show a sub form or a select box with items from the view
         $view = $this->get_attribute('view');
+        $expand = $this->get_attribute('expand');
+        $collection = false;
         if ($view){
             $collection = \PodioItem::filter_by_view($sub_app_id, $view);
-            // TODO read total, filtered do decide if autocomplete should be used.
-            if ($collection){
-                $data = array();
-                foreach($collection['items'] AS $i){
-                    $data[] = array(
-                        'item_id' => $i->item_id,
-                        'title' => $i->title,
-                    );
-                }
-                
-                $this->set_attribute('items', $data);
-            } else {
-                // if no items, then hide the field
+        }
+        
+        if (!$view && !$expand){
+            $collection = \PodioItem::filter($sub_app_id);
+        }
+        
+        // TODO read total, filtered do decide if autocomplete should be used.
+        if ($collection){
+            $data = array();
+            foreach($collection['items'] AS $i){
+                $data[] = array(
+                    'item_id' => $i->item_id,
+                    'title' => $i->title,
+                );
+            }
+
+            $this->set_attribute('items', $data);
+        } else {
+            // if no items, then hide the field
+            if (!$expand){
                 $this->set_attribute('hidden', true);
             }
         }

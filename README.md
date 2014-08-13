@@ -66,9 +66,10 @@ More attributes in the description:
 * practically any html attribute, autofocus etc
 
 ### Special attributes
-The App reference field will expand to display all elements of the first referenced app making it possible to insert values in several apps using a single form.
-If you rather what to select an existing item, set a view attribute to the description. Example: [view=12345] where 12345 is the id of a saved view for the referenced app.
+The Relation field will show the first 30 items of the first referenced app as a default.
+To filter the items, set a view attribute to the description. Example: [view=12345] where 12345 is the id of a saved view for the referenced app.
 This makes it possible to show a subset of items instead of all like the regular Podio web form does.
+To expand the first referenced app, add [expand] in the field description. Now the visitor can create a new item which will be referenced in the parent submittion.
 
 # Save the form
 	if ($_POST){
