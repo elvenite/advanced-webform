@@ -227,10 +227,10 @@ abstract class SubContact{
             $element = $this->render_locked();
         } else {
             $attributes = $this->get_attributes();
-            $attributes['value'] = $values[0]['value'][$this->name];
+            $attributes['value'] = (isset($values[0]['value'][$this->name])) ? $values[0]['value'][$this->name] : '';
             // TODO
             // until we support multiple email and phone fields, use the first
-            if ($this->get_attribute('multi')){
+            if ($this->get_attribute('multi') && is_array($attributes['value'])){
                 $attributes['value'] = $attributes['value'][0];
             }
 
