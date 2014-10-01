@@ -78,8 +78,9 @@ class Money extends Element{
              */
     }
 
-    public function set_value($values) {
-        if ($values == ''){
+    public function save() {
+        $values = $this->get_attribute('value');
+        if (empty($values)){
             $values = null;
         } else {
             $this->set_attribute('value', $values);

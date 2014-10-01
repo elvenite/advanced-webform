@@ -84,12 +84,14 @@ class Embed extends Element{
                 $embed = \PodioEmbed::create(array(
                     'url' => $value['url'],
                 ));
+                
+                $embeds[] = $embed;
             } catch (Exception $e){
                 continue;
             }
         }
 
-            $embeds[] = $embed;
+            
 
         if ($embeds){
             $urls = array_map(function($v){

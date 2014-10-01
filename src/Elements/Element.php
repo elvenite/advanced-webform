@@ -224,6 +224,12 @@ abstract class Element {
         
         public function save(){
            $values = $this->get_attribute('value');
+           
+           if (empty($values)){
+               $values = null;
+               $this->set_attribute('value', $values);
+           }
+           
            $this->item_field->set_value($values);
         }
 	

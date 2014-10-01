@@ -345,7 +345,7 @@ class AdvancedWebform {
         if (!$this->is_sub_form()){
             $csrf_field = new \PodioAppField(array(
                     'status' => 'active',
-                    'type' => 'csrf',
+                    'type' => 'CSRF',
                     'external_id' => 'advanced-webform-csrf', // external_id is used as input name
                 ));
 
