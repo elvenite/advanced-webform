@@ -122,7 +122,7 @@ abstract class Element {
                     }
                 }
 
-                $description = trim($description);
+                $description = nl2br(trim($description));
                 // set description
                 $this->set_attribute('description', $description);
             }
