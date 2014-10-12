@@ -82,14 +82,14 @@ class Date extends Element{
     protected function validate($values){
         $start_string = $values['start_date'];
         $start_format = 'Y-m-d';
-        if (isset($values['start_time'])){
+        if (isset($values['start_time']) && $values['start_time'] != ''){
             $start_string .= ' ' . $values['start_time'];
             $start_format .= ' H:i';
         }
 
         $end_string = (isset($values['end_date']) && $values['end_date'] != '') ? $values['end_date'] : $values['start_date'];
         $end_format = 'Y-m-d';
-        if (isset($values['end_time'])){
+        if (isset($values['end_time']) && $values['end_time'] != ''){
             $end_string .= ' ' . $values['end_time'];
             $end_format .= ' H:i';
         }
