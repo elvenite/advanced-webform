@@ -57,6 +57,16 @@ class CSRF extends Element{
          */
     }
     
+    /**
+     * Override Element save method
+     * There is no item_field to insert the value into
+     * @param type $value
+     * @return type
+     */
+    public function save($value){
+        return;
+    }
+    
     public function validate($value){
         $csrf = new \AdvancedWebform\CSRF();
         $csrf->is_valid($value);

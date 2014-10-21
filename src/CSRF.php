@@ -79,7 +79,8 @@ class CSRF {
         $hash = $_SESSION[ $key ];
 
         // Free up session token for one-time CSRF token usage.
-        $_SESSION[ $key ] = null;
+        // One time CRSF does not add much security for us.
+        //$_SESSION[ $key ] = null;
 
         // Origin checks
         if(  sha1( $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] ) != substr( base64_decode( $hash ), 10, 40 ) )
