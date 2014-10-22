@@ -114,103 +114,105 @@ class Category extends Element{
 
         $elements = array();
         $element = '';
-        
-        
+        $value = '';
 
         $required = $this->get_attribute('required');
 
-        foreach($this->get_attribute('options') AS $key => $option){
-        // (1=value, 2=label, 3=name, 4=type, 5=class, 6=style, 7=other attributes)
-            
-            // 1. value
-            $value = $option['id'];
-            
-            // 2. label
-            $label = $option['text'];
-            
-            // 3. name
-            $name = $this->get_attribute('name');
-            
-            // 4. type
-            $type = $this->get_attribute('type');
-            
-            // 5. class
-            $class = array();
-            switch($this->get_attribute('display')){
-                case 'inline':
-                case 'list':
-                    $class[] = $this->get_attribute('type') . '-inline';
-                    break;
+        $options = $this->get_attribute('options');
+        if (count($options)){
+            foreach($options AS $key => $option){
+            // (1=value, 2=label, 3=name, 4=type, 5=class, 6=style, 7=other attributes)
+
+                // 1. value
+                $value = $option['id'];
+
+                // 2. label
+                $label = $option['text'];
+
+                // 3. name
+                $name = $this->get_attribute('name');
+
+                // 4. type
+                $type = $this->get_attribute('type');
+
+                // 5. class
+                $class = array();
+                switch($this->get_attribute('display')){
+                    case 'inline':
+                    case 'list':
+                        $class[] = $this->get_attribute('type') . '-inline';
+                        break;
+                }
+
+                // 6. style
+                $style = array();
+                $color = $option['color'] ? $option['color'] : 'DCEBD8';
+                $style[] = 'background: #' . $color . ';';
+
+                // 7. other attributes
+                $other = array();
+                $other[] = ($required) ? 'required' : '';
+
+                // check the first option ($key === 0) if field is required and radio
+                $checked = (($required && 
+                !$this->get_attribute('multiple') &&
+                $key === 0 &&
+                (!$this->get_value())) ||
+                in_array($option['id'], (array) $this->get_value())) ? 'checked' : '';
+
+                $other[] = $checked;
+
+                $selected = ($this->get_attribute('display') == "dropdown" && ($required && 
+                            $key === 0 &&
+                            (!$this->get_value())) ||
+                            in_array($option['id'], (array) $this->get_value())) ? 'selected' : '';
+
+                $other[] = $selected;
+
+                $element = sprintf(
+                            $this->get_decorator('element-' . $this->get_attribute('display')), 
+                            $value,
+                            $label,
+                            $name,
+                            $type,
+                            implode(' ', $class),
+                            implode(' ', $style),
+                            implode(' ', $other)
+                          );
+
+                $elements[] = $element;
             }
             
-            // 6. style
-            $style = array();
-            $color = $option['color'] ? $option['color'] : 'DCEBD8';
-            $style[] = 'background: #' . $color . ';';
+            // if display = dropdown and not required, ad an empty option
+            if ($this->get_attribute('display') == "dropdown" && !$required){
+                $element = sprintf(
+                            $this->get_decorator('element-' . $this->get_attribute('display')), 
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            ''
+                          );
 
-            // 7. other attributes
-            $other = array();
-            $other[] = ($required) ? 'required' : '';
-            
-            // check the first option ($key === 0) if field is required and radio
-            $checked = (($required && 
-            !$this->get_attribute('multiple') &&
-            $key === 0 &&
-            (!$this->get_value())) ||
-            in_array($option['id'], (array) $this->get_value())) ? 'checked' : '';
-            
-            $other[] = $checked;
-            
-            $selected = ($this->get_attribute('display') == "dropdown" && ($required && 
-                        $key === 0 &&
-                        (!$this->get_value())) ||
-                        in_array($option['id'], (array) $this->get_value())) ? 'selected' : '';
-            
-            $other[] = $selected;
+                array_unshift($elements, $element);
+            }
 
-            $element = sprintf(
-                        $this->get_decorator('element-' . $this->get_attribute('display')), 
-                        $value,
-                        $label,
-                        $name,
-                        $type,
-                        implode(' ', $class),
-                        implode(' ', $style),
-                        implode(' ', $other)
-                      );
-    
-            $elements[] = $element;
+            // 1. In the wrapper, value is the elements array
+            $value = implode('', $elements);
         }
-        
-        // if display = dropdown and not required, ad an empty option
-        if ($this->get_attribute('display') == "dropdown" && !$required){
-            $element = sprintf(
-                        $this->get_decorator('element-' . $this->get_attribute('display')), 
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        ''
-                      );
-            
-            array_unshift($elements, $element);
-        }
-        
-        // 1. In the wrapper, value is the elements array
-        $value = implode('', $elements);
         
         $row = sprintf(
-                        $this->get_decorator('wrapper-' . $this->get_attribute('display')), 
-                        $value,
-                        $label,
-                        $name,
-                        $type,
-                        implode(' ', $class),
-                        implode(' ', $style),
-                        implode(' ', $other)
-                      );
+            $this->get_decorator('wrapper-' . $this->get_attribute('display')), 
+            $value,
+            $label,
+            $name,
+            $type,
+            implode(' ', $class),
+            implode(' ', $style),
+            implode(' ', $other)
+        );
 
         return parent::render($row);
     }
