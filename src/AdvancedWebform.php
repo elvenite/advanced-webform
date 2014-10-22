@@ -88,7 +88,7 @@ class AdvancedWebform {
      * Array of PodioFiles
      * @var array 
      */
-    protected $files;
+    protected $files = array();
 
     // used to prefix form fields in sub forms
     // the field "name" in an app reference field "company"
@@ -556,10 +556,6 @@ class AdvancedWebform {
      * @param type $file
      */
     public function add_file(\PodioFile $file){
-        if (!is_array($this->files)){
-                $this->files = array();
-        }
-
         $this->files[] = $file;
     }
 
@@ -568,10 +564,8 @@ class AdvancedWebform {
      * @param array[PodioFile] $files
      */
     public function add_files(array $files){
-        if (is_array($files)){
-            foreach($files AS $file){
-                    $this->add_file($file);
-            }
+        foreach($files AS $file){
+                $this->add_file($file);
         }
     }
 
@@ -890,9 +884,7 @@ class AdvancedWebform {
                 // add to the item files attribute
                 // otherwise add item field to item
                 if ($key == 'files'){
-                    if (!empty($files['files']['name'][0])){
-                        $this->add_files($element->get_files());
-                    }
+                    $this->add_files($element->get_files());
                 } else {
                     $this->item->add_field($element->get_item_field());
                 }
@@ -912,6 +904,8 @@ class AdvancedWebform {
             // TODO refactor this block to a new method attach files
             if ($item_id && $this->get_files())
             {
+                
+                
                 foreach($this->get_files() AS $file){
                     \PodioFile::attach($file->file_id, array(
                             'ref_type' => 'item',
