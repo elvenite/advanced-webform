@@ -63,7 +63,7 @@ class CSRF extends Element{
      * @param type $value
      * @return type
      */
-    public function save($value){
+    public function save(){
         return;
     }
     
