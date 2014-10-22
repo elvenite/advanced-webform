@@ -115,6 +115,9 @@ class Category extends Element{
         $elements = array();
         $element = '';
         $value = '';
+        $class = array();
+        $style = array();
+        $other = array();
 
         $required = $this->get_attribute('required');
 
