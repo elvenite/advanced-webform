@@ -112,13 +112,18 @@ class Category extends Element{
                 return parent::render($element);
         }
 
+        // reset all variables
         $elements = array();
         $element = '';
         $value = '';
         $class = array();
         $style = array();
         $other = array();
-
+        $label = '';
+        // 3. name
+        $name = $this->get_attribute('name');
+        // 3. type
+        $type = $this->get_attribute('type');
         $required = $this->get_attribute('required');
 
         $options = $this->get_attribute('options');
@@ -131,12 +136,8 @@ class Category extends Element{
 
                 // 2. label
                 $label = $option['text'];
-
-                // 3. name
-                $name = $this->get_attribute('name');
-
-                // 4. type
-                $type = $this->get_attribute('type');
+                
+                // 3. and 4. are set during reset
 
                 // 5. class
                 $class = array();

@@ -163,7 +163,8 @@ class App extends Element{
         // if $values if an int, it means it's an item_id
         if (is_numeric($values)){
                 $sub_form_item_id = (int) $values;
-                $this->sub_form->get_item()->item_id = $sub_form_item_id;
+                //$this->sub_form->get_item()->item_id = $sub_form_item_id;
+                parent::set_value($sub_form_item_id);
         } elseif (is_array($values)) {
                 $this->sub_form->set_values($values);
                 // attribute new indicates that the save function must create a
@@ -181,8 +182,10 @@ class App extends Element{
     public function save(){
         if ($this->get_attribute('new')){
             $sub_form_item_id = $this->sub_form->save();
-            $this->item_field->set_value($sub_form_item_id);
+            parent::set_value($sub_form_item_id);
         }
+        
+        parent::save();
     }
 
     /**
