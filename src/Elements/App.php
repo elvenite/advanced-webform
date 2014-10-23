@@ -84,16 +84,23 @@ class App extends Element{
         // TODO shouldn't this only work if there is NO sub item?
         // either you show a sub form or a select box with items from the view
         $view = $this->get_attribute('view');
-        $expand = $this->get_attribute('expand');
+        
+        // only expand form if not subform
+        $expand = ($this->get_form()->is_sub_form()) ? false : $this->get_attribute('expand');
         $collection = false;
+        
+        // 1. view has highest weight
         if ($view){
             $collection = \PodioItem::filter_by_view($sub_app_id, $view);
         }
         
+        // 2. if no view,  collection and expand
+        // fetch latest default view items
         if (!$view && !$expand){
             $collection = \PodioItem::filter($sub_app_id);
         }
         
+        // 3. get data from collection
         // TODO read total, filtered do decide if autocomplete should be used.
         if ($collection){
             $data = array();
@@ -105,23 +112,29 @@ class App extends Element{
             }
 
             $this->set_attribute('items', $data);
-        } else {
-            // if no items, then hide the field
-            if (!$expand){
-                $this->set_attribute('hidden', true);
-            }
         }
+        
+        // if no items, then hide the field
+        if (!$this->get_attribute('items') && !$expand){
+            $this->set_attribute('hidden', true);
+        }
+        
+        if (!$this->get_attribute('items') && $expand){
+            $sub_form_attributes = array(
+                'app_id' => $sub_app_id,
+                'is_sub_form' => true,
+                'item_id' => $sub_item_id,
+                'parent' => $this,
+            );
 
-        $sub_form_attributes = array(
-            'app_id' => $sub_app_id,
-            'is_sub_form' => true,
-            'item_id' => $sub_item_id,
-            'parent' => $this,
-        );
+            $sub_form = new \AdvancedWebform\AdvancedWebform($sub_form_attributes);
 
-        $sub_form = new \AdvancedWebform\AdvancedWebform($sub_form_attributes);
-
-        $this->set_sub_form($sub_form);
+            $this->set_sub_form($sub_form);   
+        }
+        
+//        echo '<pre>';
+//        var_dump($this->get_attributes());
+//        die();
 
         /**
          * TODO
@@ -230,8 +243,12 @@ class App extends Element{
      * @return string
      */
     public function render($element = null, $default_field_decorator = 'field'){
+        if ($this->is_hidden()){
+            return '';
+        }
+        
         if ($this->get_attribute('items')){
-                return parent::render($this->render_select());
+            return parent::render($this->render_select());
         }
 
         return parent::render($this->sub_form->render(), 'parent_field');
