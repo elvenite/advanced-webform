@@ -115,11 +115,11 @@ class App extends Element{
         }
         
         // if no items, then hide the field
-        if (!$collection && !$expand){
+        if (!$this->get_attribute('items') && !$expand){
             $this->set_attribute('hidden', true);
         }
         
-        if (!$collection && $expand){
+        if (!$this->get_attribute('items') && $expand){
             $sub_form_attributes = array(
                 'app_id' => $sub_app_id,
                 'is_sub_form' => true,
@@ -131,6 +131,10 @@ class App extends Element{
 
             $this->set_sub_form($sub_form);   
         }
+        
+//        echo '<pre>';
+//        var_dump($this->get_attributes());
+//        die();
 
         /**
          * TODO
@@ -239,8 +243,12 @@ class App extends Element{
      * @return string
      */
     public function render($element = null, $default_field_decorator = 'field'){
+        if ($this->is_hidden()){
+            return '';
+        }
+        
         if ($this->get_attribute('items')){
-                return parent::render($this->render_select());
+            return parent::render($this->render_select());
         }
 
         return parent::render($this->sub_form->render(), 'parent_field');
