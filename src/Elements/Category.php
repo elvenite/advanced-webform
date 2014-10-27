@@ -98,6 +98,24 @@ class Category extends Element{
          * check visibility equals true (config['visible']
          * add delta field (delta is the sort order)
          */
+        
+        // default values
+        // ex [value=Foo, Bar]
+        $options = $this->get_attribute('options');
+        
+        $values = array_map(function($v) use ($options){
+            $v = trim($v);
+            foreach($options AS $option){
+                if ($option['status'] == 'active' && $option['text'] == $v){
+                    return $option['id'];
+                }
+            }
+            
+        }, explode(',', $this->get_attribute('value')));
+        
+        if ($values){
+            $this->set_value($values);
+        }
 
         if ($item_field){
             $this->set_value($item_field->api_friendly_values());
