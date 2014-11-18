@@ -889,6 +889,15 @@ class AdvancedWebform {
                     $this->item->add_field($element->get_item_field());
                 }
             }
+            
+            // remove calc fields from item as they cannot be submitted in the 
+            // same way.
+            $calcs = $this->item->fields_of_type('calculation');
+            if ($calcs){
+                foreach($calcs AS $calc){
+                    $this->item->remove_field($calc->field_id);
+                }
+            }
                 
             $result = $this->item->save();
             // if item is update, result will be an array with revision id
