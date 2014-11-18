@@ -225,10 +225,23 @@ class App extends Element{
                 $label = $app_field->config['label'];
                 $element .= '<option value="">' . $label . '</option>';
         }
+                
+        $values = $this->get_value();
+        $item_ids = array();
+        if ($values){
+            foreach($values AS $value){
+                $item_ids[] = $value['value']['item_id'];
+            }
+        }
 
         $items = $this->get_attribute('items');
         foreach($items AS $item){
-                $element .= '<option value="' . $item['item_id'] . '">' . $item['title'] . '</option>';
+            if (in_array($item['item_id'], $item_ids)){
+                $selected = 'selected ';
+            } else {
+                $selected = '';
+            }
+            $element .= '<option ' . $selected . 'value="' . $item['item_id'] . '">' . $item['title'] . '</option>';
         }
 
         $element .= '</select>';
