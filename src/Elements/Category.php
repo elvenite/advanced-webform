@@ -73,8 +73,6 @@ class Category extends Element{
 
         // set multiple
         $this->set_attribute('multiple', $app_field->config['settings']['multiple']);
-
-        $this->set_attribute('options', $app_field->config['settings']['options']);
         
         $this->set_attribute('display', $app_field->config['settings']['display']);
 
@@ -93,15 +91,21 @@ class Category extends Element{
 
         $this->set_attribute('name', $name);
         $this->set_attribute('type', $type);
-        /**
-         * TODO
-         * check visibility equals true (config['visible']
-         * add delta field (delta is the sort order)
-         */
+
+        $options = $app_field->config['settings']['options'];
+
+        // remove options with status other than active
+        if ($options){
+            $options = array_filter($options, function($v){
+                return ($v['status'] == 'active');
+            });
+        }
+
+        $this->set_attribute('options', $options);
         
         // default values
         // ex [value=Foo, Bar]
-        $options = $this->get_attribute('options');
+
         
         $values = array_map(function($v) use ($options){
             $v = trim($v);

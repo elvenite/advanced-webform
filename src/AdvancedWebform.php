@@ -876,6 +876,13 @@ class AdvancedWebform {
             $this->item->remove_field('advanced-webform-csrf');
             unset($this->elements['advanced-webform-csrf']);
         }
+
+        // remove recaptcha
+        if (isset($this->elements['recaptcha'])){
+            $this->item->remove_field('recaptcha');
+            unset($this->elements['recaptcha']);
+        }
+
         try {
             foreach($this->elements AS $key => $element){
                 $element->save();
