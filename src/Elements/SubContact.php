@@ -266,7 +266,7 @@ abstract class SubContact{
                             $this->get_attribute('placeholder'),
                             $element,
                             '', // description is always empty in these fields
-                            ($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',
+                            ($this->get_attribute('required')) ? $this->parent->get_decorator('field_required') : '',
                             implode(' ', $decorator_class)
                     );
 
