@@ -89,7 +89,7 @@ abstract class Element {
             // set name
             $this->set_name($app_field->external_id);
             // set placeholder
-            $this->set_attribute('placeholder', $app_field->config['label']);
+            $this->set_attribute('label', $app_field->config['label']);
             // set required
             $this->set_attribute('required', (bool) $app_field->config['required']);
             // set type
@@ -325,6 +325,7 @@ abstract class Element {
 		$attributes_string = '';
 		$ignore = array(
 			'description',
+			'label',
 		);
 		
 		foreach($attributes AS $key => $attribute){
@@ -376,7 +377,7 @@ abstract class Element {
             }
 
             if ($this->is_locked()){
-                if (!$this->item_field->values){
+                if (!$this->get_value()){
                     return '';
                 }
                 $element = $this->render_locked();
@@ -402,7 +403,7 @@ abstract class Element {
 
             $decorator = sprintf($this->get_decorator($default_field_decorator), 
                                     $this->get_attribute('name'),
-                                    $this->get_attribute('placeholder'),
+                                    $this->get_attribute('label'),
                                     $element,
                                     $description_decorator,
                                     ($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',
