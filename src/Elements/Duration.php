@@ -152,7 +152,7 @@ class Duration extends Element{
 
         $values = $this->get_value('value', true);
 
-        unset($attributes['placeholder']);
+        unset($attributes['label']);
         unset($attributes['name']);
         unset($attributes['value']);
 
@@ -212,7 +212,7 @@ class Duration extends Element{
 
         $decorator = sprintf($this->get_decorator('field'), 
                                         $this->get_attribute('name'),
-                                        $this->get_attribute('placeholder'),
+                                        $this->get_attribute('label'),
                                         implode('', $elements),
                                         $description_decorator,
                                         ($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',

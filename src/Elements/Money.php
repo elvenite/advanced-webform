@@ -166,8 +166,8 @@ class Money extends Element{
         }
 
         // 2. label
-        $label = $attributes['placeholder'];
-        unset($attributes['placeholder']);
+        $label = $attributes['label'];
+        unset($attributes['label']);
 
         // 3. name
        $name = $attributes['name'] . '[amount]';
