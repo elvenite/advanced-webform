@@ -1,6 +1,8 @@
 # Advanced Webform for Podio
 This is an extension library to the Podio PHP library, it generates a form based on a Podio App ID and optionally an Item ID.
 
+The dev bransch is considered unstable.
+
 This is a prerelease with Podio PHP Library 3.0.0 as a dependency. Advanced Webform for Podio version 1.0 will use Podio PHP Library 4.0.* as a dependency.
 
 # Installation
