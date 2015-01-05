@@ -104,6 +104,7 @@ class App extends Element{
         // TODO read total, filtered do decide if autocomplete should be used.
         if ($collection){
             $data = array();
+            // TODO this will fail with PodioPHP 4
             foreach($collection['items'] AS $i){
                 $data[] = array(
                     'item_id' => $i->item_id,

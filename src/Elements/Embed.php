@@ -58,7 +58,7 @@ class Embed extends Element{
     }
 
     public function save(){
-        $values = $this->get_attribute('value');
+        $values = (array) $this->get_attribute('value');
         $pattern = '/^https?:\/\//i';
         $embeds = array();
 
@@ -113,6 +113,8 @@ class Embed extends Element{
         // until we support multiple link inputs in the same field
         if (isset($attributes['value']) && !empty($attributes['value'])){
             $attributes['value'] = $attributes['value'][0]['embed']['original_url'];
+        } else {
+            $attributes['value'] = 'http://';
         }
 
 

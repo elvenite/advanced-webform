@@ -45,7 +45,7 @@ class AdvancedWebform {
     /**
      * @const string
      */
-    const VERSION = '0.9';
+    const VERSION = '1.0.0';
 
     /**
      *
@@ -247,7 +247,7 @@ class AdvancedWebform {
         if (isset($attributes['recaptcha']) && $attributes['recaptcha']){
             if (!$attributes['recaptcha_public_key'] ||
                 !$attributes['recaptcha_private_key']){
-                throw new Exception('ReCaptcha public and private key must be included');
+                throw new \Exception('ReCaptcha public and private key must be included');
             }
             
             $this->set_recaptcha($attributes['recaptcha']);
