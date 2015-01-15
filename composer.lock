@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dfdaab7a9375273f19aa2a714f7d7556",
+    "hash": "c23bbfb23ed14bb3592136dd2861ac77",
     "packages": [
         {
             "name": "podio/podio-php",
-            "version": "v3.0.0",
+            "version": "v4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/podio/podio-php.git",
-                "reference": "f9415472dc90e89e8e7d122e0813f39012bdd5eb"
+                "reference": "a67a6b9406febfbb324888ec8ddde2891e027299"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/podio/podio-php/zipball/f9415472dc90e89e8e7d122e0813f39012bdd5eb",
-                "reference": "f9415472dc90e89e8e7d122e0813f39012bdd5eb",
+                "url": "https://api.github.com/repos/podio/podio-php/zipball/a67a6b9406febfbb324888ec8ddde2891e027299",
+                "reference": "a67a6b9406febfbb324888ec8ddde2891e027299",
                 "shasum": ""
             },
             "require": {
@@ -46,23 +46,17 @@
             "keywords": [
                 "podio"
             ],
-            "time": "2014-01-31 04:06:26"
+            "time": "2014-09-29 18:40:52"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [
-
-    ],
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.3.0"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }

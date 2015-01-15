@@ -362,7 +362,7 @@ class AdvancedWebform {
             $key = $app_field->external_id;
             $item_field = null;
             if ($this->item->fields){
-                    $item_field = $this->item->field($key);
+                    $item_field = $this->item->fields[$key];
             }
 
             // TODO is this really working?
@@ -873,13 +873,13 @@ class AdvancedWebform {
     public function save(){
         // remove csrf token, it should not be submitted to Podio.
         if (!$this->is_sub_form()){
-            $this->item->remove_field('advanced-webform-csrf');
+            $this->item->fields->remove('advanced-webform-csrf');
             unset($this->elements['advanced-webform-csrf']);
         }
 
         // remove recaptcha
         if (isset($this->elements['recaptcha'])){
-            $this->item->remove_field('recaptcha');
+            $this->item->fields->remove('recaptcha');
             unset($this->elements['recaptcha']);
         }
 
@@ -893,39 +893,23 @@ class AdvancedWebform {
                 if ($key == 'files'){
                     $this->add_files($element->get_files());
                 } else {
-                    $this->item->add_field($element->get_item_field());
-                }
-            }
-            
-            // remove calc fields from item as they cannot be submitted in the 
-            // same way.
-            $calcs = $this->item->fields_of_type('calculation');
-            if ($calcs){
-                foreach($calcs AS $calc){
-                    $this->item->remove_field($calc->field_id);
+                    // add field to item fields
+                    $this->item->fields[] = $element->get_item_field();
                 }
             }
                 
-            $result = $this->item->save();
-            // if item is update, result will be an array with revision id
-            // + title. We always want this function to result the item_id
-            if (is_array($result)){
-                $item_id = $this->item->item_id;
-            } else {
-                $item_id = $result;
-            }
+            $this->item->save();
 
             // if $this->item->files is a none empty array
             // attach it to the newly created item.
             // TODO refactor this block to a new method attach files
-            if ($item_id && $this->get_files())
+            if ($this->item->item_id && $this->get_files())
             {
-                
                 
                 foreach($this->get_files() AS $file){
                     \PodioFile::attach($file->file_id, array(
                             'ref_type' => 'item',
-                            'ref_id' => $item_id,
+                            'ref_id' => $this->item->item_id,
                     ));
                 }
 
@@ -941,6 +925,6 @@ class AdvancedWebform {
                 return false;
         }
 
-        return $item_id;
+        return $this->item->item_id;
     }
 }

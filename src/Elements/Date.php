@@ -69,7 +69,7 @@ class Date extends Element{
          */
 
         if ($item_field){
-            $this->set_attribute('value', $item_field->values[0]);
+            $this->set_attribute('value', $item_field->values);
         }
 
     }
@@ -80,24 +80,36 @@ class Date extends Element{
      * @param array $values
      */
     protected function validate($values){
+//        var_dump($values);
+//        die();
         $start_string = $values['start_date'];
         $start_format = 'Y-m-d';
         if (isset($values['start_time']) && $values['start_time'] != ''){
             $start_string .= ' ' . $values['start_time'];
             $start_format .= ' H:i';
         }
+        
+        $start = \DateTime::createFromFormat($start_format, $start_string);
+        $end = false;
+        
+        if (isset($values['end_date']) && $values['end_date'] != ''){
+            $end_string = (isset($values['end_date']) && $values['end_date'] != '') ? $values['end_date'] : $values['start_date'];
+            $end_format = 'Y-m-d';
+            if (isset($values['end_time']) && $values['end_time'] != ''){
+                $end_string .= ' ' . $values['end_time'];
+                $end_format .= ' H:i';
+            } else{
+                $end_string .= ' ' . $values['start_time'];
+                $end_format .= ' H:i';
+            }
 
-        $end_string = (isset($values['end_date']) && $values['end_date'] != '') ? $values['end_date'] : $values['start_date'];
-        $end_format = 'Y-m-d';
-        if (isset($values['end_time']) && $values['end_time'] != ''){
-            $end_string .= ' ' . $values['end_time'];
-            $end_format .= ' H:i';
+
+            $end = \DateTime::createFromFormat($end_format, $end_string);
         }
 
-        $start = \DateTime::createFromFormat($start_format, $start_string);
-        $end = \DateTime::createFromFormat($end_format, $end_string);
-
         if ($start && $end && ($end >= $start)){
+            return true;
+        } elseif ($start) {
             return true;
         }
 
@@ -117,9 +129,7 @@ class Date extends Element{
 
         if (!empty($values['start_date']) && !empty($values['start_time'])){
             $value['start'] .= ' ' . $values['start_time'] . ':00';
-            $values['start_time'] = $values['start_time'] . ':00';
-        } else {
-            $value['start'] .= ' 00:00:00';
+            //$values['start_time'] = $values['start_time'] . ':00';
         }
 
         if (!empty($values['start_date']) && !empty($values['end_date'])){
@@ -127,17 +137,18 @@ class Date extends Element{
 
             if (!empty($values['end_time'])){
                     $value['end'] .= ' ' . $values['end_time'] . ':00';
-                    $values['end_time'] = $values['end_time'] . ':00';
-            } else {
-                    $value['end'] .= ' 00:00:00';
+                    //$values['end_time'] = $values['end_time'] . ':00';
             }
         } else {
             $value['end'] = $value['start'];
         }
+        
+//        var_dump($value);
 
-        $values = array_merge($values, $value);
+//
+//        $values = array_merge($values, $value);
 
-        parent::set_value($values);
+        parent::set_value($value);
     }
 
 
@@ -179,7 +190,7 @@ class Date extends Element{
         $attributes['placeholder'] = 'YYYY-MM-DD';
         $attributes['name'] = $this->get_attribute('name') . '[start_date]';
         $attributes['required'] = $required;
-        $attributes['value'] = (isset($values['start_date'])) ? $values['start_date'] : null;
+        $attributes['value'] = (isset($values['start'])) ? $values['start']->format('Y-m-d') : null;
 
         $attributes_string = $this->attributes_concat($attributes);
 
@@ -195,7 +206,7 @@ class Date extends Element{
             $attributes['placeholder'] = 'HH:MM';
             $attributes['name'] = $this->get_attribute('name') . '[start_time]';
             $attributes['type'] = 'text';
-            $attributes['value'] = (isset($values['start_time'])) ? substr($values['start_time'],0,5) : null;
+            $attributes['value'] = (isset($values['start'])) ? $values['start']->format('H:i') : null;
             // TODO how do we solved "required if the date is filled in"?
             $attributes['required'] = ($required && $settings['time'] == "required") ? true : null;
             $attributes['style'] = 'width:75px;';
@@ -225,8 +236,8 @@ class Date extends Element{
             $attributes['placeholder'] = 'YYYY-MM-DD';
             $attributes['name'] = $this->get_attribute('name') . '[end_date]';
             $attributes['type'] = $this->get_attribute('type');
-            $attributes['value'] = (isset($values['end_date'])) ? $values['end_date'] : null;
-            $attributes['min'] = (isset($values['start_date'])) ? $values['start_date'] : null;
+            $attributes['value'] = (isset($values['end'])) ? $values['end']->format('Y-m-d') : null;
+            $attributes['min'] = (isset($values['start'])) ? $values['start']->format('Y-m-d') : null;
             // TODO how do we solved "required if start date is filled in"?
             $attributes['required'] = ($required && $settings['end'] == "required") ? true : null;
             unset($attributes['style']);
@@ -249,7 +260,7 @@ class Date extends Element{
                 $attributes['placeholder'] = 'HH:MM';
                 $attributes['name'] = $this->get_attribute('name') . '[end_time]';
                 $attributes['type'] = 'text';
-                $attributes['value'] = (isset($values['end_time'])) ? substr($values['end_time'],0,5) : null;
+                $attributes['value'] = (isset($values['end'])) ? $values['end']->format('H:i') : null;
                 // TODO how do we solved "required if the date is filled in"?
                 //$attributes['required'] = ($settings['time'] == "required") ? true : null;
                 $attributes['style'] = 'width:75px;';

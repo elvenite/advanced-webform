@@ -47,7 +47,7 @@ class CSRF {
     
     public function __construct() {
         if(!session_id()) {
-          session_start();
+            throw new CSRFError('CSRF needs a session to work properly');
         }
     }
 

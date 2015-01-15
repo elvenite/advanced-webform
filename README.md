@@ -1,9 +1,18 @@
 # Advanced Webform for Podio
 This is an extension library to the Podio PHP library, it generates a form based on a Podio App ID and optionally an Item ID.
 
-The dev bransch is considered unstable.
+Support for version 4
 
-This is a prerelease with Podio PHP Library 3.0.0 as a dependency. Advanced Webform for Podio version 1.0 will use Podio PHP Library 4.0.* as a dependency.
+Known issues:
+ - Submitting empty category field with values before, will not impact in the field
+
+[x] Text
+[x] Category
+
+# Date
+PodioBadRequestError Start and end must both be with time or both must be without time
+Sätt datum och tid och sätt sen att tid inte ska visas, dessa fel ska visas i formulärets felmeddelande
+Ta bort embed och category fungerar inte. De ändras inte i Podio.
 
 # Installation
 ## Composer Install

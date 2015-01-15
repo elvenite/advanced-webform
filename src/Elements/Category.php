@@ -105,7 +105,10 @@ class Category extends Element{
         
         // default values
         // ex [value=Foo, Bar]
-
+        
+        // set_value forces an array, therefore we need to get the first value
+        $value = $this->get_attribute('value');
+        $value = $value[0];
         
         $values = array_map(function($v) use ($options){
             $v = trim($v);
@@ -115,7 +118,7 @@ class Category extends Element{
                 }
             }
             
-        }, explode(',', $this->get_attribute('value')));
+        }, explode(',', $value));
         
         if ($values){
             $this->set_value($values);
@@ -254,5 +257,17 @@ class Category extends Element{
         }
 
         return $value;
+    }
+    
+    public function set_value($values){
+        $values = array_map(function($v){
+            if (is_numeric($v)){
+                return (int) $v;
+            }
+            
+            return $v;
+        }, (array) $values);
+        
+        parent::set_value($values);
     }
 }

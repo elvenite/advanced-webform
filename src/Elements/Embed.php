@@ -98,7 +98,15 @@ class Embed extends Element{
                 return $v['url'];
             }, $values);
                 $this->set_attribute('value', $urls);
-                $this->item_field->set_value($embeds);
+                $this->item_field->values = $embeds;
+        } else {
+            
+            $this->set_attribute('value', array(
+                'url' => null,
+            ));
+            $embed = new \PodioEmbed();
+            $values = array($embed);
+            $this->item_field->values = $values;
         }
     }
 
@@ -107,12 +115,14 @@ class Embed extends Element{
         // decorator
         // element
 
+
         $attributes = $this->get_attributes();
-        $attributes['value'] = $this->get_value();
+        $collection = $this->get_value();
         // TODO
         // until we support multiple link inputs in the same field
-        if (isset($attributes['value']) && !empty($attributes['value'])){
-            $attributes['value'] = $attributes['value'][0]['embed']['original_url'];
+        if (count($collection)){
+            $embed = $collection[0];
+            $attributes['value'] = $embed->original_url;
         } else {
             $attributes['value'] = 'http://';
         }

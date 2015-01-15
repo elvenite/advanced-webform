@@ -345,6 +345,7 @@ abstract class Element {
 	}
 	
 	protected function render_element(){
+            
 		$attributes = $this->get_attributes();
 		$element = '<input';
 		$element .= $this->attributes_concat($attributes);

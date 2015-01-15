@@ -3,6 +3,10 @@
 require '../../vendor/autoload.php';
 require 'config.php';
 
+if(!session_id()) {
+    session_start();
+}
+
 Podio::setup(CLIENT_ID, CLIENT_SECRET);
 Podio::$debug = true;
 

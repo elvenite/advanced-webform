@@ -52,9 +52,7 @@ class Progress extends Element{
 		
 		// initial value, can be overridden
 		if ($item_field){
-			$this->set_attribute('value', $item_field->values[0]['value']);
-		} else {
-			$this->set_attribute('value', '0');
+			$this->set_attribute('value', $item_field->values);
 		}
 		
 		
@@ -67,5 +65,3 @@ class Progress extends Element{
 	
 	}
 }
-
-?>

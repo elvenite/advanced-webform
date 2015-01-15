@@ -70,9 +70,8 @@ class App extends Element{
         $sub_item_id = null;
         if ($item_field){
                 foreach($item_field->values AS $item){
-                        $item = $item['value'];
-                        if ($item['app']['app_id'] == $sub_app_id){
-                                $sub_item_id = $item['item_id'];
+                        if ($item->app->id == $sub_app_id){
+                                $sub_item_id = $item->id;
                                 break;
 
                         }
@@ -105,7 +104,7 @@ class App extends Element{
         if ($collection){
             $data = array();
             // TODO this will fail with PodioPHP 4
-            foreach($collection['items'] AS $i){
+            foreach($collection AS $i){
                 $data[] = array(
                     'item_id' => $i->item_id,
                     'title' => $i->title,
@@ -178,7 +177,10 @@ class App extends Element{
         if (is_numeric($values)){
                 $sub_form_item_id = (int) $values;
                 //$this->sub_form->get_item()->item_id = $sub_form_item_id;
-                parent::set_value($sub_form_item_id);
+                $values = array(
+                    'item_id' => $sub_form_item_id,
+                );
+                parent::set_value($values);
         } elseif (is_array($values)) {
                 $this->sub_form->set_values($values);
                 // attribute new indicates that the save function must create a
@@ -189,6 +191,7 @@ class App extends Element{
                 
         } else {
                 // no value, the select element is empty
+                parent::set_value(array(null));
                 return;
         }
     }
@@ -196,7 +199,11 @@ class App extends Element{
     public function save(){
         if ($this->get_attribute('new')){
             $sub_form_item_id = $this->sub_form->save();
-            parent::set_value($sub_form_item_id);
+                $values = array(
+                    'item_id' => $sub_form_item_id,
+                );
+            
+            parent::set_value($values);
         }
         
         parent::save();
@@ -227,11 +234,11 @@ class App extends Element{
                 $element .= '<option value="">' . $label . '</option>';
         }
                 
-        $values = $this->get_value();
+        $collection = $this->get_value();
         $item_ids = array();
-        if ($values){
-            foreach($values AS $value){
-                $item_ids[] = $value['value']['item_id'];
+        if ($collection){
+            foreach($collection AS $item){
+                $item_ids[] = $item->item_id;
             }
         }
 
