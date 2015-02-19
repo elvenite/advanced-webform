@@ -228,6 +228,7 @@ class AdvancedWebform {
 
                 $this->set_item( new \PodioItem(array(
                         'app' => $this->get_app(),
+                        'fields' => new \PodioItemFieldCollection()
                 )));
         }
 
