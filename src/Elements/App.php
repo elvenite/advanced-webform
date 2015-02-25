@@ -90,13 +90,20 @@ class App extends Element{
         
         // 1. view has highest weight
         if ($view){
-            $collection = \PodioItem::filter_by_view($sub_app_id, $view);
+            // TODO refactor keep out of DRY
+            $limit = (int) $this->get_attribute('limit');
+            $filter_attr = array();
+            $filter_attr['limit'] = ($limit > 0 && $limit < 500) ? $limit : 30;
+            $collection = \PodioItem::filter_by_view($sub_app_id, $view, $filter_attr);
         }
         
         // 2. if no view,  collection and expand
         // fetch latest default view items
         if (!$view && !$expand){
-            $collection = \PodioItem::filter($sub_app_id);
+            $limit = (int) $this->get_attribute('limit');
+            $filter_attr = array();
+            $filter_attr['limit'] = ($limit > 0 && $limit < 500) ? $limit : 30;
+            $collection = \PodioItem::filter($sub_app_id, $filter_attr);
         }
         
         // 3. get data from collection
@@ -115,11 +122,11 @@ class App extends Element{
         }
         
         // if no items, then hide the field
-        if (!$this->get_attribute('items') && !$expand){
+        if (null === $this->get_attribute('items') && !$expand){
             $this->set_attribute('hidden', true);
         }
         
-        if (!$this->get_attribute('items') && $expand){
+        if ((null === $this->get_attribute('items')) && $expand){
             $sub_form_attributes = array(
                 'app_id' => $sub_app_id,
                 'is_sub_form' => true,
@@ -214,7 +221,11 @@ class App extends Element{
      * @return string
      */
     public function render_locked(){
-        return $this->sub_form->render();
+        if (null === $this->sub_form){
+            return $this->render_select();
+        } else {
+            return $this->sub_form->render();
+        }
     }
 
     /**
@@ -224,6 +235,10 @@ class App extends Element{
      */
     public function render_select(){
         $attributes = $this->get_attributes();
+        if (isset($attributes['locked']) && (true === $attributes['locked'])){
+            $attributes['disabled'] = true;
+            unset($attributes['locked']);
+        }
         $element = '<select';
         $element .= $this->attributes_concat($attributes);
         $element .= '>';

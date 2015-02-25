@@ -101,6 +101,7 @@ Just echo the the form object:
 * If app element is locked, better display of values
 
 # TODOs?
+* remove placeholder in subcontact fields
 * should an app reference field be an autocomplete or extended?
 * Show progress-slider value to the right
 * date and timepicker?

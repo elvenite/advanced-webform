@@ -376,7 +376,7 @@ abstract class Element {
             if ($this->is_hidden()){
                 return '';
             }
-
+                    
             if ($this->is_locked()){
                 if (!$this->get_value()){
                     return '';
