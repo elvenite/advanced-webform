@@ -789,9 +789,7 @@ class AdvancedWebform {
             try {
                 $output[] = $field->render();
             } catch (\Exception $e){
-                // TODO stupid error handling, get to work
-                echo 'Exception';
-                var_dump($field);
+                // TODO how should we handle these errors
             }
         }
 
