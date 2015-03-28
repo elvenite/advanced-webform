@@ -91,8 +91,6 @@ class Embed extends Element{
             }
         }
 
-            
-
         if ($embeds){
             $urls = array_map(function($v){
                 return $v['url'];
@@ -104,9 +102,8 @@ class Embed extends Element{
             $this->set_attribute('value', array(
                 'url' => null,
             ));
-            $embed = new \PodioEmbed();
-            $values = array($embed);
-            $this->item_field->values = $values;
+
+            $this->item_field->values = null;
         }
     }
 
