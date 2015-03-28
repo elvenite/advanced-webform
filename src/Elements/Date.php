@@ -98,7 +98,7 @@ class Date extends Element{
             if (isset($values['end_time']) && $values['end_time'] != ''){
                 $end_string .= ' ' . $values['end_time'];
                 $end_format .= ' H:i';
-            } else{
+            } elseif (isset($values['start_time'])){
                 $end_string .= ' ' . $values['start_time'];
                 $end_format .= ' H:i';
             }
