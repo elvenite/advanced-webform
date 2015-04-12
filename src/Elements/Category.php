@@ -80,7 +80,9 @@ class Category extends Element{
         // values, also change the name if multiple = true, add [] to indicate
         // array values
 
-        $name = $this->get_attribute('name');
+        // use the immidiately value, we don't want the get_name method to add
+        // field prefix for subforms at this stage.
+        $name = $this->name;
 
         if ($this->get_attribute('multiple')){
             $type = 'checkbox';

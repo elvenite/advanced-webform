@@ -110,7 +110,6 @@ class App extends Element{
         // TODO read total, filtered do decide if autocomplete should be used.
         if ($collection){
             $data = array();
-            // TODO this will fail with PodioPHP 4
             foreach($collection AS $i){
                 $data[] = array(
                     'item_id' => $i->item_id,
@@ -257,7 +256,7 @@ class App extends Element{
             }
         }
 
-        $items = $this->get_attribute('items');
+        $items = (array) $this->get_attribute('items');
         foreach($items AS $item){
             if (in_array($item['item_id'], $item_ids)){
                 $selected = 'selected ';
@@ -283,10 +282,11 @@ class App extends Element{
             return '';
         }
         
-        if ($this->get_attribute('items')){
-            return parent::render($this->render_select());
+        if (isset($this->sub_form)){
+            return parent::render($this->sub_form->render(), 'parent_field');
         }
-
-        return parent::render($this->sub_form->render(), 'parent_field');
+        
+        return parent::render($this->render_select());
+        
     }
 }

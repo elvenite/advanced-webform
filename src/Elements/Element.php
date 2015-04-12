@@ -240,7 +240,7 @@ abstract class Element {
 	public function get_name(){
 		$name = $this->name;
 		if ($this->form->is_sub_form()){
-			$name = $this->form->get_field_name_prefix() . '[' . $name . ']';
+                    $name = $this->form->get_field_name_prefix() . '[' . $name . ']';
 		}
 		
 		return $name;

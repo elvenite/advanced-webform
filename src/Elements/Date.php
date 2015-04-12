@@ -80,8 +80,6 @@ class Date extends Element{
      * @param array $values
      */
     protected function validate($values){
-//        var_dump($values);
-//        die();
         $start_string = $values['start_date'];
         $start_format = 'Y-m-d';
         if (isset($values['start_time']) && $values['start_time'] != ''){
@@ -142,15 +140,9 @@ class Date extends Element{
         } else {
             $value['end'] = $value['start'];
         }
-        
-//        var_dump($value);
-
-//
-//        $values = array_merge($values, $value);
 
         parent::set_value($value);
     }
-
 
     public function render($element = null, $default_field_decorator = 'field'){
         // output is:
@@ -248,11 +240,8 @@ class Date extends Element{
 
             $element .= '>';
             $elements[] = $element;
-        }
-        
-        if (
-            ($settings['end'] == "enabled" || 
-             $settings['end'] == "required") && 
+            
+            if ( 
             ($settings['time'] == "enabled" || 
              $settings['time'] == "required")){
                 // endtime
@@ -271,9 +260,10 @@ class Date extends Element{
 
                 $element .= '></span></div> '; // end .input-group-input & .input-group
                 $elements[] = $element;
+            }
+            
+            $elements[] = '</div>'; // end <div class="col-sm-5 col-md-4 col-lg-3">
         }
-        
-        $elements[] = '</div>';
 
         $description_decorator = '';
         if ($description){
