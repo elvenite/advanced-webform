@@ -46,7 +46,7 @@ class Embed extends Element{
     public function __construct($app_field, $form, $item_field = null) {
         parent::__construct($app_field, $form, $item_field);
 
-        $this->set_attribute('type', 'url');
+        $this->set_attribute('type', 'text');
 
         /**
          * TODO
@@ -71,7 +71,7 @@ class Embed extends Element{
                 unset($values[$key]);
                 continue;
             }
-            // TODO does this check work?
+
             $match = preg_match($pattern, $value['url']);
             if (0 === $match){
                 $value['url'] = 'http://' . $value['url'];
@@ -120,8 +120,6 @@ class Embed extends Element{
         if (count($collection)){
             $embed = $collection[0];
             $attributes['value'] = $embed->original_url;
-        } else {
-            $attributes['value'] = 'http://';
         }
 
 
