@@ -263,11 +263,11 @@ class Category extends Element{
     
     public function set_value($values){
         $values = array_map(function($v){
-            if (is_numeric($v)){
+            if (is_numeric($v) && !!$v){
                 return (int) $v;
             }
             
-            return $v;
+            return null;
         }, (array) $values);
         
         parent::set_value($values);
