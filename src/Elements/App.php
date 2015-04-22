@@ -69,13 +69,13 @@ class App extends Element{
         // extract sub item id 
         $sub_item_id = null;
         if ($item_field){
-                foreach($item_field->values AS $item){
-                        if ($item->app->id == $sub_app_id){
-                                $sub_item_id = $item->id;
-                                break;
-
-                        }
+            foreach($item_field->values AS $item){
+                if ($item->app->id == $sub_app_id){
+                    $sub_item_id = $item->id;
+                    $this->set_value($sub_item_id);
+                    break;
                 }
+            }
         }
 
         
@@ -137,10 +137,6 @@ class App extends Element{
 
             $this->set_sub_form($sub_form);   
         }
-        
-//        echo '<pre>';
-//        var_dump($this->get_attributes());
-//        die();
 
         /**
          * TODO
