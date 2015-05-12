@@ -44,80 +44,42 @@ namespace AdvancedWebform;
  */
 class CSRF {
     protected $_token_name = 'advanced-webform-csrf';
-    
-    public function __construct() {
-        if(!session_id()) {
-            throw new CSRFError('CSRF needs a session to work properly');
-        }
-    }
 
-
-    public function generate($key = null){
+    public function generate($secret, $key = null, $timestamp = null){
+        $secret = (string) $secret;
+        
         if (null === $key){
             $key = $this->_token_name;
         }
+        
+        if ( null === $timestamp ){
+            $timestamp = (string) date('YmdHis');
+        }
       
-        $origin = sha1( $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] );
+        $origin = $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'];
+        
         // token generation (basically base64_encode any random complex string, time() is used for token expiration) 
-        $token = base64_encode( time() . $origin . self::randomString( 32 ) );
-        // store the one-time token in session
-        $_SESSION[ $key ] = $token;
+        $token = $timestamp . sha1( $timestamp . $origin . $secret );
         
         return $token;
-      
     }
   
-    public function is_valid( $data, $key = null, $timespan = null ) {
+    public function is_valid( $data, $secret, $key = null ) {
+        $secret = (string) $secret;
+        
         if (null === $key){
           $key = $this->_token_name;
-      }
-        if ( !isset( $_SESSION[ $key ] ) ) {
-            throw new \AdvancedWebform\CSRFError( 'Missing CSRF session token.' );
         }
 
-        // Get valid token from session
-        $hash = $_SESSION[ $key ];
-
-        // Free up session token for one-time CSRF token usage.
-        // One time CRSF does not add much security for us.
-        //$_SESSION[ $key ] = null;
-
-        // Origin checks
-        if(  sha1( $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] ) != substr( base64_decode( $hash ), 10, 40 ) )
-        {
-            throw new \AdvancedWebform\CSRFError( 'Form origin does not match token origin.' );
-        }
+        $timestamp = (string) substr($data, 0, 14);
         
-        // Check if session token matches form token
-        if ( $data != $hash ) {
+        $token = $this->generate($secret, $key, $timestamp);
+
+        // Check if token === $data
+        if ( $token !== $data ) {
             throw new \AdvancedWebform\CSRFError( 'Invalid CSRF token.' );
         }
 
-        // Check for token expiration
-        if ( $timespan != null && is_int( $timespan ) && intval( substr( base64_decode( $hash ), 0, 10 ) ) + $timespan < time() ) {
-            throw new \AdvancedWebform\CSRFError( 'CSRF token has expired.' );
-        }
-
-
         return true;
-    }
-  
-  /**
-     * Generates a random string of given $length.
-     *
-     * @param Integer $length The string length.
-     * @return String The randomly generated string.
-     */
-    protected function randomString( $length = 32 )
-    {
-        $seed = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijqlmnopqrtsuvwxyz0123456789';
-        $max = strlen( $seed ) - 1;
-
-        $string = '';
-        for ( $i = 0; $i < $length; ++$i ) {
-            $string .= $seed{intval( mt_rand( 0.0, $max ) )};
-        }
-
-        return $string;
     }
 }
