@@ -64,7 +64,7 @@ class Duration extends Element{
          */
         
         if ($item_field){
-            $value = (int) $item_field->values[0]['value'];
+            $value = (int) $item_field->values;
             $this->set_value($value);
         }
     }
@@ -219,6 +219,6 @@ class Duration extends Element{
                                         '' // empty css class
                                 );
 
-        return $decorator;
+        return parent::render($decorator);
     }
 }

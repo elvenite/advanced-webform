@@ -240,7 +240,7 @@ abstract class Element {
 	public function get_name(){
 		$name = $this->name;
 		if ($this->form->is_sub_form()){
-			$name = $this->form->get_field_name_prefix() . '[' . $name . ']';
+                    $name = $this->form->get_field_name_prefix() . '[' . $name . ']';
 		}
 		
 		return $name;
@@ -345,6 +345,7 @@ abstract class Element {
 	}
 	
 	protected function render_element(){
+            
 		$attributes = $this->get_attributes();
 		$element = '<input';
 		$element .= $this->attributes_concat($attributes);
@@ -375,7 +376,7 @@ abstract class Element {
             if ($this->is_hidden()){
                 return '';
             }
-
+                    
             if ($this->is_locked()){
                 if (!$this->get_value()){
                     return '';

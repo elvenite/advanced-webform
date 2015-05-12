@@ -46,7 +46,7 @@ class Embed extends Element{
     public function __construct($app_field, $form, $item_field = null) {
         parent::__construct($app_field, $form, $item_field);
 
-        $this->set_attribute('type', 'url');
+        $this->set_attribute('type', 'text');
 
         /**
          * TODO
@@ -58,7 +58,7 @@ class Embed extends Element{
     }
 
     public function save(){
-        $values = $this->get_attribute('value');
+        $values = (array) $this->get_attribute('value');
         $pattern = '/^https?:\/\//i';
         $embeds = array();
 
@@ -71,7 +71,7 @@ class Embed extends Element{
                 unset($values[$key]);
                 continue;
             }
-            // TODO does this check work?
+
             $match = preg_match($pattern, $value['url']);
             if (0 === $match){
                 $value['url'] = 'http://' . $value['url'];
@@ -91,14 +91,19 @@ class Embed extends Element{
             }
         }
 
-            
-
         if ($embeds){
             $urls = array_map(function($v){
                 return $v['url'];
             }, $values);
                 $this->set_attribute('value', $urls);
-                $this->item_field->set_value($embeds);
+                $this->item_field->values = $embeds;
+        } else {
+            
+            $this->set_attribute('value', array(
+                'url' => null,
+            ));
+
+            $this->item_field->values = null;
         }
     }
 
@@ -107,12 +112,14 @@ class Embed extends Element{
         // decorator
         // element
 
+
         $attributes = $this->get_attributes();
-        $attributes['value'] = $this->get_value();
+        $collection = $this->get_value();
         // TODO
         // until we support multiple link inputs in the same field
-        if (isset($attributes['value']) && !empty($attributes['value'])){
-            $attributes['value'] = $attributes['value'][0]['embed']['original_url'];
+        if (count($collection)){
+            $embed = $collection[0];
+            $attributes['value'] = $embed->original_url;
         }
 
 

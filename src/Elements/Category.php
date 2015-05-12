@@ -80,7 +80,9 @@ class Category extends Element{
         // values, also change the name if multiple = true, add [] to indicate
         // array values
 
-        $name = $this->get_attribute('name');
+        // use the immidiately value, we don't want the get_name method to add
+        // field prefix for subforms at this stage.
+        $name = $this->name;
 
         if ($this->get_attribute('multiple')){
             $type = 'checkbox';
@@ -105,7 +107,10 @@ class Category extends Element{
         
         // default values
         // ex [value=Foo, Bar]
-
+        
+        // set_value forces an array, therefore we need to get the first value
+        $value = $this->get_attribute('value');
+        $value = $value[0];
         
         $values = array_map(function($v) use ($options){
             $v = trim($v);
@@ -115,7 +120,7 @@ class Category extends Element{
                 }
             }
             
-        }, explode(',', $this->get_attribute('value')));
+        }, explode(',', $value));
         
         if ($values){
             $this->set_value($values);
@@ -254,5 +259,17 @@ class Category extends Element{
         }
 
         return $value;
+    }
+    
+    public function set_value($values){
+        $values = array_map(function($v){
+            if (is_numeric($v) && !!$v){
+                return (int) $v;
+            }
+            
+            return null;
+        }, (array) $values);
+        
+        parent::set_value($values);
     }
 }

@@ -178,15 +178,16 @@ abstract class SubContact{
     public function render_locked(){
         $element = "";
 
-        $values = $this->get_parent()->get_item_field()->values;
+        $contacts = $this->get_parent()->get_item_field()->values;
+        $contact = $contacts[0];
 
         // don't use $this->get_name() AS it will return the parent
         // name with subelement as array key (ex. contact[name])
         $name = $this->name;
 
-        if ($values){
+        if ($contact){
             // force array for all value, not just email and phone
-            $value = (array) $values[0]['value'][$name];
+            $value = (array) $contact->{$name};
             foreach($value AS $v){
                 $element .= '<div class="form-control-static">';
                 $element .= $v;
@@ -217,22 +218,28 @@ abstract class SubContact{
         if ($this->is_hidden()){
             return '';
         }
-
-        $values = $this->get_parent()->get_value();
+        
+        $contacts = $this->get_parent()->get_value();
+        
 
         if ($this->get_parent()->is_locked()){
-            if (!$values){
+            if (null === $contacts){
                 return '';
             }
             $element = $this->render_locked();
         } else {
             $attributes = $this->get_attributes();
-            $attributes['value'] = (isset($values[0]['value'][$this->name])) ? $values[0]['value'][$this->name] : '';
-            // TODO
-            // until we support multiple email and phone fields, use the first
-            if ($this->get_attribute('multi') && is_array($attributes['value'])){
-                $attributes['value'] = $attributes['value'][0];
+            
+            if (null !== $contacts){
+                $contact = $contacts[0];
+                $attributes['value'] = ($contact->{$this->name}) ? $contact->{$this->name} : '';
+                // TODO
+                // until we support multiple email and phone fields, use the first
+                if ($this->get_attribute('multi') && is_array($attributes['value'])){
+                    $attributes['value'] = $attributes['value'][0];
+                }
             }
+            
 
             $attributes_string = '';
             foreach($attributes AS $key => $attribute){

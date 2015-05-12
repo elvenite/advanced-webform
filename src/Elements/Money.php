@@ -65,8 +65,8 @@ class Money extends Element{
 
             if ($item_field){
                     $this->set_value(array(
-                            'currency' => $item_field->currency(),
-                            'amount' => $item_field->amount(),
+                            'currency' => $item_field->currency,
+                            'amount' => $item_field->amount,
                     ));
             };
 
@@ -84,8 +84,8 @@ class Money extends Element{
             $values = null;
         } else {
             $this->set_attribute('value', $values);
-            $this->item_field->set_amount($values['amount']);
-            $this->item_field->set_currency($values['currency']);
+            $this->item_field->amount = $values['amount'];
+            $this->item_field->currency = $values['currency'];
         }
     }
 

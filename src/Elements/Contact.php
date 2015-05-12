@@ -176,8 +176,9 @@ class Contact extends Element{
         $values = $this->get_attribute('value');
         if (isset($values['name']) && !empty($values['name'])){
             $space_id = $this->form->get_app()->space_id;
-            if ($profile_values = $this->item_field->values){
-                $profile_id = $profile_values[0]['value']['profile_id'];
+            if ($contacts = $this->item_field->values){
+                $contact = $contacts[0];
+                $profile_id = $contact->profile_id;
                 // if the Contact is deleted
                 // Podio will return PodioNotFoundError.
                 // We'll just dismiss that.

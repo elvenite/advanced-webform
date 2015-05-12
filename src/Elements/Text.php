@@ -52,14 +52,15 @@ class Text extends Element{
         } else {
             $type = 'textarea';
             $this->set_attribute('rows', 6);
-            if ($item_field){
-                $value = $item_field->values[0]['value'];
-                $value = str_replace('</p><p>', "\n\n", $value);
-                $value = strip_tags($value);
-                $this->set_attribute('value', $value);
-            }
         }
         $this->set_attribute('type', $type);
+        
+        if ($item_field){
+            $value = $item_field->values;
+            $value = str_replace('</p><p>', "\n\n", $value);
+            $value = strip_tags($value);
+            $this->set_attribute('value', $value);
+        }
 
         /**
          * TODO

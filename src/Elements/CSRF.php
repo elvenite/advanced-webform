@@ -68,8 +68,10 @@ class CSRF extends Element{
     }
     
     public function validate($value){
+        $app = $this->form->get_app();
+        
         $csrf = new \AdvancedWebform\CSRF();
-        $csrf->is_valid($value);
+        $csrf->is_valid($value, $app->link);
     }
     
     protected function render_element(){
@@ -86,7 +88,9 @@ class CSRF extends Element{
 
     public function render($element = null, $default_field_decorator = 'field'){
         $csrf = new \AdvancedWebform\CSRF();
-        $token = $csrf->generate();
+        $app = $this->form->get_app();
+        
+        $token = $csrf->generate($app->link);
         
         $this->set_attribute('value', $token);
         
