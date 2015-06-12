@@ -60,10 +60,15 @@ class App extends Element{
         parent::__construct($app_field, $form, $item_field, $attributes);
 
         // load a new AdvancedWebform in the sub_form attribute
-        $this->set_attribute('reference_apps', $app_field->config['settings']['referenceable_types']);
+        $this->set_attribute('referenced_apps', $app_field->config['settings']['referenced_apps']);
 
+        if (!$this->get_attribute('referenced_apps')){
+            throw new \Exception('No app chosen as reference');
+        }
+        
         // for now, just get the first app
-        $sub_app_id = $app_field->config['settings']['referenceable_types'][0];
+        $referenced_apps = $this->get_attribute('referenced_apps');
+        $sub_app_id = $referenced_apps[0]['app_id'];
         $this->set_attribute('app_id', $sub_app_id);
 
         // extract sub item id 
@@ -82,7 +87,17 @@ class App extends Element{
         // setup view settings
         // TODO shouldn't this only work if there is NO sub item?
         // either you show a sub form or a select box with items from the view
-        $view = $this->get_attribute('view');
+        
+        $view = null;
+        // first get view_id from the regular settings (it can be null but that don't change anything)
+        if (isset($referenced_apps[0]['view_id'])){
+            $view = $referenced_apps[0]['view_id'];
+        }
+        
+        // then, if there 
+        if ($this->get_attribute('view')){
+            $view = $this->get_attribute('view');
+        }
         
         // only expand form if not subform
         $expand = ($this->get_form()->is_sub_form()) ? false : $this->get_attribute('expand');
