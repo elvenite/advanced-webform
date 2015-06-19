@@ -76,7 +76,7 @@ class AdvancedWebform {
      * An array of all AdvancedWebform\Elements\Form objects
      * @var array
      */
-    protected $elements;
+    protected $elements = array();
 
     /**
      * Is $this a sub form, used to indicate if <form>-tag should be displayed or not

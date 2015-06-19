@@ -104,7 +104,7 @@ class App extends Element{
         $collection = false;
         
         // 1. view has highest weight
-        if ($view){
+        if ($view && !$expand){
             // TODO refactor keep out of DRY
             $limit = (int) $this->get_attribute('limit');
             $filter_attr = array();
