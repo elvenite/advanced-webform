@@ -1,0 +1,22 @@
+{
+  "status": "active",
+  "type": "text",
+  "field_id": 115410553,
+  "label": "Text with <span style=\"color:red;\">red color</span>",
+  "config": {
+    "default_value": null,
+    "description": "Here&#x27;s a small introduction to this field.",
+    "settings": {
+      "format": "html",
+      "size": "large"
+    },
+    "required": false,
+    "mapping": null,
+    "label": "Text with <span style=\"color:red;\">red color</span>",
+    "visible": true,
+    "delta": 1,
+    "hidden": false,
+    "unique": false
+  },
+  "external_id": "text-with-span-stylecolorredred-colorspan"
+}
