@@ -72,7 +72,7 @@ class Category extends Element{
         parent::__construct($app_field, $form, $item_field);
 
         // set multiple
-        $this->set_attribute('multiple', $app_field->config['settings']['multiple']);
+        $this->set_attribute('multiple', (bool) $app_field->config['settings']['multiple']);
         
         $this->set_attribute('display', $app_field->config['settings']['display']);
 

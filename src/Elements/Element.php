@@ -63,7 +63,7 @@ abstract class Element {
    */
   protected $decorators = array();
 
-  public function __construct(\PodioAppField $app_field, \AdvancedWebform\AdvancedWebform $form, $item_field = null, $attributes = null) {
+  public function __construct(\PodioAppField $app_field, \AdvancedWebform\AdvancedWebform $form, \PodioItemField$item_field = null, $attributes = null) {
           if ($app_field->status != "active"){
                   throw new \ErrorException('Field is not active');
           }
@@ -75,15 +75,15 @@ abstract class Element {
           // set id
           $this->set_attribute('id', (int) $app_field->field_id);
           // set name
-          $this->set_name(filter_var($app_field->external_id,FILTER_SANITIZE_STRING));
+          $this->set_name($app_field->external_id);
           // set placeholder
-          $this->set_attribute('label', filter_var($app_field->config['label'],FILTER_SANITIZE_STRING));
+          $this->set_attribute('label', $app_field->config['label']);
           // set required
           $this->set_attribute('required', (bool) $app_field->config['required']);
           // set type
-          $this->set_attribute('type', filter_var($app_field->type,FILTER_SANITIZE_STRING));
+          $this->set_attribute('type', $app_field->type);
 
-          if(!$item_field){
+          if(null === $item_field){
             $class_name = 'Podio' . ucfirst($app_field->type) . 'ItemField';
             $this->set_item_field(new $class_name(array(
               'field_id' => $this->get_attribute('id'),
@@ -403,8 +403,8 @@ abstract class Element {
           }
 
           $decorator = sprintf($this->get_decorator($default_field_decorator), 
-                                  htmlspecialchars($this->get_attribute('name'), ENT_COMPAT, 'UTF-8'),
-                                  htmlspecialchars($this->get_attribute('label'), ENT_COMPAT, 'UTF-8'),
+                                  htmlspecialchars($this->get_attribute('name'), ENT_NOQUOTES, 'UTF-8', true),
+                                  htmlspecialchars($this->get_attribute('label'), ENT_NOQUOTES, 'UTF-8', true),
                                   $element,
                                   $description_decorator,
                                   ($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',

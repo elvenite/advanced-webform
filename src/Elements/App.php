@@ -68,7 +68,7 @@ class App extends Element{
         
         // for now, just get the first app
         $referenced_apps = $this->get_attribute('referenced_apps');
-        $sub_app_id = $referenced_apps[0]['app_id'];
+        $sub_app_id = (int) $referenced_apps[0]['app_id'];
         $this->set_attribute('app_id', $sub_app_id);
 
         // extract sub item id 
@@ -91,7 +91,7 @@ class App extends Element{
         $view = null;
         // first get view_id from the regular settings (it can be null but that don't change anything)
         if (isset($referenced_apps[0]['view_id'])){
-            $view = $referenced_apps[0]['view_id'];
+            $view = (int) $referenced_apps[0]['view_id'];
         }
         
         // then, if there 
@@ -127,7 +127,7 @@ class App extends Element{
             $data = array();
             foreach($collection AS $i){
                 $data[] = array(
-                    'item_id' => $i->item_id,
+                    'item_id' => (int) $i->item_id,
                     'title' => $i->title,
                 );
             }

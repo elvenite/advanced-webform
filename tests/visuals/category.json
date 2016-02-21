@@ -1,0 +1,42 @@
+{
+  "status": "active",
+  "type": "category",
+  "field_id": 115574443,
+  "label": "Category with <span style=\"color:red;\">red color</span>",
+  "config": {
+    "default_value": null,
+    "description": "Here&#x27;s a small introduction to this field. Also with <span style=\"color:red;\">red color</span>",
+    "settings": {
+      "multiple": false,
+      "options": [
+        {
+          "status": "active",
+          "text": "Text here!",
+          "id": 1,
+          "color": "DCEBD8"
+        },
+        {
+          "status": "active",
+          "text": "Text with code <strong>Strong</strong>",
+          "id": 2,
+          "color": "DCEBD8"
+        },
+        {
+          "status": "active",
+          "text": "Other color",
+          "id": 3,
+          "color": "F7D1D0"
+        }
+      ],
+      "display": "inline"
+    },
+    "required": false,
+    "mapping": null,
+    "label": "Category with <span style=\"color:red;\">red color</span>",
+    "visible": true,
+    "delta": 2,
+    "hidden": false,
+    "unique": false
+  },
+  "external_id": "text-with-span-stylecolorredred-colorspan-2"
+}
