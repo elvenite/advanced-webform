@@ -152,9 +152,13 @@ class Duration extends Element{
 
         $values = $this->get_value('value', true);
 
+        $fields = $this->get_attribute('fields');
+
         unset($attributes['label']);
         unset($attributes['name']);
         unset($attributes['value']);
+        unset($attributes['fields']);
+        unset($attributes['value_types']);
 
 
         $attributes_string = '';
@@ -164,7 +168,7 @@ class Duration extends Element{
         $elements[] = '<div class="row">';
 
 
-        foreach($attributes['fields'] AS $value_type){
+        foreach($fields AS $value_type){
             $value_types = $this->get_attribute('value_types');
             $help_text = $value_types[$value_type];
             
@@ -205,20 +209,24 @@ class Duration extends Element{
 
         $description_decorator = '';
         if ($description){
-                $description_decorator = sprintf($this->get_decorator('field_description'),
-                                                                                        $description
-                                                                                );
+          $description_decorator = sprintf($this->get_decorator('field_description'),
+            $description
+          );
         }
 
-        $decorator = sprintf($this->get_decorator('field'), 
-                                        $this->get_attribute('name'),
-                                        $this->get_attribute('label'),
-                                        implode('', $elements),
-                                        $description_decorator,
-                                        ($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',
-                                        '' // empty css class
-                                );
+        // $decorator = sprintf($this->get_decorator('field'), 
+        //                                 $this->get_attribute('name'),
+        //                                 $this->get_attribute('label'),
+        //                                 implode('', $elements),
+        //                                 $description_decorator,
+        //                                 ($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',
+        //                                 '' // empty css class
+        //                         );
 
-        return parent::render($decorator);
+
+
+        //return parent::render($decorator);
+
+        return parent::render(implode('', $elements));
     }
 }

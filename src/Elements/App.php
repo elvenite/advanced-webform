@@ -238,49 +238,54 @@ class App extends Element{
         }
     }
 
-    /**
-     * Renders a select box with items to choose from
-     * Only if attribute items is set
-     * @return string
-     */
-    public function render_select(){
-        $attributes = $this->get_attributes();
-        if (isset($attributes['locked']) && (true === $attributes['locked'])){
-            $attributes['disabled'] = true;
-            unset($attributes['locked']);
-        }
-        $element = '<select';
-        $element .= $this->attributes_concat($attributes);
-        $element .= '>';
+  /**
+   * Renders a select box with items to choose from
+   * Only if attribute items is set
+   * @return string
+   */
+  public function render_select(){
+    $attributes = $this->get_attributes();
+    unset($attributes['items']);
+    unset($attributes['referenced_apps']);
+    unset($attributes['app_id']);
 
-        if(!$this->get_attribute('required')){
-                $app_field = $this->get_app_field();
-                $label = $app_field->config['label'];
-                $element .= '<option value="">' . $label . '</option>';
-        }
-                
-        $collection = $this->get_value();
-        $item_ids = array();
-        if ($collection){
-            foreach($collection AS $item){
-                $item_ids[] = $item->item_id;
-            }
-        }
 
-        $items = (array) $this->get_attribute('items');
-        foreach($items AS $item){
-            if (in_array($item['item_id'], $item_ids)){
-                $selected = 'selected ';
-            } else {
-                $selected = '';
-            }
-            $element .= '<option ' . $selected . 'value="' . $item['item_id'] . '">' . $item['title'] . '</option>';
-        }
+      if (isset($attributes['locked']) && (true === $attributes['locked'])){
+          $attributes['disabled'] = true;
+          unset($attributes['locked']);
+      }
+      $element = '<select';
+      $element .= $this->attributes_concat($attributes);
+      $element .= '>';
 
-        $element .= '</select>';
+      if(!$this->get_attribute('required')){
+              $app_field = $this->get_app_field();
+              $label = $app_field->config['label'];
+              $element .= '<option value="">' . htmlspecialchars($label, ENT_NOQUOTES, 'UTF-8', true) . '</option>';
+      }
+              
+      $collection = $this->get_value();
+      $item_ids = array();
+      if ($collection){
+          foreach($collection AS $item){
+              $item_ids[] = $item->item_id;
+          }
+      }
 
-        return $element;
-    }
+      $items = (array) $this->get_attribute('items');
+      foreach($items AS $item){
+          if (in_array($item['item_id'], $item_ids)){
+              $selected = 'selected ';
+          } else {
+              $selected = '';
+          }
+          $element .= '<option ' . $selected . 'value="' . (int) $item['item_id'] . '">' . htmlspecialchars($item['title'], ENT_NOQUOTES, 'UTF-8', true) . '</option>';
+      }
+
+      $element .= '</select>';
+
+      return $element;
+  }
 
     /**
      * Renders a complete sub form
