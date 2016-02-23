@@ -176,7 +176,7 @@ class Duration extends Element{
                     if (is_array($attribute)){
                         $attribute = json_encode($attribute);
                     }
-                    $attributes_string .= ' ' . $key . '="' . (string) $attribute . '"';
+                    $attributes_string .= ' ' . $key . '="' . (string) htmlspecialchars($attribute, ENT_COMPAT, 'UTF-8', true) . '"';
             }
             $element = '<div class="col-xs-3 col-md-2 col-lg-1"><input';
 
@@ -195,8 +195,8 @@ class Duration extends Element{
             $element .= '>';
 
             $help_text_decorator = sprintf('<span class="help-inline">%1$s</span>&nbsp;&nbsp;&nbsp;&nbsp;',
-                                                                                    $help_text
-                                                                            );
+              $help_text
+            );
 
             $element .= $help_text_decorator;
             
@@ -206,26 +206,6 @@ class Duration extends Element{
         }
         
         $elements[] = '</div>';
-
-        $description_decorator = '';
-        if ($description){
-          $description_decorator = sprintf($this->get_decorator('field_description'),
-            $description
-          );
-        }
-
-        // $decorator = sprintf($this->get_decorator('field'), 
-        //                                 $this->get_attribute('name'),
-        //                                 $this->get_attribute('label'),
-        //                                 implode('', $elements),
-        //                                 $description_decorator,
-        //                                 ($this->get_attribute('required')) ? $this->get_decorator('field_required') : '',
-        //                                 '' // empty css class
-        //                         );
-
-
-
-        //return parent::render($decorator);
 
         return parent::render(implode('', $elements));
     }

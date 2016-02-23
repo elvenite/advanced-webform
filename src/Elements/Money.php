@@ -64,10 +64,10 @@ class Money extends Element{
             $this->set_attribute('currencies', $this->app_field->config['settings']['allowed_currencies']);
 
             if ($item_field){
-                    $this->set_value(array(
-                            'currency' => $item_field->currency,
-                            'amount' => $item_field->amount,
-                    ));
+              $this->set_value(array(
+                  'currency' => $item_field->currency,
+                  'amount' => $item_field->amount,
+              ));
             };
 
             /**
@@ -202,13 +202,7 @@ class Money extends Element{
         
         $row = sprintf(
                 $this->get_decorator('wrapper'), 
-                $value,
-                '',
-                '',
-                '',
-                '',
-                '',
-                ''
+                $value
               );
 
         

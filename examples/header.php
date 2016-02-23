@@ -19,7 +19,7 @@
 		<?php if (isset($error_message)){ ?>
 			<div class="row">
 				<div class="span12">
-					<div class="alert alert-error"><?php echo $error_message; ?></div>
+					<div class="alert alert-danger"><?php echo $error_message; ?></div>
 				</div>
 			</div>
 		<?php }if (isset($message)){ ?>
