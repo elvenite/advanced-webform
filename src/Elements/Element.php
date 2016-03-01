@@ -217,20 +217,20 @@ abstract class Element {
       return $this->item_field->humanized_value();
   }
   
-  public function set_value($values){
-          $this->set_attribute('value', $values);
+  public function set_value($value){
+          $this->set_attribute('value', $value);
   }
       
-      public function save(){
-         $values = $this->get_attribute('value');
-         
-         if (empty($values)){
-             $values = null;
-             $this->set_attribute('value', $values);
-         }
-         
-         $this->item_field->set_value($values);
-      }
+  public function save(){
+   $values = $this->get_attribute('value');
+   
+   if (empty($values)){
+     $values = null;
+     $this->set_attribute('value', $values);
+   }
+   
+   $this->item_field->set_value($values);
+  }
   
   /**
    * Get name attribute of element (to use in <input name="{$name}">")
