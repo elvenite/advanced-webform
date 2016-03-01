@@ -42,6 +42,19 @@ namespace AdvancedWebform\Elements;
  */
 
 class Embed extends Element{
+
+  /**
+  * (1=value, 2=label, 3=name, 4=type, 5=class, 6=style, 7=other attributes)
+  * Element inline display
+  * Element list display
+  * Element dropdown display
+  * 
+  * @var array 
+  */
+  protected $decorators = array(
+      'wrapper' => '<div class="form-group"><div class="input-group" style="width:100%%;">%1$s</div></div>',
+      'element' => '<input class="%5$s" type="%4$s" value="%1$s" name="%3$s" %7$s><span class="input-group-btn  field-remove hidden"><button type="button" class="btn btn-link">✕</button></span>',
+  );
 	
     public function __construct($app_field, $form, $item_field = null) {
         parent::__construct($app_field, $form, $item_field);
@@ -108,29 +121,58 @@ class Embed extends Element{
     }
 
     public function render($element = null, $default_field_decorator = 'field'){
-        // output is:
-        // decorator
-        // element
+      $attributes = $this->get_attributes();
+      
+      // (1=value, 2=label, 3=name, 4=type, 5=class, 6=style, 7=other attributes)
 
+      unset($attributes['value']);
+      unset($attributes['label']);
+      unset($attributes['name']);
+      unset($attributes['id']);
 
-        $attributes = $this->get_attributes();
-        $collection = $this->get_value();
-        // TODO
-        // until we support multiple link inputs in the same field
-        if (count($collection)){
-            $embed = $collection[0];
-            $attributes['value'] = $embed->original_url;
-        }
+      // 4. type
+      $type = $attributes['type'];
+      unset($attributes['type']);
+    
+      // 5. class
+      $class = (array) $attributes['class'];
+      unset($attributes['class']);
 
+      // 7. other attributes
+      $other = $this->attributes_concat($attributes);
 
-        $attributes['name'] .= '[][url]';
+    // iterate through all existing values or once
+    $collection = (null !== $this->get_value()) ? $this->get_value() : array();
 
-        $element = '<input';
+    $length = (count($collection)) ? count($collection) : 1;
 
-        $element .= $this->attributes_concat($attributes);
+    for($i = 0;$i<$length;$i++){
+      $value = (isset($collection[$i]->original_url)) ? $collection[$i]->original_url : '';
 
-        $element .= '>';
+      // 3. name
+      $name = $this->get_attribute('name') . '['. $i .'][url]';
 
-        return parent::render($element);
+      $element = sprintf(
+        $this->get_decorator('element'), 
+        $value,
+        '', // label (used in parent::render, not here)
+        $name,
+        $type,
+        implode(' ', $class),
+        '',
+        $other
+      );
+
+      $rows[] = sprintf(
+        $this->get_decorator('wrapper'), 
+        $element
+      );
     }
+
+        // add "add more" button
+
+    $rows[] = '<div class="form-group"><button type="button" class="btn btn-link field-add-another"><span class="glyphicon glyphicon-plus-sign"></span> Add one more</button></div>';
+
+    return parent::render(implode('', $rows));
+  }
 }

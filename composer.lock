@@ -4,25 +4,28 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "be82bf3a4606536d9c4b8347fc5b0fac",
-    "content-hash": "17afecd200f13aedfa101bc7a54ecebd",
+    "hash": "10401abebcba37fbad1b788b7d8426b3",
+    "content-hash": "250419a9639be73d79b322df0b64a921",
     "packages": [
         {
             "name": "podio/podio-php",
-            "version": "v4.0.2",
+            "version": "4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/podio/podio-php.git",
-                "reference": "a67a6b9406febfbb324888ec8ddde2891e027299"
+                "reference": "436002738f202455c2c788ed7204fd24a4c3b5c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/podio/podio-php/zipball/a67a6b9406febfbb324888ec8ddde2891e027299",
-                "reference": "a67a6b9406febfbb324888ec8ddde2891e027299",
+                "url": "https://api.github.com/repos/podio/podio-php/zipball/436002738f202455c2c788ed7204fd24a4c3b5c0",
+                "reference": "436002738f202455c2c788ed7204fd24a4c3b5c0",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
+            },
+            "suggest": {
+                "kdyby/curl-ca-bundle": "Improve security through providing current CA ROOT certificates bundle"
             },
             "type": "library",
             "autoload": {
@@ -47,7 +50,7 @@
             "keywords": [
                 "podio"
             ],
-            "time": "2014-09-29 18:40:52"
+            "time": "2015-09-30 08:28:53"
         },
         {
             "name": "raveren/kint",
