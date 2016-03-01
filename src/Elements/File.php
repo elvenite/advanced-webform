@@ -55,13 +55,7 @@ class File extends Element{
     $this->form->set_enctype(\AdvancedWebform\AdvancedWebform::ENCTYPE_MULTIPART);
                 
     $this->set_max_file_size();
-    
-    /**
-     * TODO
-     * check visibility equals true (config['visible']
-     * add delta field (delta is the sort order)
-     */
-  
+
   }
         
   public function set_max_file_size(){

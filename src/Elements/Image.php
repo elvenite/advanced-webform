@@ -41,35 +41,28 @@ namespace AdvancedWebform\Elements;
  * @since   1.0.0
  */
 class Image extends File{
-    
-    public function __construct($app_field, $form, $item_field = null) {
-        parent::__construct($app_field, $form, $item_field);
 
-        $this->set_attribute('accept', 'image/jpeg,image/gif,image/png,image/bmp');
+  public function __construct($app_field, $form, $item_field = null) {
+    parent::__construct($app_field, $form, $item_field);
 
-        /**
-         * TODO
-         * check status is active
-         * check visibility equals true (config['visible']
-         * add delta field (delta is the sort order)
-         */
+    $this->set_attribute('accept', 'image/jpeg,image/gif,image/png,image/bmp');
 
+  }
+
+  /**
+   * @param array $values
+   */
+  public function save(){
+    parent::save();
+    $new_images = $this->get_files();
+    if ($new_images){
+      $current_images = $this->item_field->values;
+      
+      foreach($new_images AS $file){
+        $current_images[] = $file;
+      }
+
+      $this->item_field->set_value($current_images);
     }
-	
-    /**
-     * @param array $values
-     */
-    public function save(){
-        parent::save();
-        $new_images = $this->get_files();
-        if ($new_images){
-          $current_images = $this->item_field->values;
-          
-          foreach($new_images AS $file){
-            $current_images[] = $file;
-          }
-
-          $this->item_field->set_value($current_images);
-        }
-    }
+  }
 }
