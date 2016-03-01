@@ -83,7 +83,11 @@ class File extends Element{
     return $this->files;
   }
   
-  public function set_value($values) {
+  /**
+   * @param $values array
+   * @param $files null It will never be used, only there to be compatible with Element::set_value
+   */
+  public function set_value($values, $files = null) {
     // make sure each file is in its own array
     // not an array for all names, tmp_names etc.
     $new_values = array();
@@ -103,6 +107,8 @@ class File extends Element{
     
     if ($new_values){
       $this->set_attribute('value', $new_values);
+
+      d($new_values);
     }
   }
         

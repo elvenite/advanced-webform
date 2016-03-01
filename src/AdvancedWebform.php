@@ -545,39 +545,39 @@ class AdvancedWebform {
         return self::$fake_field_id_index--;
     }
 
-    /**
-     * Get array of PodioFile objects
-     * @return array[PodioFile]
-     */
-    public function get_files(){
-        return $this->files;
-    }
+  /**
+   * Get array of PodioFile objects
+   * @return array[PodioFile]
+   */
+  public function get_files(){
+      return $this->files;
+  }
 
-    /**
-     * Add a PodioFile object
-     * @param type $file
-     */
-    public function add_file(\PodioFile $file){
-        $this->files[] = $file;
-    }
+  /**
+   * Add a PodioFile object
+   * @param type $file
+   */
+  public function add_file(\PodioFile $file){
+      $this->files[] = $file;
+  }
 
-    /**
-     * Adds an array of PodioFile objects
-     * @param array[PodioFile] $files
-     */
-    public function add_files(array $files){
-        foreach($files AS $file){
-                $this->add_file($file);
-        }
-    }
+  /**
+   * Adds an array of PodioFile objects
+   * @param array[PodioFile] $files
+   */
+  public function add_files(array $files){
+      foreach($files AS $file){
+        $this->add_file($file);
+      }
+  }
 
-    /**
-     * Set array of \PodioFiles to $this->files
-     * @param array $files
-     */
-    public function set_files(array $files){
-        $this->files = $files;
-    }
+  /**
+   * Set array of \PodioFiles to $this->files
+   * @param array $files
+   */
+  public function set_files(array $files){
+      $this->files = $files;
+  }
 
     /**
      * Get form method
@@ -644,11 +644,16 @@ class AdvancedWebform {
     }
     
     /**
-     * Set form encoding type
+     * Set form encoding type, if this is a sub form, set the enctype to the parent instead, since this form won't have the form html tag.
      * @param type $enctype
      */
     public function set_enctype($enctype){
+      if ($this->is_sub_form()){
+        $parent = $this->get_attribute('parent');
+        $parent->get_form()->set_attribute('enctype', $enctype);
+      } else {
         $this->set_attribute('enctype', $enctype);
+      }
     }
     
     /**
@@ -814,7 +819,7 @@ class AdvancedWebform {
      * @param array $files
      */
     public function set_values($data, $files = array()){
-        
+      d($files);
         if (!$this->is_sub_form()){
             // validate CSRF
             $csrf = $this->get_element('advanced-webform-csrf');
@@ -830,18 +835,23 @@ class AdvancedWebform {
         }
         
         foreach($this->elements AS $key => $element){
-            if (isset($data[$key])){
+            if (isset($data[$key]) || isset($files[$key])){
                 // catch all errors to postpone them
                 // all elements must have their value set before we can
                 // return the form. Ohterwise all elements after the failed
                 // will have lost the posted values.
                 try {
-                    $element->set_value($data[$key]);
+                    if ($element->get_attribute('type') === 'app'){
+                      $d = isset($data[$key]) ? $data[$key] : null;
+                      $f = isset($files[$key]) ? $files[$key] : array();
+                      $element->set_value($d, $f);
+                    } else {
+                      $d = isset($files[$key]) ? $files[$key] : $data[$key];
+                      $element->set_value($d);
+                    }
                 } catch (\AdvancedWebform\ElementError $e){
                     $this->error_elements[] = $e;
                 }
-            } elseif (isset($files[$key])){
-                $element->set_value($files[$key]);
             }
         }
         

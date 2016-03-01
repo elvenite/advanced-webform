@@ -217,7 +217,11 @@ abstract class Element {
       return $this->item_field->humanized_value();
   }
   
-  public function set_value($value){
+  /**
+   * @param $values array
+   * @param $files null It will never be used, only there to be compatible with Element::set_value
+   */
+  public function set_value($value, $files = null){
           $this->set_attribute('value', $value);
   }
       
