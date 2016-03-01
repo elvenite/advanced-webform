@@ -84,6 +84,7 @@ class File extends Element{
   }
   
   /**
+   * Since a file input can exist in both a form and subform, we need to take the name of the field into account
    * @param $values array
    * @param $files null It will never be used, only there to be compatible with Element::set_value
    */
@@ -93,12 +94,12 @@ class File extends Element{
     $new_values = array();
 
     if (is_array($values['name'])){
-      $count = count($values['name']);
+      $count = $this->count_files($values);
       for($i=0;$i<$count;$i++){
         $new_values[] = array(
-          'name' => $values['name'][$i],
-          'tmp_name' => $values['tmp_name'][$i],
-          'error' => $values['error'][$i],
+          'name' => $this->fetch_file_meta_data($values, 'name', $i),
+          'tmp_name' => $this->fetch_file_meta_data($values, 'tmp_name', $i),
+          'error' => $this->fetch_file_meta_data($values, 'error', $i),
         );
       }
     } else {
@@ -107,9 +108,17 @@ class File extends Element{
     
     if ($new_values){
       $this->set_attribute('value', $new_values);
-
-      d($new_values);
     }
+  }
+
+  protected function fetch_file_meta_data($values, $key, $index){
+    $name = $this->app_field->external_id;
+    return (isset($values[$key][$name])) ? $values[$key][$name][$index] : $values[$key][$index];
+  }
+
+  protected function count_files ($values){
+    $name = $this->app_field->external_id;
+    return (isset($values['name'][$name])) ? count($values['name'][$name]) : count($values['name']);
   }
         
   public function save(){

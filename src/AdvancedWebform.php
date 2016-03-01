@@ -819,7 +819,6 @@ class AdvancedWebform {
      * @param array $files
      */
     public function set_values($data, $files = array()){
-      d($files);
         if (!$this->is_sub_form()){
             // validate CSRF
             $csrf = $this->get_element('advanced-webform-csrf');

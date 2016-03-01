@@ -69,7 +69,6 @@ class Image extends File{
             $current_images[] = $file;
           }
 
-          d($current_images);
           $this->item_field->set_value($current_images);
         }
     }

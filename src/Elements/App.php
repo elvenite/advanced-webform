@@ -196,7 +196,8 @@ class App extends Element{
           parent::set_value($values);
         } elseif (is_array($values) || $files) {
           $values = (is_array($values)) ? $values : array();
-          $this->sub_form->set_values($values, $files);
+          $field_name = key($files['name']);
+          $this->sub_form->set_values($values, array($field_name => $files));
           // attribute new indicates that the save function must create a
           // new item
           $this->set_attribute('new', true);
