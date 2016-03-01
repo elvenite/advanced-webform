@@ -241,6 +241,7 @@ class AdvancedWebform {
         // a sub form will not create a form tag
         if (isset($attributes['is_sub_form'])){
                 $this->set_is_sub_form($attributes['is_sub_form']);
+                $this->set_field_name_prefix($attributes['parent']->get_attribute('name'));
                 unset($attributes['is_sub_form']);
         }
         
@@ -436,7 +437,7 @@ class AdvancedWebform {
 
         // add element to elements list
         if ($element){
-                $this->elements[$app_field->external_id] = $element;
+          $this->elements[$app_field->external_id] = $element;
         }
     }
 
@@ -896,7 +897,7 @@ class AdvancedWebform {
                     $this->item->fields[] = $element->get_item_field();
                 }
             }
-                
+
             $this->item->save();
 
             // if $this->item->files is a none empty array

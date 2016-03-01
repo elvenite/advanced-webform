@@ -8,7 +8,7 @@ if(!session_id()) {
 }
 
 Podio::setup(CLIENT_ID, CLIENT_SECRET);
-Podio::$debug = true;
+Podio::$debug = 'file';
 
 // Just for testing, you don't really want to reset the auth_token everytime.
 Podio::$oauth = new PodioOAuth();
@@ -42,6 +42,7 @@ if ($_POST){
         $podioform = '';
     } catch(\Exception $e){
         $error_message = 'There\'s an unknown error with the submission. Please revisit the form and submit again.';
+        var_dump($e);
         $podioform = '';
     }
 }

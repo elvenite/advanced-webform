@@ -61,6 +61,16 @@ class Image extends File{
      */
     public function save(){
         parent::save();
-        $this->item_field->set_value($this->get_files());
+        $new_images = $this->get_files();
+        if ($new_images){
+          $current_images = $this->item_field->values;
+          
+          foreach($new_images AS $file){
+            $current_images[] = $file;
+          }
+
+          d($current_images);
+          $this->item_field->set_value($current_images);
+        }
     }
 }

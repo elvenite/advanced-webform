@@ -87,7 +87,7 @@ abstract class Element {
             $class_name = 'Podio' . ucfirst($app_field->type) . 'ItemField';
             $this->set_item_field(new $class_name(array(
               'field_id' => $this->get_attribute('id'),
-              'external_id' => $this->get_name(),
+              'external_id' => $app_field->external_id,
             )));
           } else {
             $this->set_item_field($item_field);
@@ -239,7 +239,7 @@ abstract class Element {
   public function get_name(){
       $name = $this->name;
       if ($this->form->is_sub_form()){
-                  $name = $this->form->get_field_name_prefix() . '[' . $name . ']';
+        $name = $this->form->get_field_name_prefix() . '[' . $name . ']';
       }
       
       return $name;

@@ -178,11 +178,6 @@ class App extends Element{
         } else {
             $this->sub_form = new \AdvancedWebform\AdvancedWebform($settings);
         }
-
-        // just for extra safety
-        $this->sub_form->set_is_sub_form(true);
-
-        $this->sub_form->set_field_name_prefix($this->get_attribute('name'));
     }
     /**
      * Set value
