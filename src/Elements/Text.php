@@ -58,6 +58,7 @@ class Text extends Element{
         if ($item_field){
             $value = $item_field->values;
             $value = str_replace('</p><p>', "\n\n", $value);
+            $value = str_replace('<br />', "\n", $value);
             $value = strip_tags($value);
             $this->set_attribute('value', $value);
         }
