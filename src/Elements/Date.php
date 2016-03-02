@@ -116,7 +116,7 @@ class Date extends Element{
         $this->throw_error($this->messages[self::END_TIME_BEFORE_START_TIME]);
     }
 	
-    public function set_value($values) {
+    public function set_value($values, $files = null) {
         $value = array();
         if (empty($values['start_date']) || !$this->validate($values)){
             // does this really run?

@@ -116,9 +116,9 @@ class AdvancedWebform {
      */
 
     protected $decorators = array(
-        'field' => '<div class="form-group %6$s"><label class="control-label" for="%1$s">%2$s%5$s</label>%3$s%4$s</div>',
+        'field' => '<div class="form-group %6$s"><label class="control-label" for="%1$s">%2$s%5$s</label>%4$s%3$s</div>',
         'field_required' => ' <span class="required">*</span>',
-        'field_description' => '<small class="help-block muted">%1$s</small>',
+        'field_description' => '<p class="help-block">%1$s</p>',
         'parent_field' => '<fieldset class="well"><legend>%2$s</legend>%4$s%3$s</fieldset>',
         'sub_field' => '<div class="form-group %6$s"><label class="control-label" for="%1$s">%2$s%5$s</label>%3$s%4$s</div>',
         'sub_parent_field' => '<div class="form-group %6$s"><div class="padding-left"><h4>%2$s%5$s%4$s</h4>%3$s</div></div>',
