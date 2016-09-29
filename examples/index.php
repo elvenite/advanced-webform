@@ -42,7 +42,7 @@ if ($_POST){
         $podioform = '';
     } catch(\Exception $e){
         $error_message = 'There\'s an unknown error with the submission. Please revisit the form and submit again.';
-        var_dump($e);
+        d($e);
         $podioform = '';
     }
 }

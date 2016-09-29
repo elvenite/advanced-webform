@@ -116,7 +116,7 @@ class AdvancedWebform {
      */
 
     protected $decorators = array(
-        'field' => '<div class="form-group %6$s"><label class="control-label" for="%1$s">%2$s%5$s</label>%4$s%3$s</div>',
+        'field' => '<label class="control-label" for="%1$s">%2$s%5$s</label><div class="form-group %6$s">%3$s%4$s</div>',
         'field_required' => ' <span class="required">*</span>',
         'field_description' => '<p class="help-block">%1$s</p>',
         'parent_field' => '<fieldset class="well"><legend>%2$s</legend>%4$s%3$s</fieldset>',
@@ -772,6 +772,10 @@ class AdvancedWebform {
      */
     public function render(){
         $output = array();
+
+        $output[] = '<!--[if lt IE 9]>
+<div class="alert alert-danger">You are using an outdated browser. The form might not work as expected. Please consider upgrading to a <a href="http://browsehappy.com/">modern browser</a>.</div>
+<![endif]-->';
 
         // create the form tag if not a sub form
         if (!$this->is_sub_form()){

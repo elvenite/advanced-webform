@@ -226,14 +226,14 @@ abstract class Element {
   }
       
   public function save(){
-   $values = $this->get_attribute('value');
-   
-   if (empty($values)){
-     $values = null;
-     $this->set_attribute('value', $values);
-   }
-   
-   $this->item_field->set_value($values);
+    $values = $this->get_attribute('value');
+
+    if (empty($values)){
+      $values = null;
+      $this->set_attribute('value', $values);
+    }
+
+    $this->item_field->set_value($values);
   }
   
   /**
@@ -335,12 +335,12 @@ abstract class Element {
           if (in_array($key, $ignore) || is_null($attribute)) continue;
           // if true, then attribute minimization is allowed
           if ($attribute === true){
-              $attributes_string .= ' ' . $key;
+              $attributes_string .= ' ' . htmlspecialchars($key, ENT_COMPAT, 'UTF-8', true);
           } elseif ($attribute != ''){ // empty attributes won't be added
                           if (is_array($attribute)){
                               $attribute = json_encode($attribute);
                           }
-              $attributes_string .= ' ' . $key . '=\'' . (string) $attribute . '\'';
+              $attributes_string .= ' ' . $key . '=\'' . (string) htmlspecialchars($attribute, ENT_COMPAT, 'UTF-8', true) . '\'';
           }
       }
       
